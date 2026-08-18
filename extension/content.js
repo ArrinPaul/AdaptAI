@@ -437,7 +437,7 @@ function injectAiAssistantPanel() {
   panel.innerHTML = `
     <div class="assistant-header">
       <div class="assistant-title">
-        <span class="logo-spark">⚡</span> AdaptAI Floating Assistant
+        <span class="brand-dot"></span> AdaptAI Floating Assistant
       </div>
       <button class="assistant-close-btn" id="adaptai-assistant-close" title="Close (Esc)">✕</button>
     </div>
@@ -449,9 +449,9 @@ function injectAiAssistantPanel() {
       </div>
 
       <div class="suggested-chips" id="adaptai-suggested-chips">
-        <button class="chip-btn" data-query="Summarize this page content briefly.">📄 Summarize Page</button>
-        <button class="chip-btn" data-query="Explain complex concepts on this page simply.">🧠 Explain This</button>
-        <button class="chip-btn" data-query="Highlight key action items or decisions.">🎯 Key Takeaways</button>
+        <button class="chip-btn" data-query="Summarize this page content briefly.">Summarize Page</button>
+        <button class="chip-btn" data-query="Explain complex concepts on this page simply.">Explain This</button>
+        <button class="chip-btn" data-query="Highlight key action items or decisions.">Key Takeaways</button>
       </div>
 
       <div id="adaptai-chat-history" class="chat-history"></div>
@@ -459,14 +459,15 @@ function injectAiAssistantPanel() {
 
     <div class="assistant-footer">
       <div id="adaptai-context-indicator" class="context-indicator" style="display:none;">
-        <span class="context-icon">📌</span> Selected Text Context Attached
+        <span class="context-icon">/</span> Selected Text Context Attached
       </div>
       <div class="input-row">
-        <textarea id="adaptai-assistant-input" rows="1" placeholder="Ask anything about this page... (Enter to send, Shift+Enter for new line)"></textarea>
-        <button id="adaptai-assistant-send" class="send-btn">➤</button>
+        <textarea id="adaptai-assistant-input" rows="1" placeholder="Ask anything about this page..."></textarea>
+        <button id="adaptai-assistant-send" class="send-btn">→</button>
       </div>
     </div>
   `;
+
 
   document.body.appendChild(panel);
 

@@ -272,21 +272,60 @@ function updateTtsBtnIcon(iconText) {
 }
 
 /**
- * Toggles Extension Light / Dark Mode without modifying host website colors
+ * Toggles Extension Light / Dark / Persona High-Contrast Mode on page and UI
  */
 function toggleExtensionTheme() {
-  extensionThemeState = extensionThemeState === 'light' ? 'dark' : 'light';
-  
-  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-    chrome.storage.local.set({ extensionTheme: extensionThemeState }, () => {
-      console.log("[AdaptAI Theme] Extension theme saved:", extensionThemeState);
-    });
-  }
+  const root = document.documentElement;
 
-  // Re-mount widget with new theme styles
-  removeFloatingToolbar();
-  mountShadowWidget();
+  // Retrieve User Accessibility Profile from Chrome storage or fallback
+  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+    chrome.storage.local.get(['userProfile', 'extensionTheme'], (res) => {
+      const profile = res.userProfile || {};
+      const currentTheme = res.extensionTheme || 'dark';
+
+      if (currentTheme === 'dark') {
+        // Switch to High-Contrast Persona Theme (Yellow on Black)
+        extensionThemeState = 'high_contrast';
+        root.setAttribute('data-adaptai-transformed', 'true');
+        root.style.setProperty('--adapt-bg-color', '#121212');
+        root.style.setProperty('--adapt-text-color', '#FFFF00');
+        console.log("[AdaptAI Theme] Applied Persona High-Contrast Theme (Yellow on Black).");
+      } else if (currentTheme === 'high_contrast') {
+        // Switch to High-Contrast Light Theme (Black on White)
+        extensionThemeState = 'light';
+        root.setAttribute('data-adaptai-transformed', 'true');
+        root.style.setProperty('--adapt-bg-color', '#FFFFFF');
+        root.style.setProperty('--adapt-text-color', '#000000');
+        console.log("[AdaptAI Theme] Applied Persona Light Theme (Black on White).");
+      } else {
+        // Reset to Standard Default Theme
+        extensionThemeState = 'dark';
+        root.removeAttribute('data-adaptai-transformed');
+        root.style.removeProperty('--adapt-bg-color');
+        root.style.removeProperty('--adapt-text-color');
+        console.log("[AdaptAI Theme] Reset to Default Page Theme.");
+      }
+
+      chrome.storage.local.set({ extensionTheme: extensionThemeState });
+
+      // Re-mount widget with new theme styles
+      removeFloatingToolbar();
+      mountShadowWidget();
+    });
+  } else {
+    // Non-extension fallback toggle
+    if (!root.getAttribute('data-adaptai-transformed')) {
+      root.setAttribute('data-adaptai-transformed', 'true');
+      root.style.setProperty('--adapt-bg-color', '#121212');
+      root.style.setProperty('--adapt-text-color', '#FFFF00');
+    } else {
+      root.removeAttribute('data-adaptai-transformed');
+      root.style.removeProperty('--adapt-bg-color');
+      root.style.removeProperty('--adapt-text-color');
+    }
+  }
 }
+
 
 function handleVoiceCommand() {
   toggleAiAssistant();

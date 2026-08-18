@@ -19,21 +19,22 @@
 ## TRACK B EXECUTION MODULES
 
 ### B.1 Service Worker Lifecycle & Extension Trigger Wiring
-- [ ] Implement `chrome.runtime.onInstalled` opening onboarding setup tab (`background.js`)
-- [ ] Implement `chrome.action.onClicked` extension icon click handler emitting `"scrape_page"` message
-- [ ] Implement keyboard shortcut command listener (`Ctrl+Shift+A`) triggering adaptation
-- [ ] Wire incoming message listener for `process_with_ai` payload from `content.js`
+- [x] Implement `chrome.runtime.onInstalled` opening onboarding setup tab (`background.js`)
+- [x] Implement `chrome.action.onClicked` extension icon click handler emitting `"scrape_page"` message
+- [x] Implement keyboard shortcut command listener (`Ctrl+Shift+A`) triggering adaptation
+- [x] Wire incoming message listener for `process_with_ai` payload from `content.js`
 
 **Tests:**
-- [ ] Service worker registers without syntax or runtime initialization errors
-- [ ] Extension icon click sends `{ action: "scrape_page" }` to active tab
-- [ ] Keyboard shortcut `Ctrl+Shift+A` emits trigger message to active tab
-- [ ] `chrome.runtime.onMessage` correctly catches incoming scraped DOM text
+- [x] Service worker registers without syntax or runtime initialization errors
+- [x] Extension icon click sends `{ action: "scrape_page" }` to active tab
+- [x] Keyboard shortcut `Ctrl+Shift+A` emits trigger message to active tab
+- [x] `chrome.runtime.onMessage` correctly catches incoming scraped DOM text
 
 **Quality Gate:**
-- [ ] Background service worker stays responsive without crashing or memory leaks
-- [ ] Message passing listener returns true for async responses when necessary
-- [ ] Sub-task committed to `Track-B`
+- [x] Background service worker stays responsive without crashing or memory leaks
+- [x] Message passing listener returns true for async responses when necessary
+- [x] Sub-task committed to `Track-B`
+
 
 ---
 

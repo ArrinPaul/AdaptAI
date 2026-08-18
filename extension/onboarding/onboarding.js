@@ -19,11 +19,29 @@ function nextStep(stepNumber) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('btn-next-2')?.addEventListener('click', () => nextStep(2));
+  document.getElementById('btn-next-2')?.addEventListener('click', () => {
+    const selected = document.querySelector('input[name="visual_test"]:checked');
+    if (!selected) {
+      alert("Please select one of the visual legibility options to continue.");
+      return;
+    }
+    nextStep(2);
+  });
+
   document.getElementById('btn-back-1')?.addEventListener('click', () => nextStep(1));
-  document.getElementById('btn-next-3')?.addEventListener('click', () => nextStep(3));
+
+  document.getElementById('btn-next-3')?.addEventListener('click', () => {
+    const selected = document.querySelector('input[name="cognitive_test"]:checked');
+    if (!selected) {
+      alert("Please select one of the cognitive readability options to continue.");
+      return;
+    }
+    nextStep(3);
+  });
+
   document.getElementById('btn-back-2')?.addEventListener('click', () => nextStep(2));
   document.getElementById('btn-calc-persona')?.addEventListener('click', () => calculatePersona());
+
 
   // Proceed Browsing action - saves state & closes onboarding tab
   document.getElementById('btn-proceed-browsing')?.addEventListener('click', () => {

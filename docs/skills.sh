@@ -47,7 +47,7 @@ echo ""
 echo "-- MODULE 1: Extension Core --"
 cat << 'EOF'
   1. Chrome Extension architecture (Manifest V3)
-     - manifest.json structure, permissions, content_scripts, action/popup
+     - manifest.json structure, permissions, content_scripts, action (no popup)
   2. Content scripts and the extension messaging model
      - chrome.runtime.sendMessage / onMessage between popup, background, content script
   3. Vanilla JS DOM manipulation
@@ -57,7 +57,7 @@ cat << 'EOF'
        disabling animations via CSS
   5. Web Speech API
      - SpeechSynthesis (read aloud), SpeechRecognition (voice capture)
-  6. Basic popup UI/UX
+  6. Basic onboarding UI/UX
      - simple HTML/CSS forms, button states, no framework needed
 EOF
 echo ""

@@ -51,7 +51,7 @@ Repo layout enforces this physically:
 - No leftover `console.log` debugging spam in code that reaches the integration branch.
 - Every function that calls the AI endpoint (Module 1) or calls Gemini (Module 2) must have a `try/catch` — a failed call must never throw an unhandled error that breaks the demo.
 - Module 2: **always validate the AI's JSON response before returning it.** If Gemini returns malformed JSON or extra prose, catch it, retry once or fall back to safe defaults — never pass raw unvalidated model output back to Module 1.
-- Module 1: **always have a non-AI fallback.** If the fetch to Module 2 fails or times out, fall back to the hardcoded CSS persona presets silently rather than showing a broken/error state.
+- Module 1: **always have a non-AI fallback.** If the fetch to Module 2 fails or times out, fall back to the hardcoded CSS presets silently rather than showing a broken/error state.
 - Comment the "why" on anything non-obvious, not the "what."
 
 ---
@@ -68,7 +68,7 @@ Repo layout enforces this physically:
 
 Each module must independently prove itself working **before** the integration slot begins:
 
-- **Module 1 checkpoint:** load unpacked extension in `chrome://extensions`, run every persona against the demo page using the mock response, confirm DOM changes visibly apply and read-aloud/voice capture work.
+- **Module 1 checkpoint:** load unpacked extension in `chrome://extensions`, run through the onboarding tests against the demo page using the mock response, confirm DOM changes visibly apply and read-aloud/voice capture work.
 - **Module 2 checkpoint:** every `mode` in the contract returns a valid, schema-matching response via curl for at least one realistic input.
 
 If a module can't pass its own checkpoint, it is not ready for integration — fix it in isolation first, don't debug it live during the integration slot.
@@ -82,7 +82,7 @@ If time runs short, cut in this exact order — decided now so nobody argues abo
 1. Image description
 2. Voice command mode
 3. Accessibility report scoring
-4. Extra personas beyond Visual + Dyslexia
+4. Extra tests beyond Core tests
 
 **Never cut:** persona-based CSS transformation, the core AI Adapt flow, or the demo page. These three are the entire demo.
 

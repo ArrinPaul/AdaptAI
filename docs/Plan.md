@@ -22,29 +22,36 @@ Not: "We completely reconstruct any website." That's out of scope for this timef
 
 ## 2. Core User Flow
 
+**First Installation (Onboarding):**
+```text
+USER INSTALLS EXTENSION
+  │
+  ▼
+Redirected to full-screen Onboarding Landing Page
+  │
+  ├── 1. Select Preferred Language
+  ├── 2. Curated Tests (Dyslexia, Visual Impairment, Auditory needs)
+  └── 3. Generates and saves a customized "Preset" to local storage
 ```
-USER
+
+**Daily Browsing:**
+```text
+USER VISITS A WEBSITE
   │
   ▼
-"How do you prefer to experience the web?"
-  │
-  ├── Pick a persona (Visual / Dyslexia / Cognitive / Motor)
-  └── OR describe it in plain language ("I have difficulty reading")
-  │
-  ▼
-AdaptAI extension
+Clicks Extension Icon (Action toggle)
   │
   ├── DOM Analyzer reads the current page
-  ├── Sends page summary + preference to AI layer
+  ├── Sends page summary + saved Preset to AI layer
   ▼
 AI returns an Adaptation Plan (JSON)
   │
   ▼
-DOM Modifier applies it to the live page
-  │
-  ▼
-Transformed, personalized interface
+DOM Modifier applies it to the live page (Rearranges layout, alters text/colors)
 ```
+
+**AI Assistant (On-Demand):**
+- User presses `Ctrl+Shift+A` (`Cmd+Shift+A` on Mac) to activate the AI Assistant for specific on-page queries or voice commands.
 
 ---
 
@@ -55,9 +62,9 @@ Everyone on both modules should be aligned on this exact stack — don't substit
 | Layer | Tech |
 |---|---|
 | Extension platform | Chrome Extension, Manifest V3 |
-| Extension UI | HTML, CSS, vanilla JS (`popup.html`, `popup.js`) — no framework, keep it fast to build |
+| Extension UI | HTML, CSS, vanilla JS (`onboarding.html`, `onboarding.js`) — no framework, keep it fast to build |
 | Page manipulation | Content script (`content.js`), vanilla JS DOM APIs |
-| Extension messaging | `chrome.runtime` messaging between popup ↔ background ↔ content script |
+| Extension messaging | `chrome.runtime` messaging between onboarding ↔ background ↔ content script |
 | Client-side accessibility APIs | `SpeechSynthesis` (read aloud), `SpeechRecognition` (voice capture) — both built into Chrome, no external service |
 | AI model | Gemini API (`gemini-1.5-flash` or latest available — confirm key/model before Hour 1) |
 | AI vision (image description) | Gemini API multimodal (image input) |
@@ -132,8 +139,8 @@ One endpoint, routed internally by `mode`. Module 1 always sends this shape; Mod
 
 ### Module 1 — Extension Core
 - `manifest.json`
-- `popup.html`, `popup.js` — persona selection + preference input + accessibility report display
-- `content.js` — DOM Analyzer (builds the `page` object), DOM Modifier (applies the Response JSON), hardcoded CSS persona presets (zero-AI fallback), read aloud, keyboard navigation, voice capture (mic → transcript)
+- `onboarding.html`, `onboarding.js` — language selection & curated tests, saving preset to storage
+- `content.js` — DOM Analyzer (builds the `page` object), DOM Modifier (applies the Response JSON), hardcoded CSS presets (zero-AI fallback), read aloud, keyboard navigation, voice capture (mic → transcript)
 - `background.js` — message routing, single fetch call to Module 2's endpoint
 
 ### Module 2 — AI Intelligence Layer
@@ -154,7 +161,7 @@ See `skills.sh` for the runnable checklist. Summary by module:
 - DOM manipulation in vanilla JS (`querySelectorAll`, style injection, `MutationObserver` basics)
 - CSS (font scaling, contrast, spacing, transitions/animations)
 - Web Speech API (`SpeechSynthesis`, `SpeechRecognition`)
-- Basic UX/UI for a small popup interface
+- Basic UX/UI for a full-page onboarding interface
 
 **Module 2 needs:**
 - Gemini API usage (prompt construction, multimodal/image input, response parsing)
@@ -183,7 +190,7 @@ See `skills.sh` for the runnable checklist. Summary by module:
 
 1. Open the **controlled demo page** (deliberately small text, dense paragraphs, tiny buttons — built/chosen in advance, never a live third-party site).
 2. Show the "before" state.
-3. Open AdaptAI, pick "Easier to read."
+3. Show the Onboarding Flow (Language + tests) saving a preset."
 4. Show the DOM Analyzer progress UI ("342 elements found...") for visual impact.
 5. Show the transformed "after" state — large text, high contrast, simplified paragraph, larger buttons.
 6. Show one AI Adapt example: type a free-text preference, show it map to a real profile.

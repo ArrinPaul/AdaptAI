@@ -51,22 +51,26 @@
 
 ## PHASE 1: MODULE 1 — EXTENSION SCAFFOLD & POPUP UI (Hour 0:15 - 1:15)
 
-> **Goal:** Functioning Chrome Extension popup UI, persona selection, free-text input, and CSS fallbacks.
+> **Goal:** Functioning Chrome Extension onboarding UI, persona selection, free-text input, and CSS fallbacks.
 
-### 1.1 Manifest & Popup Scaffold (Person A)
+### Person A — Onboarding, Keybinds, & UI
 
-- [ ] Create `manifest.json` (Manifest V3: permissions, content script registration, popup registration)
-- [ ] Build `popup.html` structure (Persona buttons: Visual, Dyslexia, Cognitive, Motor)
-- [ ] Build free-text preference input in `popup.html` ("How do you prefer to experience the web?")
-- [ ] Wire `popup.js` to handle button clicks and send messages to `background.js`
-- [ ] Implement hardcoded CSS persona presets (Visual, Dyslexia) for zero-AI fallback
-- [ ] Add "Analyzing page... N elements found" progress UI in `popup.js`
+| # | Task | Est. | Status | Notes |
+|---|---|---|---|---|
+| 1.A.1 | `manifest.json` — background script (`onInstalled` redirect), commands (keybind), action | 20 min | TODO | Manifest V3 |
+| 1.A.2 | Onboarding Page UI — HTML/CSS for language selection & testing interface | 30 min | TODO | Full-page landing |
+| 1.A.3 | Curated Tests logic — implement Dyslexia, Visual Impairment, and Auditory tests | 45 min | TODO | Generates user preset |
+| 1.A.4 | Storage — save generated preset to `chrome.storage.local` | 15 min | TODO | |
+| 1.A.5 | Background Script — handle extension icon click to trigger adaptation via content script | 20 min | TODO | No popup, direct toggle |
+| 1.A.6 | Keybind implementation — handle `Ctrl+Shift+A` command to activate AI Assistant | 20 min | TODO | |
+| 1.A.7 | Accessibility report UI (overlay/modal injected on page) | 30 min | TODO | |
+| 1.A.8 | Visual polish pass on onboarding page | 20 min | TODO | |
 
 **Tests:**
 
 - [ ] Extension loads unpacked in `chrome://extensions` with zero errors
 - [ ] Popup opens correctly on clicking extension icon
-- [ ] Clicking persona buttons sends valid message payload to background script
+- [ ] Completing onboarding tests sends valid message payload to background script
 - [ ] CSS fallback presets work offline without network call
 
 **Quality Gate:**
@@ -79,7 +83,7 @@
 ### **PHASE 1 EXIT GATE**
 
 - [ ] Extension manifest loads cleanly without warnings
-- [ ] Persona selector UI passes visual check
+- [ ] Onboarding UI passes visual check
 - [ ] Offline CSS presets verified standalone
 
 ---
@@ -234,13 +238,13 @@
 - [ ] End-to-End Test `mode: SIMPLIFY` on dense demo page paragraphs
 - [ ] End-to-End Test `mode: DESCRIBE_IMAGE` on demo page images
 - [ ] End-to-End Test `mode: VOICE_COMMAND` end-to-end (mic → transcript → AI → DOM action)
-- [ ] End-to-End Test `mode: REPORT` and display score card in popup
+- [ ] End-to-End Test `mode: REPORT` and display score card as an injected overlay
 - [ ] Fallback Test: Intentionally sever AI backend and verify instant CSS preset fallback in extension
 
 **Tests:**
 
 - [ ] All 6 operational modes complete successfully end-to-end
-- [ ] Page transformation completes in < 3 seconds after popup click
+- [ ] Page transformation completes in < 3 seconds after extension icon click
 - [ ] Disabling network connectivity triggers pure CSS preset fallback gracefully
 
 **Quality Gate:**
@@ -264,8 +268,8 @@
 
 ### 7.1 Report Panel & Demo Dry-Run (Both Teams)
 
-- [ ] Build Accessibility Report Panel in `popup.html` / `popup.js` (renders overall score, category breakdown, recommendations)
-- [ ] Visual polish pass on extension popup (typography, icons, active states)
+- [ ] Build Accessibility Report Panel in `onboarding.html` / `onboarding.js` (renders overall score, category breakdown, recommendations)
+- [ ] Visual polish pass on onboarding page (typography, icons, active states)
 - [ ] Perform 3 timed demo runs using the controlled demo page
 - [ ] Patch any lingering edge cases identified during dry runs
 
@@ -310,7 +314,7 @@
 
 | Role | Developer | Primary Responsibilities |
 |---|---|---|
-| **Module 1 — Person A** | Developer 1 (UI/Popup) | `manifest.json`, `popup.html`, `popup.js`, CSS presets, report panel UI |
+| **Module 1 — Person A** | Developer 1 (UI/Popup) | `manifest.json`, `onboarding.html`, `onboarding.js`, CSS presets, report panel UI |
 | **Module 1 — Person B** | Developer 2 (DOM/Speech) | `content.js` (DOM Analyzer, DOM Modifier), SpeechSynthesis, SpeechRecognition, keyboard nav |
 | **Module 2 — Person A** | Developer 3 (AI Prompts) | Express backend, Gemini prompts (Persona, AI Adapt, Simplify, Image, Report) |
 | **Module 2 — Person B** | Developer 4 (Validation/Voice)| Voice command prompt, schema validator, fallback middleware, error handling |

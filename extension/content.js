@@ -135,8 +135,35 @@ function handleVoiceCommand() {
 
 
 // -------------------------------------------------------------
-// SUB-TASK A4: DOM TRANSFORMATION ENGINE
+// SUB-TASK A4: COMPLETE DOM TRANSFORMATION & INTENT ENGINE
 // -------------------------------------------------------------
+
+/**
+ * Injects or removes Dyslexic font face into document head
+ */
+function ensureDyslexicFont(enable) {
+  let styleEl = document.getElementById('adaptai-dyslexic-style');
+  if (enable) {
+    if (!styleEl) {
+      styleEl = document.createElement('style');
+      styleEl.id = 'adaptai-dyslexic-style';
+      styleEl.textContent = `
+        @font-face {
+          font-family: 'OpenDyslexic';
+          src: url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/opendyslexic-regular.webfont.woff') format('woff');
+        }
+      `;
+      document.head.appendChild(styleEl);
+    }
+    document.documentElement.style.setProperty('--adapt-font-family', "'OpenDyslexic', sans-serif");
+  } else {
+    document.documentElement.style.removeProperty('--adapt-font-family');
+  }
+}
+
+/**
+ * Applies CSS variables to document root
+ */
 function applyCssTransformations(cssUpdates) {
   if (!cssUpdates) return;
   const root = document.documentElement;
@@ -145,14 +172,93 @@ function applyCssTransformations(cssUpdates) {
   });
 }
 
+/**
+ * Toggles motor accessibility target expansion
+ */
+function applyMotorAssist(enable) {
+  if (enable) {
+    document.body.classList.add('adapt-motor-assist');
+  } else {
+    document.body.classList.remove('adapt-motor-assist');
+  }
+}
+
+/**
+ * Swaps original paragraph innerText with simplified AI texts
+ */
 function applyTextSimplification(simplifiedTextArray) {
   if (!Array.isArray(simplifiedTextArray) || simplifiedTextArray.length === 0) return;
-  const paragraphs = document.querySelectorAll('p');
+  
+  // Store active simplified text for Web Speech TTS engine
+  activeSimplifiedText = simplifiedTextArray;
+
+  const paragraphs = Array.from(document.querySelectorAll('p')).filter(p => !p.closest('#adaptai-toolbar'));
   paragraphs.forEach((p, idx) => {
     if (simplifiedTextArray[idx]) {
       p.innerText = simplifiedTextArray[idx];
+      p.style.transition = 'all 0.3s ease';
     }
   });
+}
+
+/**
+ * Executes navigation / scrolling voice intents
+ */
+function executeVoiceIntent(intent) {
+  if (!intent) return;
+  console.log(`[AdaptAI Voice Intent Execution] Executing intent: ${intent}`);
+  
+  switch (intent.toLowerCase()) {
+    case 'scroll_down':
+      window.scrollBy({ top: 500, behavior: 'smooth' });
+      break;
+    case 'scroll_up':
+      window.scrollBy({ top: -500, behavior: 'smooth' });
+      break;
+    case 'scroll_top':
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      break;
+    case 'scroll_bottom':
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      break;
+    case 'read_page':
+      handleReadAloud();
+      break;
+    default:
+      console.warn(`[AdaptAI Voice Intent] Unrecognized intent: ${intent}`);
+  }
+}
+
+/**
+ * Master transformation pipeline entrypoint
+ */
+function runFullTransformation(payload) {
+  console.log("[AdaptAI] Applying full transformations payload:", payload);
+
+  // 1. Apply CSS variable overrides
+  if (payload.cssUpdates) {
+    applyCssTransformations(payload.cssUpdates);
+  }
+
+  // 2. Enable Dyslexic font if requested
+  if (payload.dyslexicFont) {
+    ensureDyslexicFont(true);
+  }
+
+  // 3. Enable motor assistance if requested
+  if (payload.motorAssist) {
+    applyMotorAssist(true);
+  }
+
+  // 4. Swap paragraph inner text
+  if (payload.simplifiedText) {
+    applyTextSimplification(payload.simplifiedText);
+  }
+
+  // 5. Execute voice intent if returned
+  if (payload.voiceIntent) {
+    executeVoiceIntent(payload.voiceIntent);
+  }
 }
 
 // -------------------------------------------------------------
@@ -169,11 +275,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   if (request.action === "apply_transformations") {
     const payload = request.data || mockGeminiResponse;
-    applyCssTransformations(payload.cssUpdates);
-    applyTextSimplification(payload.simplifiedText);
+    runFullTransformation(payload);
   }
 });
 
 // Auto-inject UI toolbar on load
 injectFloatingToolbar();
+
 

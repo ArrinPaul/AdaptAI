@@ -109,15 +109,16 @@ html[data-adaptai-transformed="true"] a {
 
 }
 
-/* Floating AI Assistant Overlay Panel (Standard Floating Chatbot Widget) */
+/* Floating AI Assistant Overlay Panel (Floating Right-Side Rectangle Widget) */
 #adaptai-assistant-overlay {
   position: fixed !important;
-  bottom: 84px !important;
+  top: 50% !important;
   right: 24px !important;
-  width: 380px !important;
+  transform: translateY(-50%) !important;
+  width: 400px !important;
   max-width: calc(100vw - 32px) !important;
-  height: 520px !important;
-  max-height: calc(100vh - 120px) !important;
+  height: 560px !important;
+  max-height: calc(100vh - 80px) !important;
   background: #121215 !important;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -131,8 +132,8 @@ html[data-adaptai-transformed="true"] a {
   color: #fafafa !important;
   overflow: hidden !important;
   filter: none !important;
-  animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
+
 
 
 @keyframes slideInUp {

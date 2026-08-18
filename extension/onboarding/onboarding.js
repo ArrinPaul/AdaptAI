@@ -18,6 +18,14 @@ function nextStep(stepNumber) {
   }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('btn-next-2')?.addEventListener('click', () => nextStep(2));
+  document.getElementById('btn-back-1')?.addEventListener('click', () => nextStep(1));
+  document.getElementById('btn-next-3')?.addEventListener('click', () => nextStep(3));
+  document.getElementById('btn-back-2')?.addEventListener('click', () => nextStep(2));
+  document.getElementById('btn-calc-persona')?.addEventListener('click', () => calculatePersona());
+});
+
 function initMotorTest() {
   const btn = document.getElementById('motor-target-btn');
   const display = document.getElementById('motor-score-display');

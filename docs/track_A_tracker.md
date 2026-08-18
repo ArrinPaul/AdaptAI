@@ -19,21 +19,22 @@
 ## TRACK A EXECUTION MODULES
 
 ### A.1 Onboarding UI & Profile Storage Setup
-- [ ] Build interactive 3-section selection form (`onboarding.html`, `onboarding.css`)
-- [ ] Build form state handler capturing visual, cognitive, audio options (`onboarding.js`)
-- [ ] Save profile JSON payload securely to `chrome.storage.local` under key `userProfile`
-- [ ] Retrieve and pre-populate options when reopening onboarding page
+- [x] Build interactive 3-section selection form (`onboarding.html`, `onboarding.css`)
+- [x] Build form state handler capturing visual, cognitive, audio options (`onboarding.js`)
+- [x] Save profile JSON payload securely to `chrome.storage.local` under key `userProfile`
+- [x] Retrieve and pre-populate options when reopening onboarding page
 
 **Tests:**
-- [ ] Profile JSON schema valid: `{"highContrast": bool, "dyslexicFont": bool, "fontScale": string, "audioEnabled": bool}`
-- [ ] `chrome.storage.local.set` persists options without error
-- [ ] `chrome.storage.local.get` accurately restores saved profile state
-- [ ] Visual styling responsive across screen viewports
+- [x] Profile JSON schema valid: `{"highContrast": bool, "dyslexicFont": bool, "fontScale": string, "audioEnabled": bool}`
+- [x] `chrome.storage.local.set` persists options without error
+- [x] `chrome.storage.local.get` accurately restores saved profile state
+- [x] Visual styling responsive across screen viewports
 
 **Quality Gate:**
-- [ ] Zero console errors on form submit
-- [ ] Profile data verified in Chrome Extension Storage DevTools
-- [ ] Pushed to `main` via git merge workflow
+- [x] Zero console errors on form submit
+- [x] Profile data verified in Chrome Extension Storage DevTools
+- [x] Pushed to `main` via git merge workflow
+
 
 ---
 

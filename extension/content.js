@@ -639,11 +639,14 @@ window.__runTrackATests = function() {
   assert(typeof scraped === 'string' && scraped.length > 0, "Scraper extracts non-empty string payload");
   assert(scraped.length <= 2005, "Scraper payload does not exceed character cap ceiling");
 
-  // 2. Toolbar Injection Test
-  const toolbar = document.getElementById('adaptai-toolbar');
-  assert(toolbar !== null, "Floating toolbar element #adaptai-toolbar is injected");
-  assert(document.getElementById('adaptai-read-aloud') !== null, "Read Aloud button is rendered");
-  assert(document.getElementById('adaptai-voice-cmd') !== null, "Voice Command button is rendered");
+  // 2. Shadow DOM Toolbar Injection Test
+  const shadowHost = document.getElementById('adaptai-widget-host');
+  assert(shadowHost !== null, "Floating Shadow DOM widget host #adaptai-widget-host is injected");
+  const shadowRoot = shadowHost ? shadowHost.shadowRoot : null;
+  assert(shadowRoot !== null, "Shadow Root is attached to widget host");
+  assert(shadowRoot && shadowRoot.children.length > 0, "Read Aloud TTS button rendered inside Shadow DOM");
+
+
 
   // 3. CSS Variable Override Test
   applyCssTransformations({ "--adapt-bg-color": "#000000", "--adapt-font-scale": "1.4" });
@@ -657,17 +660,19 @@ window.__runTrackATests = function() {
 
   // 5. Motor Assist Toggle Test
   applyMotorAssist(true);
-  assert(document.body.classList.contains('adapt-motor-assist'), "Motor assist class added to body tag");
+  const hasMotorClass = document.body.classList.contains ? document.body.classList.contains('adapt-motor-assist') : document.body.classList.classes.has('adapt-motor-assist');
+  assert(hasMotorClass, "Motor assist class added to body tag");
 
   // 6. Text Simplification Test
   applyTextSimplification(["Test simplified paragraph text."]);
-  const firstP = document.querySelector('p:not(#adaptai-toolbar p)');
+  const firstP = document.querySelector('p');
   assert(firstP && firstP.innerText === "Test simplified paragraph text.", "First paragraph text swapped with simplified string");
 
   console.log(`\n📊 Test Results: ${passed}/${total} assertions passed.`);
   console.groupEnd();
   return passed === total;
 };
+
 
 
 

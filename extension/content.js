@@ -283,18 +283,19 @@ function toggleExtensionTheme() {
 
   if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
     chrome.storage.local.get(['extensionTheme'], (res) => {
-      const currentTheme = res.extensionTheme || 'light';
+      // Default theme is 'dark'
+      const currentTheme = res.extensionTheme || 'dark';
 
-      if (currentTheme === 'light') {
+      if (currentTheme === 'dark') {
+        // Toggle to Light / Original Normal Mode
+        extensionThemeState = 'light';
+        root.removeAttribute('data-adaptai-transformed');
+        console.log("[AdaptAI Theme] Toggled to Light / Original Theme across website.");
+      } else {
         // Toggle to High-Contrast Dark Mode (Flawless Dark Inversion)
         extensionThemeState = 'dark';
         root.setAttribute('data-adaptai-transformed', 'true');
         console.log("[AdaptAI Theme] Toggled to High-Contrast Dark Theme across website.");
-      } else {
-        // Toggle back to Normal / Light Mode
-        extensionThemeState = 'light';
-        root.removeAttribute('data-adaptai-transformed');
-        console.log("[AdaptAI Theme] Reset to Normal / Light Theme across website.");
       }
 
       chrome.storage.local.set({ extensionTheme: extensionThemeState });
@@ -304,7 +305,7 @@ function toggleExtensionTheme() {
       mountShadowWidget();
     });
   } else {
-    // Standalone fallback toggle
+    // Standalone fallback toggle (Defaults to Dark Mode)
     if (root.getAttribute('data-adaptai-transformed') === 'true') {
       root.removeAttribute('data-adaptai-transformed');
     } else {
@@ -312,6 +313,7 @@ function toggleExtensionTheme() {
     }
   }
 }
+
 
 
 

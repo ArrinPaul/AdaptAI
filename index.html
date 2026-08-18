@@ -3,27 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AdaptAI — Intelligent Web Adaptation Engine</title>
+  <title>AdaptAI — Autonomous AI Web Accessibility Engine</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #090a0f;
-      --bg-card: #11131a;
-      --accent-primary: #2563eb;
-      --accent-glow: #3b82f6;
+      --bg-dark: #080a0f;
+      --bg-surface: #10141e;
+      --bg-card: #161b27;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
       --text-bright: #f8fafc;
-      --text-muted: #94a3b8;
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --card-hover: rgba(255, 255, 255, 0.03);
+      --text-subtle: #94a3b8;
+      --border-line: rgba(255, 255, 255, 0.08);
+      --glass-bg: rgba(22, 27, 39, 0.7);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     }
 
     body {
@@ -33,248 +36,429 @@
       overflow-x: hidden;
     }
 
-    /* Ambient background grid */
-    .bg-grid {
+    /* Radial glows */
+    .glow-top {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-      background-size: 32px 32px;
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, rgba(139, 92, 246, 0.12) 40%, transparent 70%);
+      filter: blur(100px);
       pointer-events: none;
       z-index: 0;
     }
 
     nav {
-      max-width: 1140px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 24px 20px;
+      padding: 20px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: relative;
-      z-index: 10;
+      z-index: 20;
     }
 
     .brand-logo {
-      font-weight: 800;
-      font-size: 20px;
-      letter-spacing: -0.5px;
       display: flex;
       align-items: center;
       gap: 10px;
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-logo .logo-icon {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
     }
 
     .brand-badge {
-      background: rgba(37, 99, 235, 0.15);
+      background: rgba(59, 130, 246, 0.12);
       border: 1px solid rgba(59, 130, 246, 0.3);
-      color: var(--accent-glow);
+      color: var(--accent-cyan);
       font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 6px;
+      padding: 3px 10px;
+      border-radius: 20px;
       font-weight: 600;
     }
 
-    .nav-cta {
-      background: var(--accent-primary);
-      color: white;
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-link {
+      color: var(--text-subtle);
       text-decoration: none;
-      padding: 10px 20px;
-      border-radius: 8px;
       font-size: 14px;
       font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover { color: var(--text-bright); }
+
+    .btn-nav-cta {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white;
+      text-decoration: none;
+      padding: 10px 22px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
       transition: all 0.2s ease;
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
     }
 
-    .nav-cta:hover {
-      background: #1d4ed8;
-      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+    .btn-nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(59, 130, 246, 0.5);
     }
 
+    /* Hero Section */
     .hero {
-      max-width: 900px;
-      margin: 90px auto 70px;
+      max-width: 1050px;
+      margin: 80px auto 60px;
       text-align: center;
       padding: 0 20px;
       position: relative;
       z-index: 10;
     }
 
-    .hero-tag {
-      display: inline-block;
+    .pill-announcement {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-subtle);
-      padding: 6px 14px;
-      border-radius: 20px;
+      border: 1px solid var(--border-line);
+      padding: 6px 18px;
+      border-radius: 30px;
       font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 24px;
+      color: var(--accent-cyan);
+      margin-bottom: 28px;
     }
 
     .hero h1 {
-      font-size: 52px;
+      font-size: 58px;
       font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -1.5px;
-      margin-bottom: 20px;
+      line-height: 1.12;
+      letter-spacing: -1.8px;
+      margin-bottom: 24px;
     }
 
-    .hero h1 span.gradient {
-      background: linear-gradient(135deg, #60a5fa, #2563eb);
+    .hero h1 span.gradient-text {
+      background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .hero p {
-      font-size: 18px;
-      color: var(--text-muted);
-      max-width: 660px;
-      margin: 0 auto 36px;
+    .hero p.lead {
+      font-size: 19px;
+      color: var(--text-subtle);
+      max-width: 720px;
+      margin: 0 auto 40px;
       line-height: 1.6;
     }
 
-    .hero-actions {
+    .hero-ctas {
       display: flex;
       justify-content: center;
-      gap: 16px;
+      gap: 18px;
       flex-wrap: wrap;
     }
 
-    .btn-main {
-      background: var(--accent-primary);
+    .btn-hero-primary {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
       color: white;
       text-decoration: none;
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 15px;
-      transition: all 0.2s ease;
+      padding: 16px 36px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 16px;
+      transition: all 0.25s ease;
+      box-shadow: 0 8px 30px rgba(59, 130, 246, 0.35);
     }
 
-    .btn-main:hover {
-      background: #1d4ed8;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
+    .btn-hero-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(59, 130, 246, 0.55);
     }
 
-    .btn-outline {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-subtle);
+    .btn-hero-secondary {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-line);
       color: var(--text-bright);
       text-decoration: none;
-      padding: 14px 28px;
-      border-radius: 10px;
+      padding: 16px 36px;
+      border-radius: 12px;
       font-weight: 600;
-      font-size: 15px;
-      transition: all 0.2s ease;
+      font-size: 16px;
+      transition: all 0.25s ease;
     }
 
-    .btn-outline:hover {
-      background: rgba(255, 255, 255, 0.07);
-      transform: translateY(-2px);
-    }
-
-    .features-grid {
-      max-width: 1140px;
-      margin: 80px auto;
-      padding: 0 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-      position: relative;
-      z-index: 10;
-    }
-
-    .feature-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      padding: 32px;
-      border-radius: 14px;
-      transition: all 0.2s ease;
-    }
-
-    .feature-card:hover {
-      background: var(--card-hover);
-      border-color: rgba(59, 130, 246, 0.4);
+    .btn-hero-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
       transform: translateY(-3px);
     }
 
-    .card-num {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--accent-glow);
-      margin-bottom: 16px;
-      display: block;
+    /* Live Sandbox Section */
+    .sandbox-section {
+      max-width: 1100px;
+      margin: 80px auto;
+      padding: 0 20px;
     }
 
-    .feature-card h3 {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 10px;
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
     }
 
-    .feature-card p {
-      color: var(--text-muted);
+    .section-header h2 {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .section-header p {
+      color: var(--text-subtle);
+      font-size: 16px;
+      margin-top: 8px;
+    }
+
+    .sandbox-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-line);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    .sandbox-controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-line);
+    }
+
+    .toggle-chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-line);
+      color: var(--text-subtle);
+      padding: 10px 18px;
+      border-radius: 10px;
       font-size: 14px;
-      line-height: 1.6;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toggle-chip:hover {
+      border-color: rgba(59, 130, 246, 0.5);
+      color: var(--text-bright);
+    }
+
+    .toggle-chip.active {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: var(--accent-blue);
+      color: var(--text-bright);
+    }
+
+    .sandbox-preview {
+      background: #090b10;
+      border: 1px solid var(--border-line);
+      border-radius: 14px;
+      padding: 30px;
+      transition: all 0.3s ease;
+      min-height: 220px;
+    }
+
+    .sandbox-preview.high-contrast {
+      background: #121212 !important;
+      color: #ffff00 !important;
+    }
+
+    .sandbox-preview.dyslexic {
+      font-family: 'OpenDyslexic', 'Courier New', monospace !important;
+    }
+
+    .sandbox-preview h4 {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+
+    .sandbox-preview p {
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* Stats Grid */
+    .stats-row {
+      max-width: 1100px;
+      margin: 60px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 38px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--text-subtle);
+      margin-top: 4px;
     }
 
     footer {
-      border-top: 1px solid var(--border-subtle);
+      border-top: 1px solid var(--border-line);
       text-align: center;
-      padding: 36px 20px;
-      color: var(--text-muted);
-      font-size: 13px;
+      padding: 40px 20px;
+      color: var(--text-subtle);
+      font-size: 14px;
       margin-top: 100px;
     }
   </style>
 </head>
 <body>
-  <div class="bg-grid"></div>
+  <div class="glow-top"></div>
 
   <nav>
     <div class="brand-logo">
-      AdaptAI <span class="brand-badge">Manifest V3</span>
+      <div class="logo-icon">⚡</div>
+      AdaptAI
+      <span class="brand-badge">Manifest V3</span>
     </div>
-    <a href="extension/onboarding/onboarding.html" class="nav-cta">Launch Assessment</a>
+    <div class="nav-actions">
+      <a href="demo/index.html" class="nav-link">Interactive Demo Page</a>
+      <a href="extension/onboarding/onboarding.html" class="btn-nav-cta">Take Diagnostic Assessment 🚀</a>
+    </div>
   </nav>
 
   <section class="hero">
-    <div class="hero-tag">Real-Time Client-Side Accessibility Engine</div>
-    <h1>The Web, <span class="gradient">Adapted To Your Needs.</span></h1>
-    <p>
-      An intelligent Chrome extension that automatically transforms hostile web layouts, scales typography, simplifies complex paragraphs, and provides instant audio narration.
+    <div class="pill-announcement">
+      ✨ Powered by Gemini API & Dual Groq Intelligence Fallback
+    </div>
+    <h1>
+      The Web Experience<br />
+      <span class="gradient-text">That Adapts To You In Real Time.</span>
+    </h1>
+    <p class="lead">
+      AdaptAI is an autonomous accessibility engine that eliminates web friction. It transforms hostile layouts, simplifies complex jargon, scales typography, and provides audio narration.
     </p>
-    <div class="hero-actions">
-      <a href="extension/onboarding/onboarding.html" class="btn-main">Take Diagnostic Assessment</a>
-      <a href="demo/index.html" class="btn-outline">View Test Demo Page</a>
+
+    <div class="hero-ctas">
+      <a href="extension/onboarding/onboarding.html" class="btn-hero-primary">Start Personalized Assessment ➔</a>
+      <a href="demo/index.html" class="btn-hero-secondary">View Test Page Demo 👁️</a>
     </div>
   </section>
 
-  <section class="features-grid">
-    <div class="feature-card">
-      <span class="card-num">01 / VISUAL</span>
-      <h3>Dynamic Contrast & Scaling</h3>
-      <p>Custom root variable overrides enforcing high contrast color themes and proportional font scaling.</p>
+  <!-- Live Sandbox Demonstration -->
+  <section class="sandbox-section">
+    <div class="section-header">
+      <h2>Experience Live Adaptation</h2>
+      <p>Click the controls below to preview how AdaptAI dynamically transforms website DOM elements in real-time.</p>
     </div>
 
-    <div class="feature-card">
-      <span class="card-num">02 / COGNITIVE</span>
-      <h3>AI Paragraph Simplification</h3>
-      <p>Extracts dense text and replaces complex academic jargon with clear, readable summaries.</p>
-    </div>
+    <div class="sandbox-card">
+      <div class="sandbox-controls">
+        <button class="toggle-chip" onclick="toggleContrast(this)">👁️ High Contrast</button>
+        <button class="toggle-chip" onclick="toggleDyslexic(this)">📖 OpenDyslexic Font</button>
+        <button class="toggle-chip" onclick="toggleScale(this)">🔍 1.5x Typography Scale</button>
+        <button class="toggle-chip" onclick="toggleSimplify(this)">🧠 AI Simplification</button>
+      </div>
 
-    <div class="feature-card">
-      <span class="card-num">03 / AUDIO & MOTOR</span>
-      <h3>Speech Engine & Action Targets</h3>
-      <p>Integrated Web Speech API narration and motor accessibility padding expansion for easy interaction.</p>
+      <div class="sandbox-preview" id="sandbox-box">
+        <h4 id="sandbox-title">Quarterly Financial & Technology Performance Synopsis</h4>
+        <p id="sandbox-desc">
+          In the second quarter of fiscal year 2026, our enterprise recorded exponential algorithmic productivity increases, driven primarily by hyper-scaled cloud architecture deployments and automated cross-domain data synchronization pipelines.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Metrics -->
+  <section class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num">&lt; 300ms</div>
+      <div class="stat-label">Client-Side DOM Transformation Speed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Privacy-First Serverless Execution</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">Dual AI</div>
+      <div class="stat-label">Gemini + Groq Instant Fallback Pipeline</div>
     </div>
   </section>
 
   <footer>
-    AdaptAI Extension Platform — Built for Serverless Accessibility Execution.
+    AdaptAI Platform © 2026 — Serverless Accessibility Chrome Extension.
   </footer>
+
+  <script>
+    const originalText = "In the second quarter of fiscal year 2026, our enterprise recorded exponential algorithmic productivity increases, driven primarily by hyper-scaled cloud architecture deployments and automated cross-domain data synchronization pipelines.";
+    const simplifiedText = "✨ AI Simplified: Cloud systems boosted performance by 14% this quarter through automated software optimizations.";
+
+    function toggleContrast(btn) {
+      btn.classList.toggle('active');
+      document.getElementById('sandbox-box').classList.toggle('high-contrast');
+    }
+
+    function toggleDyslexic(btn) {
+      btn.classList.toggle('active');
+      document.getElementById('sandbox-box').classList.toggle('dyslexic');
+    }
+
+    function toggleScale(btn) {
+      btn.classList.toggle('active');
+      const box = document.getElementById('sandbox-box');
+      if (btn.classList.contains('active')) {
+        box.style.fontSize = '1.3em';
+      } else {
+        box.style.fontSize = '1em';
+      }
+    }
+
+    function toggleSimplify(btn) {
+      btn.classList.toggle('active');
+      const desc = document.getElementById('sandbox-desc');
+      if (btn.classList.contains('active')) {
+        desc.innerText = simplifiedText;
+      } else {
+        desc.innerText = originalText;
+      }
+    }
+  </script>
 </body>
 </html>
+
 

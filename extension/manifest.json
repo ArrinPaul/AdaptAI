@@ -22,8 +22,10 @@
     }
   ],
   "action": {
-    "default_title": "Adapt this page"
+    "default_title": "Adapt this page",
+    "default_popup": "popup/popup.html"
   },
+
   "commands": {
     "trigger_adaptation": {
       "suggested_key": {

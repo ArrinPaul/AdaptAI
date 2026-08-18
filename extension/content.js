@@ -448,7 +448,7 @@ function runFullTransformation(payload) {
     return;
   }
 
-  console.log("[AdaptAI] Applying full persona transformation payload:", payload);
+  console.log("[AdaptAI] Applying visual persona transformation payload:", payload);
 
   // 1. Apply CSS variable overrides
   if (payload.cssUpdates) {
@@ -465,9 +465,9 @@ function runFullTransformation(payload) {
     applyMotorAssist(true);
   }
 
-  // 4. Swap paragraph inner text
+  // 4. Cache active simplified text array for AI Assistant / TTS without overwriting paragraph DOM content
   if (payload.simplifiedText) {
-    applyTextSimplification(payload.simplifiedText);
+    activeSimplifiedText = payload.simplifiedText;
   }
 
   // 5. Execute voice intent if returned
@@ -477,6 +477,7 @@ function runFullTransformation(payload) {
 
   isPageAdaptedState = true;
 }
+
 
 
 // -------------------------------------------------------------

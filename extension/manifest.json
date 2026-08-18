@@ -9,7 +9,19 @@
     "scripting"
   ],
   "host_permissions": [
-    "https://generativelanguage.googleapis.com/*"
+    "https://generativelanguage.googleapis.com/*",
+    "https://api.groq.com/*",
+    "<all_urls>"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "onboarding/onboarding.html",
+        "profile/profile.html",
+        "styles.css"
+      ],
+      "matches": ["<all_urls>"]
+    }
   ],
   "background": {
     "service_worker": "background.js"
@@ -42,4 +54,5 @@
     }
   }
 }
+
 

@@ -1,10 +1,10 @@
 // background.js - Track B Intelligence Engine & Service Worker
 
-// Environment Variable Configuration (Inlined to prevent MV3 Service Worker importScripts network fetch errors)
-self.ENV = self.ENV || {
-  GEMINI_API_KEY: "YOUR_GEMINI_API_KEY",
-  GROQ_API_KEY: "YOUR_GROQ_API_KEY"
-};
+// Dynamically import gitignored env.js configuration file
+import './env.js';
+
+// Environment Variable Fallback Guard
+self.ENV = self.ENV || {};
 
 // -------------------------------------------------------------
 // SUB-TASK B1: SERVICE WORKER LIFECYCLE & EVENT WIRING

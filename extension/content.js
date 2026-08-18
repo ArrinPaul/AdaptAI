@@ -393,7 +393,8 @@ function executeVoiceIntent(intent) {
  * Master transformation pipeline entrypoint
  */
 function runFullTransformation(payload) {
-  console.log("[AdaptAI] Applying full transformations payload:", payload);
+  console.log("🔥 [AdaptAI DEV LOG] AI Recommended Transformation Payload:");
+  console.log(JSON.stringify(payload, null, 2));
 
   // 1. Apply CSS variable overrides
   if (payload.cssUpdates) {
@@ -608,6 +609,9 @@ function applyGeminiPreset() {
   if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
     chrome.storage.local.get(['geminiUIPreset'], (res) => {
       if (res.geminiUIPreset) {
+        console.log("🔥 [AdaptAI DEV LOG] Recommended CSS Change from Gemini:");
+        console.log(res.geminiUIPreset);
+        
         let styleEl = document.getElementById('gemini-ui-preset-style');
         if (!styleEl) {
           styleEl = document.createElement('style');
@@ -615,6 +619,8 @@ function applyGeminiPreset() {
           document.head.appendChild(styleEl);
         }
         styleEl.textContent = res.geminiUIPreset;
+      } else {
+        console.log("⚠️ [AdaptAI DEV LOG] No Gemini UI Preset found in chrome.storage.local.");
       }
     });
   }

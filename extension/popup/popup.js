@@ -86,15 +86,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el) {
       el.addEventListener('click', (e) => {
         e.preventDefault();
-        if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.create) {
-          const targetUrl = chrome.runtime.getURL ? chrome.runtime.getURL(item.path) : item.fullUrl;
-          chrome.tabs.create({ url: targetUrl });
-        } else {
+        try {
+          if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.create) {
+            let targetUrl = item.fullUrl;
+            try {
+              if (chrome.runtime && chrome.runtime.getURL) {
+                targetUrl = chrome.runtime.getURL(item.path);
+              }
+            } catch (err) {
+              targetUrl = item.fullUrl;
+            }
+            chrome.tabs.create({ url: targetUrl });
+          } else {
+            window.open(item.fullUrl, '_blank');
+          }
+        } catch (err) {
+          console.warn("[AdaptAI Popup] Navigation fallback:", err);
           window.open(item.fullUrl, '_blank');
         }
       });
     }
   });
+
 
   // Handle Long Click / Double Click interaction menu gesture
   let clickTimer = null;

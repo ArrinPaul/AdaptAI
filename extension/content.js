@@ -76,9 +76,11 @@ function injectFloatingToolbar() {
         return;
       }
       if (res.extensionTheme) extensionThemeState = res.extensionTheme;
+      applyHostTheme(extensionThemeState);
       mountShadowWidget();
     });
   } else {
+    applyHostTheme(extensionThemeState);
     mountShadowWidget();
   }
 }
@@ -243,8 +245,31 @@ function updateTtsBtnIcon(iconChar) {
   if (ttsBtn) ttsBtn.innerText = iconChar;
 }
 
+function applyHostTheme(theme) {
+  if (theme === 'dark') {
+    document.documentElement.style.filter = 'invert(1) hue-rotate(180deg)';
+    document.documentElement.style.backgroundColor = '#ffffff';
+    let style = document.getElementById('adaptai-host-theme');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'adaptai-host-theme';
+      document.head.appendChild(style);
+    }
+    style.textContent = `
+      img, video, iframe, canvas, [style*="background-image"] {
+        filter: invert(1) hue-rotate(180deg) !important;
+      }
+    `;
+  } else {
+    document.documentElement.style.filter = '';
+    document.documentElement.style.backgroundColor = '';
+    const style = document.getElementById('adaptai-host-theme');
+    if (style) style.remove();
+  }
+}
+
 /**
- * Toggles Extension Light / Dark Mode without modifying host website colors
+ * Toggles Extension Light / Dark Mode and modifies host website colors
  */
 function toggleExtensionTheme() {
   extensionThemeState = extensionThemeState === 'light' ? 'dark' : 'light';
@@ -254,6 +279,9 @@ function toggleExtensionTheme() {
       console.log("[AdaptAI Theme] Extension theme saved:", extensionThemeState);
     });
   }
+
+  applyHostTheme(extensionThemeState);
+
 
   // Re-mount widget with new theme styles
   removeFloatingToolbar();
@@ -576,12 +604,29 @@ document.addEventListener('keydown', (e) => {
 });
 
 
+function applyGeminiPreset() {
+  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+    chrome.storage.local.get(['geminiUIPreset'], (res) => {
+      if (res.geminiUIPreset) {
+        let styleEl = document.getElementById('gemini-ui-preset-style');
+        if (!styleEl) {
+          styleEl = document.createElement('style');
+          styleEl.id = 'gemini-ui-preset-style';
+          document.head.appendChild(styleEl);
+        }
+        styleEl.textContent = res.geminiUIPreset;
+      }
+    });
+  }
+}
+
 // -------------------------------------------------------------
 // MESSAGE LISTENER & RUNTIME HANDLERS
 // -------------------------------------------------------------
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "scrape_page") {
     const pageText = scrapePageDOM();
+    applyGeminiPreset(); // Inject when user triggers adaptation
     chrome.runtime.sendMessage({ 
       action: "process_with_ai", 
       pageText: pageText 
@@ -600,13 +645,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "extension_state_changed") {
     if (request.enabled) {
       injectFloatingToolbar();
+      applyGeminiPreset(); // Inject when extension is enabled
     } else {
       removeFloatingToolbar();
+      let styleEl = document.getElementById('gemini-ui-preset-style');
+      if (styleEl) styleEl.remove();
     }
   }
 
   if (request.action === "extension_theme_changed") {
     extensionThemeState = request.theme || 'dark';
+    applyHostTheme(extensionThemeState);
     removeFloatingToolbar();
     mountShadowWidget();
   }
@@ -615,6 +664,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // Auto-inject UI toolbar on load
 injectFloatingToolbar();
+applyGeminiPreset();
 
 
 // -------------------------------------------------------------

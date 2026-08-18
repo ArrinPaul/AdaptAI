@@ -3,263 +3,99 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AdaptAI Extension Control Center</title>
+  <title>AdaptAI Extension</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b0f19;
-      --card-bg: #141a29;
-      --text-bright: #f8fafc;
-      --text-subtle: #94a3b8;
-      --accent-blue: #3b82f6;
-      --accent-green: #10b981;
-      --accent-red: #ef4444;
-      --border: rgba(255, 255, 255, 0.08);
+      --bg: #000000;
+      --surface: #0a0a0a;
+      --border: #222222;
+      --text: #ffffff;
+      --text-muted: #888888;
+      --accent: #ffffff;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    }
-
-    body {
-      width: 330px;
-      background-color: var(--bg);
-      color: var(--text-bright);
-      padding: 16px;
-      user-select: none;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 14px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 800;
-      font-size: 17px;
-    }
-
-    .status-badge {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 12px;
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--accent-green);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .status-badge.disabled {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--accent-red);
-      border-color: rgba(239, 68, 68, 0.3);
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      background: var(--accent-green);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--accent-green);
-    }
-
-    .status-badge.disabled .status-dot {
-      background: var(--accent-red);
-      box-shadow: 0 0 8px var(--accent-red);
-    }
-
-    /* Master ON/OFF Toggle Box */
-    .master-toggle-box {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 14px;
-      border-radius: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .toggle-info h4 {
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .toggle-info p {
-      font-size: 11px;
-      color: var(--text-subtle);
-    }
-
-    .master-switch {
-      position: relative;
-      display: inline-block;
-      width: 44px;
-      height: 24px;
-    }
-
-    .master-switch input { opacity: 0; width: 0; height: 0; }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #334155;
-      transition: .3s;
-      border-radius: 24px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .3s;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider { background-color: var(--accent-blue); }
-    input:checked + .slider:before { transform: translateX(20px); }
-
-    /* Persona Summary Banner */
-    .persona-banner {
-      background: rgba(59, 130, 246, 0.1);
-      border: 1px solid rgba(59, 130, 246, 0.25);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 14px;
-    }
-
-    .persona-title {
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--accent-blue);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .persona-name {
-      font-size: 14px;
-      font-weight: 700;
-      margin-top: 2px;
-    }
-
-    .btn-adapt-now {
-      background: linear-gradient(135deg, var(--accent-blue), #2563eb);
-      color: white;
-      border: none;
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
-      transition: all 0.2s;
-      margin-bottom: 14px;
-    }
-
-    .btn-adapt-now:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
-    }
-
-    .btn-adapt-now:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    .menu-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .menu-item {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 10px 12px;
-      border-radius: 8px;
-      color: var(--text-bright);
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: all 0.2s;
-    }
-
-    .menu-item:hover {
-      border-color: rgba(59, 130, 246, 0.4);
-      background: rgba(255, 255, 255, 0.04);
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    body { width: 320px; background-color: var(--bg); color: var(--text); padding: 1.5rem; user-select: none; -webkit-font-smoothing: antialiased; }
+    
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .brand { font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .brand svg { width: 18px; height: 18px; }
+    
+    .status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 500; padding: 0.25rem 0.75rem; border-radius: 9999px; background: #111; border: 1px solid var(--border); }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #ffffff; }
+    
+    .toggle-group { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    .toggle-info h4 { font-size: 0.875rem; font-weight: 500; margin-bottom: 0.25rem; }
+    .toggle-info p { font-size: 0.75rem; color: var(--text-muted); }
+    
+    .switch { position: relative; width: 40px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #222; transition: .3s; border-radius: 24px; border: 1px solid var(--border); }
+    .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: var(--text-muted); transition: .3s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--text); border-color: var(--text); }
+    input:checked + .slider:before { transform: translateX(16px); background-color: var(--bg); }
+    
+    .persona { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem; text-align: center; }
+    .persona-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .persona-name { font-size: 1rem; font-weight: 600; }
+    
+    .btn-adapt { background: var(--text); color: var(--bg); border: none; width: 100%; padding: 1rem; border-radius: 9999px; font-weight: 500; font-size: 0.875rem; cursor: pointer; transition: all 0.3s ease; margin-bottom: 2rem; }
+    .btn-adapt:hover { transform: scale(1.02); }
+    
+    .menu { display: flex; flex-direction: column; gap: 0.5rem; }
+    .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 0.875rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; color: var(--text); text-decoration: none; font-size: 0.875rem; transition: all 0.3s ease; }
+    .menu-item:hover { border-color: #444; background: #111; }
+    .menu-item svg { width: 16px; height: 16px; opacity: 0.5; }
+    
+    svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="brand">⚡ AdaptAI</div>
-    <div id="status-badge" class="status-badge">
-      <span class="status-dot"></span> <span id="status-text">ON</span>
+  <header>
+    <div class="brand">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      AdaptAI
     </div>
-  </div>
+    <div class="status">
+      <span class="status-dot"></span> ON
+    </div>
+  </header>
 
-  <!-- Master ON/OFF Switch -->
-  <div class="master-toggle-box">
+  <div class="toggle-group">
     <div class="toggle-info">
-      <h4>Extension Protection</h4>
-      <p id="toggle-desc">DOM transformations active</p>
+      <h4>Extension</h4>
+      <p>DOM active</p>
     </div>
-    <label class="master-switch">
-      <input type="checkbox" id="master-toggle" checked>
+    <label class="switch">
+      <input type="checkbox" checked>
       <span class="slider"></span>
     </label>
   </div>
 
-  <!-- User Persona Summary -->
-  <div class="persona-banner" id="persona-banner">
-    <div class="persona-title">Active AI Persona</div>
-    <div class="persona-name" id="persona-name">High-Contrast Assist</div>
+  <div class="persona">
+    <div class="persona-label">Active Persona</div>
+    <div class="persona-name">High-Contrast Assist</div>
   </div>
 
-  <button class="btn-adapt-now" id="trigger-adapt">✨ Adapt Current Page (Ctrl+Shift+A)</button>
+  <button class="btn-adapt">Adapt Page</button>
 
-  <!-- Quick Action Navigation -->
-  <div class="menu-list">
-    <a href="http://localhost:8080/index.html" id="link-landing" target="_blank" class="menu-item">
-      <span>🌐 Public Landing Page</span> ➔
+  <div class="menu">
+    <a href="../../index.html" id="link-landing" class="menu-item">
+      Landing Page <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
-    <a href="http://localhost:8080/extension/onboarding/onboarding.html" id="link-onboarding" target="_blank" class="menu-item">
-      <span>🧠 Take Diagnostic Test</span> ➔
+    <a href="../onboarding/onboarding.html" id="link-onboarding" class="menu-item">
+      Diagnostic Test <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
-    <a href="http://localhost:8080/extension/profile/profile.html" id="link-profile" target="_blank" class="menu-item">
-      <span>⚙️ Profile Settings</span> ➔
+    <a href="../profile/profile.html" id="link-profile" class="menu-item">
+      Profile Settings <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
-    <a href="http://localhost:8080/demo/index.html" id="link-demo" target="_blank" class="menu-item">
-      <span>🧪 Demo Workbench</span> ➔
+    <a href="../../demo/index.html" id="link-demo" class="menu-item">
+      Demo Workbench <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
   </div>
 
   <script src="popup.js"></script>
 </body>
 </html>
-
-

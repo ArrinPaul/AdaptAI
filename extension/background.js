@@ -13,12 +13,18 @@ self.ENV = self.ENV || {
 
 
 
-// 1. Open Onboarding Setup Tab on Installation
+// 1. Open Onboarding Setup Tab on Installation / Unpacked load
 chrome.runtime.onInstalled.addListener((details) => {
-  if (details.reason === 'install') {
-    console.log("[AdaptAI Service Worker] Extension installed. Opening Onboarding setup tab...");
-    chrome.tabs.create({ url: 'onboarding/onboarding.html' });
-  }
+  console.log(`[AdaptAI Service Worker] Extension onInstalled event triggered (reason: ${details.reason})`);
+  
+  chrome.storage.local.get(['onboardingCompleted'], (res) => {
+    // Open onboarding page if first installation or if onboarding is not yet completed
+    if (details.reason === 'install' || !res.onboardingCompleted) {
+      const onboardingUrl = chrome.runtime.getURL('onboarding/onboarding.html');
+      console.log("[AdaptAI Service Worker] Opening Onboarding setup tab:", onboardingUrl);
+      chrome.tabs.create({ url: onboardingUrl });
+    }
+  });
 });
 
 // Helper: Sends scrape_page trigger to target tab if extension is enabled and onboarding is complete
@@ -30,8 +36,9 @@ function triggerPageAdaptation(tab) {
     const isCompleted = res.onboardingCompleted === true;
 
     if (!isCompleted) {
-      console.log("[AdaptAI Service Worker] Onboarding incomplete. Opening onboarding setup...");
-      chrome.tabs.create({ url: 'onboarding/onboarding.html' });
+      const onboardingUrl = chrome.runtime.getURL('onboarding/onboarding.html');
+      console.log("[AdaptAI Service Worker] Onboarding incomplete. Opening onboarding setup:", onboardingUrl);
+      chrome.tabs.create({ url: onboardingUrl });
       return;
     }
 
@@ -63,8 +70,9 @@ function triggerAssistantActivation(tab) {
     const isCompleted = res.onboardingCompleted === true;
 
     if (!isCompleted) {
-      console.log("[AdaptAI Service Worker] Onboarding incomplete. Directing user to onboarding...");
-      chrome.tabs.create({ url: 'onboarding/onboarding.html' });
+      const onboardingUrl = chrome.runtime.getURL('onboarding/onboarding.html');
+      console.log("[AdaptAI Service Worker] Onboarding incomplete. Directing user to onboarding:", onboardingUrl);
+      chrome.tabs.create({ url: onboardingUrl });
       return;
     }
 
@@ -100,6 +108,30 @@ chrome.commands.onCommand.addListener((command) => {
 
 // 4. Runtime Message Listener Router
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "generate_ui_preset") {
+    const testResultsStr = JSON.stringify(request.testResults);
+    const apiKey = self.ENV.GEMINI_API_KEY;
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const promptText = `act as the best UI designer to create a CSS preset that rearranges and styles website content to aid accessibility and web viewability based on these user needs: ${testResultsStr}`;
+    
+    fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: promptText }] }]
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      let cssText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      cssText = cssText.replace(/```css\n?/g, '').replace(/```/g, '').trim();
+      chrome.storage.local.set({ geminiUIPreset: cssText }, () => {
+        console.log("[AdaptAI Service Worker] Saved geminiUIPreset");
+      });
+    })
+    .catch(err => console.error("[AdaptAI Service Worker] Error generating UI preset:", err));
+  }
+
   if (request.action === "process_with_ai") {
     console.log("[AdaptAI Service Worker] Received scraped text payload from content script.");
     const tabId = sender.tab ? sender.tab.id : null;

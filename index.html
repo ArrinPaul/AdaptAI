@@ -3,445 +3,140 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AdaptAI — Autonomous AI Web Accessibility Engine</title>
+  <title>AdaptAI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #080a0f;
-      --bg-surface: #10141e;
-      --bg-card: #161b27;
-      --accent-blue: #3b82f6;
-      --accent-purple: #8b5cf6;
-      --accent-cyan: #06b6d4;
-      --accent-green: #10b981;
-      --text-bright: #f8fafc;
-      --text-subtle: #94a3b8;
-      --border-line: rgba(255, 255, 255, 0.08);
-      --glass-bg: rgba(22, 27, 39, 0.7);
+      --bg: #000000;
+      --bg-surface: #0a0a0a;
+      --bg-card: #111111;
+      --border: #222222;
+      --text-main: #ffffff;
+      --text-muted: #888888;
+      --accent: #ffffff;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg-dark);
-      color: var(--text-bright);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    /* Radial glows */
-    .glow-top {
-      position: absolute;
-      top: -150px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 800px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, rgba(139, 92, 246, 0.12) 40%, transparent 70%);
-      filter: blur(100px);
-      pointer-events: none;
-      z-index: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    body { background-color: var(--bg); color: var(--text-main); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    
+    a { text-decoration: none; color: inherit; }
+    
     nav {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: relative;
-      z-index: 20;
+      max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
     }
+    .brand { font-weight: 600; font-size: 1.25rem; display: flex; align-items: center; gap: 0.75rem; letter-spacing: -0.02em; }
+    .brand svg { width: 24px; height: 24px; }
+    .nav-links { display: flex; align-items: center; gap: 2rem; }
+    .nav-link { font-size: 0.875rem; color: var(--text-muted); transition: color 0.3s ease; }
+    .nav-link:hover { color: var(--text-main); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.75rem 1.5rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 500; transition: all 0.3s ease; cursor: pointer; border: 1px solid transparent; }
+    .btn-primary { background-color: var(--text-main); color: var(--bg); }
+    .btn-primary:hover { transform: scale(1.02); opacity: 0.9; }
+    .btn-secondary { background-color: transparent; border-color: var(--border); color: var(--text-main); }
+    .btn-secondary:hover { background-color: var(--bg-surface); }
 
-    .brand-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      font-size: 22px;
-      letter-spacing: -0.5px;
-    }
+    section { padding: 8rem 1.5rem; max-width: 1200px; margin: 0 auto; }
+    
+    .hero { text-align: center; }
+    .hero h1 { font-size: clamp(3rem, 6vw, 5rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 3rem; }
+    .hero-actions { display: flex; justify-content: center; gap: 1rem; }
+    
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+    
+    .card { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; padding: 3rem; transition: transform 0.4s ease, border-color 0.4s ease; }
+    .card:hover { transform: translateY(-4px); border-color: #444; }
+    .card h3 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+    
+    .sandbox-preview { background-color: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; min-height: 200px; transition: all 0.4s ease; margin-top: 2rem; }
+    .sandbox-preview h4 { font-size: 1.25rem; font-weight: 500; margin-bottom: 1rem; }
+    .sandbox-preview p { color: var(--text-muted); font-size: 1rem; }
+    
+    .sandbox-preview.high-contrast { background-color: #000; color: #fff; border-color: #fff; }
+    .sandbox-preview.high-contrast p { color: #fff; }
+    .sandbox-preview.dyslexic { font-family: 'Comic Sans MS', sans-serif; }
+    
+    .controls { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .control-btn { background: var(--bg-surface); border: 1px solid var(--border); color: var(--text-muted); padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.875rem; cursor: pointer; transition: all 0.3s ease; }
+    .control-btn:hover, .control-btn.active { color: var(--text-main); border-color: var(--text-muted); }
 
-    .brand-logo .logo-icon {
-      width: 34px;
-      height: 34px;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
+    .stats { display: flex; justify-content: space-between; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 4rem 0; flex-wrap: wrap; gap: 2rem; }
+    .stat { flex: 1; min-width: 200px; }
+    .stat-num { font-size: 3rem; font-weight: 500; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+    .stat-label { font-size: 0.875rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
 
-    .brand-badge {
-      background: rgba(59, 130, 246, 0.12);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      color: var(--accent-cyan);
-      font-size: 11px;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-weight: 600;
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .nav-link {
-      color: var(--text-subtle);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 600;
-      transition: color 0.2s;
-    }
-
-    .nav-link:hover { color: var(--text-bright); }
-
-    .btn-nav-cta {
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-      color: white;
-      text-decoration: none;
-      padding: 10px 22px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 700;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
-    }
-
-    .btn-nav-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(59, 130, 246, 0.5);
-    }
-
-    /* Hero Section */
-    .hero {
-      max-width: 1050px;
-      margin: 80px auto 60px;
-      text-align: center;
-      padding: 0 20px;
-      position: relative;
-      z-index: 10;
-    }
-
-    .pill-announcement {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-line);
-      padding: 6px 18px;
-      border-radius: 30px;
-      font-size: 13px;
-      color: var(--accent-cyan);
-      margin-bottom: 28px;
-    }
-
-    .hero h1 {
-      font-size: 58px;
-      font-weight: 800;
-      line-height: 1.12;
-      letter-spacing: -1.8px;
-      margin-bottom: 24px;
-    }
-
-    .hero h1 span.gradient-text {
-      background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero p.lead {
-      font-size: 19px;
-      color: var(--text-subtle);
-      max-width: 720px;
-      margin: 0 auto 40px;
-      line-height: 1.6;
-    }
-
-    .hero-ctas {
-      display: flex;
-      justify-content: center;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    .btn-hero-primary {
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-      color: white;
-      text-decoration: none;
-      padding: 16px 36px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 16px;
-      transition: all 0.25s ease;
-      box-shadow: 0 8px 30px rgba(59, 130, 246, 0.35);
-    }
-
-    .btn-hero-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 40px rgba(59, 130, 246, 0.55);
-    }
-
-    .btn-hero-secondary {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-line);
-      color: var(--text-bright);
-      text-decoration: none;
-      padding: 16px 36px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 16px;
-      transition: all 0.25s ease;
-    }
-
-    .btn-hero-secondary:hover {
-      background: rgba(255, 255, 255, 0.08);
-      transform: translateY(-3px);
-    }
-
-    /* Live Sandbox Section */
-    .sandbox-section {
-      max-width: 1100px;
-      margin: 80px auto;
-      padding: 0 20px;
-    }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .section-header h2 {
-      font-size: 34px;
-      font-weight: 800;
-      letter-spacing: -1px;
-    }
-
-    .section-header p {
-      color: var(--text-subtle);
-      font-size: 16px;
-      margin-top: 8px;
-    }
-
-    .sandbox-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-line);
-      border-radius: 20px;
-      padding: 32px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-    }
-
-    .sandbox-controls {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border-line);
-    }
-
-    .toggle-chip {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-line);
-      color: var(--text-subtle);
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .toggle-chip:hover {
-      border-color: rgba(59, 130, 246, 0.5);
-      color: var(--text-bright);
-    }
-
-    .toggle-chip.active {
-      background: rgba(59, 130, 246, 0.15);
-      border-color: var(--accent-blue);
-      color: var(--text-bright);
-    }
-
-    .sandbox-preview {
-      background: #090b10;
-      border: 1px solid var(--border-line);
-      border-radius: 14px;
-      padding: 30px;
-      transition: all 0.3s ease;
-      min-height: 220px;
-    }
-
-    .sandbox-preview.high-contrast {
-      background: #121212 !important;
-      color: #ffff00 !important;
-    }
-
-    .sandbox-preview.dyslexic {
-      font-family: 'OpenDyslexic', 'Courier New', monospace !important;
-    }
-
-    .sandbox-preview h4 {
-      font-size: 20px;
-      margin-bottom: 12px;
-    }
-
-    .sandbox-preview p {
-      font-size: 15px;
-      line-height: 1.7;
-    }
-
-    /* Stats Grid */
-    .stats-row {
-      max-width: 1100px;
-      margin: 60px auto;
-      padding: 0 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 20px;
-    }
-
-    .stat-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-line);
-      border-radius: 16px;
-      padding: 24px;
-      text-align: center;
-    }
-
-    .stat-num {
-      font-size: 38px;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .stat-label {
-      font-size: 14px;
-      color: var(--text-subtle);
-      margin-top: 4px;
-    }
-
-    footer {
-      border-top: 1px solid var(--border-line);
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--text-subtle);
-      font-size: 14px;
-      margin-top: 100px;
-    }
+    footer { text-align: center; padding: 4rem 1.5rem; color: var(--text-muted); font-size: 0.875rem; }
+    
+    svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   </style>
 </head>
 <body>
-  <div class="glow-top"></div>
-
   <nav>
-    <div class="brand-logo">
-      <div class="logo-icon">⚡</div>
+    <div class="brand">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
       AdaptAI
-      <span class="brand-badge">Manifest V3</span>
     </div>
-    <div class="nav-actions">
-      <a href="/extension/profile/profile.html" class="nav-link">Profile Settings</a>
-      <a href="/extension/onboarding/onboarding.html" class="nav-link">Diagnostic Test</a>
-      <a href="/demo/index.html" class="btn-nav-cta">Launch Demo Workbench 🚀</a>
+    <div class="nav-links">
+      <a href="extension/profile/profile.html" id="nav-profile" class="nav-link">Profile</a>
+      <a href="extension/onboarding/onboarding.html" id="nav-onboarding" class="nav-link">Diagnostic</a>
+      <a href="demo/index.html" id="nav-demo" class="btn btn-secondary">Demo</a>
     </div>
   </nav>
 
   <section class="hero">
-    <div class="pill-announcement">
-      ✨ Powered by Gemini API & Dual Groq Intelligence Fallback
-    </div>
-    <h1>
-      The Web Experience<br />
-      <span class="gradient-text">That Adapts To You In Real Time.</span>
-    </h1>
-    <p class="lead">
-      AdaptAI is an autonomous accessibility engine that eliminates web friction. It transforms hostile layouts, simplifies complex jargon, scales typography, and provides audio narration.
-    </p>
-
-    <div class="hero-ctas">
-      <a href="extension/onboarding/onboarding.html" class="btn-hero-primary">Start Personalized Assessment ➔</a>
-      <a href="demo/index.html" class="btn-hero-secondary">View Test Page Demo 👁️</a>
+    <h1>The Web Experience That Adapts To You.</h1>
+    <div class="hero-actions">
+      <a href="extension/onboarding/onboarding.html" id="hero-onboarding" class="btn btn-primary">Start Assessment</a>
+      <a href="demo/index.html" id="hero-demo" class="btn btn-secondary">View Demo</a>
     </div>
   </section>
 
-  <!-- Meet Your AI Assistant Section -->
-  <section class="sandbox-section">
-    <div class="section-header">
-      <h2>Meet Your Instant Floating AI Assistant</h2>
-      <p>Activate context-aware page assistance anytime using browser-native keyboard shortcuts.</p>
-    </div>
-
-    <div class="sandbox-card" style="display: flex; gap: 30px; flex-wrap: wrap; align-items: center;">
-      <div style="flex: 1; min-width: 280px;">
-        <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 12px; color: var(--accent-cyan);">⚡ Dedicated Activation Shortcuts</h3>
-        <p style="color: var(--text-subtle); font-size: 15px; margin-bottom: 20px;">
-          Press your assigned shortcut to instantly summon the floating assistant overlay. Automatically attaches highlighted text and page headings for context-aware answers.
-        </p>
-
-        <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-          <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-line); padding: 12px 18px; border-radius: 12px; flex: 1;">
-            <div style="font-size: 11px; font-weight: 700; color: var(--accent-blue); text-transform: uppercase;">Chrome Shortcut</div>
-            <div style="font-size: 16px; font-weight: 800; margin-top: 4px;">Ctrl + Shift + Y</div>
+  <section>
+    <div class="card" style="margin-bottom: 2rem;">
+      <h3>Floating AI Assistant</h3>
+      <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 250px;">
+          <div style="border: 1px solid var(--border); padding: 1.5rem; border-radius: 16px; margin-bottom: 1rem;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Chrome</div>
+            <div style="font-size: 1.25rem; font-weight: 500;">Ctrl + Shift + Y</div>
           </div>
-          <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-line); padding: 12px 18px; border-radius: 12px; flex: 1;">
-            <div style="font-size: 11px; font-weight: 700; color: var(--accent-purple); text-transform: uppercase;">Safari Shortcut</div>
-            <div style="font-size: 16px; font-weight: 800; margin-top: 4px;">⌘ + Shift + Y</div>
+          <div style="border: 1px solid var(--border); padding: 1.5rem; border-radius: 16px;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Safari</div>
+            <div style="font-size: 1.25rem; font-weight: 500;">⌘ + Shift + Y</div>
           </div>
         </div>
-      </div>
-
-      <div style="flex: 1; min-width: 280px; background: rgba(15, 23, 42, 0.9); border: 1px solid var(--border-line); border-radius: 16px; padding: 24px;">
-        <div style="font-weight: 800; font-size: 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
-          <span>⚡ AdaptAI Floating Assistant</span>
-          <span style="font-size: 11px; color: var(--accent-green); font-weight: 700;">● Active Context</span>
-        </div>
-        <div style="background: rgba(59, 130, 246, 0.15); border-radius: 8px; padding: 10px; font-size: 12px; color: #60a5fa; margin-bottom: 12px;">
-          📌 Selected Context Attached: "Hyper-scaled cloud architecture..."
-        </div>
-        <div style="background: rgba(255, 255, 255, 0.06); padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 8px; text-align: right;">
-          Summarize this section simply.
-        </div>
-        <div style="background: rgba(59, 130, 246, 0.2); padding: 10px; border-radius: 8px; font-size: 13px;">
-          ⚡ Cloud software optimizations boosted productivity by 14% this quarter.
+        <div style="flex: 1; min-width: 250px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; padding: 2rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 2rem;">
+            <span style="font-weight: 500; font-size: 0.875rem;">Assistant</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Active</span>
+          </div>
+          <div style="background: var(--bg); border: 1px solid var(--border); padding: 1rem; border-radius: 8px; font-size: 0.875rem; margin-bottom: 1rem; color: var(--text-muted);">
+            Context Attached: Hyper-scaled cloud...
+          </div>
+          <div style="background: var(--text-main); color: var(--bg); padding: 1rem; border-radius: 8px; font-size: 0.875rem; margin-bottom: 1rem; margin-left: 2rem;">
+            Summarize this section.
+          </div>
+          <div style="background: var(--bg-card); border: 1px solid var(--border); padding: 1rem; border-radius: 8px; font-size: 0.875rem; margin-right: 2rem;">
+            Cloud software optimizations boosted productivity.
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Live Sandbox Section -->
-  <section class="sandbox-section">
-    <div class="section-header">
-      <h2>Experience Live Adaptation</h2>
-      <p>Click the controls below to preview how AdaptAI dynamically transforms website DOM elements in real-time.</p>
-    </div>
-
-    <div class="sandbox-card">
-      <div class="sandbox-controls">
-        <button class="toggle-chip" onclick="toggleContrast(this)">👁️ High Contrast</button>
-        <button class="toggle-chip" onclick="toggleDyslexic(this)">📖 OpenDyslexic Font</button>
-        <button class="toggle-chip" onclick="toggleScale(this)">🔍 1.5x Typography Scale</button>
-        <button class="toggle-chip" onclick="toggleSimplify(this)">🧠 AI Simplification</button>
+  <section>
+    <div class="card">
+      <h3>Live Adaptation</h3>
+      <div class="controls">
+        <button class="control-btn" onclick="toggleContrast(this)">High Contrast</button>
+        <button class="control-btn" onclick="toggleDyslexic(this)">Dyslexic Font</button>
+        <button class="control-btn" onclick="toggleScale(this)">1.5x Scale</button>
+        <button class="control-btn" onclick="toggleSimplify(this)">AI Simplification</button>
       </div>
-
       <div class="sandbox-preview" id="sandbox-box">
-        <h4 id="sandbox-title">Quarterly Financial & Technology Performance Synopsis</h4>
+        <h4 id="sandbox-title">Quarterly Financial Performance</h4>
         <p id="sandbox-desc">
           In the second quarter of fiscal year 2026, our enterprise recorded exponential algorithmic productivity increases, driven primarily by hyper-scaled cloud architecture deployments and automated cross-domain data synchronization pipelines.
         </p>
@@ -449,61 +144,56 @@
     </div>
   </section>
 
-  <!-- Key Metrics -->
-  <section class="stats-row">
-    <div class="stat-card">
-      <div class="stat-num">&lt; 300ms</div>
-      <div class="stat-label">Client-Side DOM Transformation Speed</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num">100%</div>
-      <div class="stat-label">Privacy-First Serverless Execution</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num">Dual AI</div>
-      <div class="stat-label">Gemini + Groq Instant Fallback Pipeline</div>
+  <section>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num">&lt; 300ms</div>
+        <div class="stat-label">Transformation Speed</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Privacy-First Execution</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">Dual AI</div>
+        <div class="stat-label">Fallback Pipeline</div>
+      </div>
     </div>
   </section>
 
   <footer>
-    AdaptAI Platform © 2026 — Serverless Accessibility Chrome Extension.
+    AdaptAI Platform © 2026
   </footer>
 
   <script>
     const originalText = "In the second quarter of fiscal year 2026, our enterprise recorded exponential algorithmic productivity increases, driven primarily by hyper-scaled cloud architecture deployments and automated cross-domain data synchronization pipelines.";
-    const simplifiedText = "✨ AI Simplified: Cloud systems boosted performance by 14% this quarter through automated software optimizations.";
+    const simplifiedText = "Cloud systems boosted performance by 14% this quarter through automated software optimizations.";
 
     function toggleContrast(btn) {
       btn.classList.toggle('active');
       document.getElementById('sandbox-box').classList.toggle('high-contrast');
     }
-
     function toggleDyslexic(btn) {
       btn.classList.toggle('active');
       document.getElementById('sandbox-box').classList.toggle('dyslexic');
     }
-
     function toggleScale(btn) {
       btn.classList.toggle('active');
       const box = document.getElementById('sandbox-box');
-      if (btn.classList.contains('active')) {
-        box.style.fontSize = '1.3em';
-      } else {
-        box.style.fontSize = '1em';
-      }
+      box.style.fontSize = btn.classList.contains('active') ? '1.5em' : '1em';
     }
-
     function toggleSimplify(btn) {
       btn.classList.toggle('active');
-      const desc = document.getElementById('sandbox-desc');
-      if (btn.classList.contains('active')) {
-        desc.innerText = simplifiedText;
+      document.getElementById('sandbox-desc').innerText = btn.classList.contains('active') ? simplifiedText : originalText;
+    }
+
+    function navigateTo(targetRel) {
+      if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
+        window.location.href = chrome.runtime.getURL(targetRel);
       } else {
-        desc.innerText = originalText;
+        window.location.href = targetRel;
       }
     }
   </script>
 </body>
 </html>
-
-

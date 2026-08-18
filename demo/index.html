@@ -3,303 +3,126 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AdaptAI Controlled Demo & Diagnostic Test Page</title>
+  <title>AdaptAI Demo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --adapt-bg-color: #0b0f19;
-      --adapt-text-color: #f1f5f9;
+      --adapt-bg-color: #000000;
+      --adapt-text-color: #ffffff;
       --adapt-font-scale: 1;
-      --adapt-line-height: 1.6;
-      --panel-bg: #141a29;
-      --panel-border: rgba(255, 255, 255, 0.08);
-      --accent: #3b82f6;
+      --panel-bg: #0a0a0a;
+      --panel-border: #222222;
+      --btn-bg: #111111;
+      --btn-hover: #1a1a1a;
+      --text-muted: #888888;
     }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    body { background-color: var(--adapt-bg-color); color: var(--adapt-text-color); font-size: calc(1rem * var(--adapt-font-scale)); display: flex; min-height: 100vh; transition: background-color 0.4s ease, color 0.4s ease; -webkit-font-smoothing: antialiased; }
+    
+    .sidebar { width: 320px; background: var(--panel-bg); border-right: 1px solid var(--panel-border); display: flex; flex-direction: column; padding: 2rem; flex-shrink: 0; }
+    .sidebar-header { margin-bottom: 3rem; }
+    .sidebar-header h2 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; }
+    
+    .control-group { margin-bottom: 2rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .control-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.5rem; }
+    
+    .btn { background: var(--btn-bg); border: 1px solid var(--panel-border); color: inherit; padding: 0.875rem 1rem; border-radius: 12px; font-size: 0.875rem; cursor: pointer; text-align: left; transition: all 0.3s ease; text-decoration: none; display: flex; justify-content: space-between; align-items: center; }
+    .btn:hover { background: var(--btn-hover); border-color: #444; }
+    .btn svg { width: 16px; height: 16px; opacity: 0.5; }
+    .btn:hover svg { opacity: 1; }
+    
+    .btn-primary { background: #ffffff; color: #000000; border: none; text-align: center; justify-content: center; font-weight: 500; margin-top: auto; padding: 1rem; border-radius: 9999px; }
+    .btn-primary:hover { transform: scale(1.02); opacity: 0.9; }
+    
+    .main-content { flex-grow: 1; padding: 6rem 4rem; max-width: 900px; margin: 0 auto; overflow-y: auto; }
+    
+    .document { opacity: 1; transition: opacity 0.4s ease; }
+    h1 { font-size: 2.5rem; font-weight: 600; margin-bottom: 3rem; letter-spacing: -0.03em; line-height: 1.2; }
+    p { margin-bottom: 2rem; line-height: 1.7; color: var(--text-muted); }
+    
+    .actions { display: flex; gap: 1rem; margin-top: 4rem; }
+    .action-btn { background: var(--panel-bg); color: var(--adapt-text-color); border: 1px solid var(--panel-border); padding: 0.75rem 1.5rem; border-radius: 9999px; font-size: 0.875rem; cursor: pointer; transition: all 0.3s ease; }
+    .action-btn:hover { background: var(--btn-hover); border-color: #444; }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    }
-
-    body {
-      background-color: var(--adapt-bg-color);
-      color: var(--adapt-text-color);
-      font-size: calc(15px * var(--adapt-font-scale));
-      line-height: var(--adapt-line-height);
-      display: flex;
-      min-height: 100vh;
-    }
-
-    /* Sidebar Control Panel */
-    .control-sidebar {
-      width: 320px;
-      background: var(--panel-bg);
-      border-right: 1px solid var(--panel-border);
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      flex-shrink: 0;
-    }
-
-    .sidebar-header {
-      border-bottom: 1px solid var(--panel-border);
-      padding-bottom: 16px;
-    }
-
-    .sidebar-header h2 {
-      font-size: 18px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .sidebar-header p {
-      font-size: 12px;
-      color: #94a3b8;
-      margin-top: 4px;
-    }
-
-    .control-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .control-label {
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #94a3b8;
-    }
-
-    .btn-action {
-      background: #1e293b;
-      border: 1px solid var(--panel-border);
-      color: white;
-      padding: 12px 16px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: all 0.2s ease;
-    }
-
-    .btn-action:hover {
-      background: #334155;
-      border-color: var(--accent);
-    }
-
-    .btn-trigger-main {
-      background: linear-gradient(135deg, #2563eb, #7c3aed);
-      color: white;
-      border: none;
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
-      transition: all 0.2s ease;
-      margin-top: auto;
-    }
-
-    .btn-trigger-main:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 28px rgba(37, 99, 235, 0.6);
-    }
-
-    /* Main Hostile / Adapted Document Area */
-    .document-area {
-      flex-grow: 1;
-      padding: 40px;
-      overflow-y: auto;
-      max-width: 900px;
-    }
-
-    /* Deliberately hostile elements before adaptation */
-    .hostile-header {
-      border-bottom: 2px solid var(--panel-border);
-      padding-bottom: 20px;
-      margin-bottom: 30px;
-    }
-
-    .hostile-banner {
-      background: #ef4444;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    h1.headline {
-      font-size: 28px;
-      font-weight: 800;
-      margin-bottom: 8px;
-      color: inherit;
-    }
-
-    h2.subheading {
-      font-size: 16px;
-      color: #94a3b8;
-      font-weight: 600;
-      margin-bottom: 24px;
-    }
-
-    p.dense-paragraph {
-      margin-bottom: 20px;
-      color: inherit;
-    }
-
-    .actions-row {
-      display: flex;
-      gap: 12px;
-      margin-top: 30px;
-    }
-
-    .tiny-btn {
-      background: #1e293b;
-      color: white;
-      border: 1px solid var(--panel-border);
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .adapt-motor-assist .tiny-btn {
-      padding: 16px 28px !important;
-      font-size: 16px !important;
-      background: #2563eb !important;
-    }
+    .adapt-motor-assist .action-btn { padding: 1.5rem 3rem !important; font-size: 1.125rem !important; }
+    
+    svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   </style>
 </head>
 <body>
-  <!-- Side Control Bar -->
-  <aside class="control-sidebar">
+  <aside class="sidebar">
     <div class="sidebar-header">
-      <h2>⚡ AdaptAI Test Suite</h2>
-      <p>Control & simulation environment for Extension DOM transformations.</p>
+      <h2>AdaptAI Suite</h2>
     </div>
 
     <div class="control-group">
-      <span class="control-label">Visual Adjustments</span>
-      <button class="btn-action" onclick="toggleHighContrast()">
-        High Contrast Theme <span>👁️</span>
-      </button>
-      <button class="btn-action" onclick="toggleDyslexicFont()">
-        OpenDyslexic Font <span>📖</span>
-      </button>
-      <button class="btn-action" onclick="toggleFontScaling()">
-        1.5x Typography Scale <span>🔍</span>
-      </button>
+      <span class="control-label">Visual</span>
+      <button class="btn" onclick="toggleHighContrast()">High Contrast <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      <button class="btn" onclick="toggleDyslexicFont()">Dyslexic Font <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></button>
+      <button class="btn" onclick="toggleFontScaling()">1.5x Scale <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></button>
     </div>
 
     <div class="control-group">
       <span class="control-label">Cognitive & Motor</span>
-      <button class="btn-action" onclick="toggleTextSimplification()">
-        AI Simplification <span>🧠</span>
-      </button>
-      <button class="btn-action" onclick="toggleMotorTargets()">
-        Motor Click Targets <span>🎯</span>
-      </button>
+      <button class="btn" onclick="toggleTextSimplification()">Simplification <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+      <button class="btn" onclick="toggleMotorTargets()">Motor Targets <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></button>
     </div>
 
     <div class="control-group">
-      <span class="control-label">Navigation & Sub-Pages</span>
-      <a href="/index.html" class="btn-action" style="text-decoration:none;">
-        🌐 Public Landing Page
-      </a>
-      <a href="/extension/profile/profile.html" class="btn-action" style="text-decoration:none;">
-        ⚙️ Profile Settings & Persona
-      </a>
-      <a href="/extension/onboarding/onboarding.html" class="btn-action" style="text-decoration:none;">
-        🧠 Take Diagnostic Test
-      </a>
+      <span class="control-label">Navigation</span>
+      <a href="../index.html" class="btn">Landing Page <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <a href="../extension/profile/profile.html" class="btn">Profile Settings <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <a href="../extension/onboarding/onboarding.html" class="btn">Diagnostic Test <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
     </div>
 
-    <button class="btn-trigger-main" onclick="triggerFullAdaptation()">
-      🚀 Trigger Full AI Adaptation Pipeline
-
-    </button>
-
+    <button class="btn-primary" onclick="triggerFullAdaptation()">Run Adaptation Pipeline</button>
   </aside>
 
-  <!-- Document Viewport -->
-  <main class="document-area">
-    <div class="hostile-banner">
-      <span>⚠️ Hostile Web Layout Mode (Low Contrast & Dense Text)</span>
-      <span>Simulated Web Page</span>
-    </div>
+  <main class="main-content">
+    <div class="document">
+      <h1>Quarterly Financial & Technology Performance Synopsis</h1>
 
-    <div class="hostile-header">
-      <h1 class="headline">Quarterly Financial & Technology Performance Synopsis</h1>
-      <h2 class="subheading">Executive Overview for Fiscal Year 2026 Q2</h2>
-    </div>
+      <p id="para-1">
+        In the second quarter of fiscal year 2026, our enterprise recorded exponential algorithmic productivity increases, driven primarily by hyper-scaled cloud architecture deployments and automated cross-domain data synchronization pipelines. Despite macroeconomic volatility in global supply chains, net operational margins expanded by 14.2%, attributable to optimized resource allocation strategies, streamlined microservice topologies, and reduced infrastructure overhead. Stakeholders are advised to review the comprehensive tabular breakdowns in Section 4.B for granular metrics on regional throughput and compliance audits.
+      </p>
 
-    <p class="dense-paragraph" id="para-1">
-      In the second quarter of fiscal year 2026, our enterprise recorded exponential algorithmic productivity increases, driven primarily by hyper-scaled cloud architecture deployments and automated cross-domain data synchronization pipelines. Despite macroeconomic volatility in global supply chains, net operational margins expanded by 14.2%, attributable to optimized resource allocation strategies, streamlined microservice topologies, and reduced infrastructure overhead. Stakeholders are advised to review the comprehensive tabular breakdowns in Section 4.B for granular metrics on regional throughput and compliance audits.
-    </p>
+      <p id="para-2">
+        Furthermore, ongoing research initiatives in autonomous accessibility orchestration have yielded breakthrough heuristics capable of dynamic client-side DOM adaptation. These proprietary models analyze real-time DOM structural node trees, synthesizing semantic context and transforming visual style assets without altering core business logic or underlying REST API integration boundaries.
+      </p>
 
-    <p class="dense-paragraph" id="para-2">
-      Furthermore, ongoing research initiatives in autonomous accessibility orchestration have yielded breakthrough heuristics capable of dynamic client-side DOM adaptation. These proprietary models analyze real-time DOM structural node trees, synthesizing semantic context and transforming visual style assets without altering core business logic or underlying REST API integration boundaries.
-    </p>
-
-    <div class="actions-row">
-      <button class="tiny-btn">Download PDF Report</button>
-      <button class="tiny-btn">Request Investor Callback</button>
+      <div class="actions">
+        <button class="action-btn">Download Report</button>
+        <button class="action-btn">Request Callback</button>
+      </div>
     </div>
   </main>
 
-  <script src="/extension/content.js"></script>
+  <script src="../extension/content.js"></script>
   <script>
     function toggleHighContrast() {
-      document.documentElement.style.setProperty('--adapt-bg-color', '#121212');
-      document.documentElement.style.setProperty('--adapt-text-color', '#ffff00');
+      document.documentElement.style.setProperty('--adapt-bg-color', '#000000');
+      document.documentElement.style.setProperty('--adapt-text-color', '#ffffff');
     }
-
-    function toggleDyslexicFont() {
-      ensureDyslexicFont(true);
-    }
-
-    function toggleFontScaling() {
-      document.documentElement.style.setProperty('--adapt-font-scale', '1.4');
-    }
-
+    function toggleDyslexicFont() { if (typeof ensureDyslexicFont === 'function') ensureDyslexicFont(true); }
+    function toggleFontScaling() { document.documentElement.style.setProperty('--adapt-font-scale', '1.4'); }
     function toggleTextSimplification() {
-      applyTextSimplification([
-        "✨ AI Summary 1: Enterprise performance boosted by 14% this quarter due to cloud infrastructure optimizations.",
-        "✨ AI Summary 2: Autonomous software models automatically simplify complex webpage text for easy reading."
-      ]);
-    }
-
-    function toggleMotorTargets() {
-      applyMotorAssist(true);
-    }
-
-    function triggerFullAdaptation() {
-      if (typeof window.__runTrackATests === 'function') {
-        window.__runTrackATests();
-      } else {
-        runFullTransformation(mockGeminiResponse);
+      if(typeof applyTextSimplification === 'function') {
+        applyTextSimplification(["Enterprise performance boosted by 14% this quarter due to cloud infrastructure optimizations.", "Autonomous software models automatically simplify complex webpage text for easy reading."]);
       }
+    }
+    function toggleMotorTargets() {
+      if (typeof applyMotorAssist === 'function') {
+        applyMotorAssist(!document.body.classList.contains('adapt-motor-assist'));
+      } else {
+        document.body.classList.toggle('adapt-motor-assist');
+      }
+    }
+    function triggerFullAdaptation() {
+      if (typeof window.__runTrackATests === 'function') window.__runTrackATests();
+      else if (typeof runFullTransformation === 'function') runFullTransformation(mockGeminiResponse);
     }
   </script>
 </body>
 </html>
-

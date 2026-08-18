@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdaptAI Controlled Demo & Diagnostic Test Page</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --adapt-bg-color: #0b0f19;
+      --adapt-text-color: #f1f5f9;
+      --adapt-font-scale: 1;
+      --adapt-line-height: 1.6;
+      --panel-bg: #141a29;
+      --panel-border: rgba(255, 255, 255, 0.08);
+      --accent: #3b82f6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    body {
+      background-color: var(--adapt-bg-color);
+      color: var(--adapt-text-color);
+      font-size: calc(15px * var(--adapt-font-scale));
+      line-height: var(--adapt-line-height);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Control Panel */
+    .control-sidebar {
+      width: 320px;
+      background: var(--panel-bg);
+      border-right: 1px solid var(--panel-border);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header {
+      border-bottom: 1px solid var(--panel-border);
+      padding-bottom: 16px;
+    }
+
+    .sidebar-header h2 {
+      font-size: 18px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-header p {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .control-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #94a3b8;
+    }
+
+    .btn-action {
+      background: #1e293b;
+      border: 1px solid var(--panel-border);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-action:hover {
+      background: #334155;
+      border-color: var(--accent);
+    }
+
+    .btn-trigger-main {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+      transition: all 0.2s ease;
+      margin-top: auto;
+    }
+
+    .btn-trigger-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(37, 99, 235, 0.6);
+    }
+
+    /* Main Hostile / Adapted Document Area */
+    .document-area {
+      flex-grow: 1;
+      padding: 40px;
+      overflow-y: auto;
+      max-width: 900px;
+    }
+
+    /* Deliberately hostile elements before adaptation */
+    .hostile-header {
+      border-bottom: 2px solid var(--panel-border);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .hostile-banner {
+      background: #ef4444;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    h1.headline {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: inherit;
+    }
+
+    h2.subheading {
+      font-size: 16px;
+      color: #94a3b8;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    p.dense-paragraph {
+      margin-bottom: 20px;
+      color: inherit;
+    }
+
+    .actions-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .tiny-btn {
+      background: #1e293b;
+      color: white;
+      border: 1px solid var(--panel-border);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .adapt-motor-assist .tiny-btn {
+      padding: 16px 28px !important;
+      font-size: 16px !important;
+      background: #2563eb !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Side Control Bar -->
+  <aside class="control-sidebar">
+    <div class="sidebar-header">
+      <h2>⚡ AdaptAI Test Suite</h2>
+      <p>Control & simulation environment for Extension DOM transformations.</p>
+    </div>
+
+    <div class="control-group">
+      <span class="control-label">Visual Adjustments</span>
+      <button type="button" class="btn-action" id="btn-high-contrast">
+        High Contrast Theme <span>👁️</span>
+      </button>
+      <button type="button" class="btn-action" id="btn-dyslexic-font">
+        OpenDyslexic Font <span>📖</span>
+      </button>
+      <button type="button" class="btn-action" id="btn-font-scale">
+        1.5x Typography Scale <span>🔍</span>
+      </button>
+    </div>
+
+    <div class="control-group">
+      <span class="control-label">Cognitive & Motor</span>
+      <button type="button" class="btn-action" id="btn-simplify-text">
+        AI Simplification <span>🧠</span>
+      </button>
+      <button type="button" class="btn-action" id="btn-motor-targets">
+        Motor Click Targets <span>🎯</span>
+      </button>
+    </div>
+
+    <div class="control-group">
+      <span class="control-label">Navigation & Sub-Pages</span>
+      <a href="../index.html" id="link-landing" class="btn-action">
+        🌐 Public Landing Page
+      </a>
+      <a href="../profile/profile.html" id="link-profile" class="btn-action">
+        ⚙️ Profile Settings & Persona
+      </a>
+      <a href="../onboarding/onboarding.html" id="link-onboarding" class="btn-action">
+        🧠 Take Diagnostic Test
+      </a>
+    </div>
+
+    <button type="button" class="btn-trigger-main" id="btn-trigger-adaptation">
+      🚀 Trigger Full AI Adaptation Pipeline
+    </button>
+  </aside>
+
+  <!-- Document Viewport -->
+  <main class="document-area">
+    <div class="hostile-banner">
+      <span>⚠️ Hostile Web Layout Mode (Low Contrast & Dense Text)</span>
+      <span>Simulated Web Page</span>
+    </div>
+
+    <div class="hostile-header">
+      <h1 class="headline">Quarterly Financial & Technology Performance Synopsis</h1>
+      <h2 class="subheading">Executive Overview for Fiscal Year 2026 Q2</h2>
+    </div>
+
+    <p class="dense-paragraph" id="para-1">
+      In the second quarter of fiscal year 2026, our enterprise recorded exponential algorithmic productivity increases, driven primarily by hyper-scaled cloud architecture deployments and automated cross-domain data synchronization pipelines. Despite macroeconomic volatility in global supply chains, net operational margins expanded by 14.2%, attributable to optimized resource allocation strategies, streamlined microservice topologies, and reduced infrastructure overhead. Stakeholders are advised to review the comprehensive tabular breakdowns in Section 4.B for granular metrics on regional throughput and compliance audits.
+    </p>
+
+    <p class="dense-paragraph" id="para-2">
+      Furthermore, ongoing research initiatives in autonomous accessibility orchestration have yielded breakthrough heuristics capable of dynamic client-side DOM adaptation. These proprietary models analyze real-time DOM structural node trees, synthesizing semantic context and transforming visual style assets without altering core business logic or underlying REST API integration boundaries.
+    </p>
+
+    <div class="actions-row">
+      <button type="button" class="tiny-btn">Download PDF Report</button>
+      <button type="button" class="tiny-btn">Request Investor Callback</button>
+    </div>
+  </main>
+
+  <script src="../content.js"></script>
+  <script src="demo.js"></script>
+</body>
+</html>

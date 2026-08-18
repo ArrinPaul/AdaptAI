@@ -7,13 +7,25 @@
   --adapt-font-family: inherit;
 }
 
-/* Force document elements to obey dynamic CSS variable overrides */
-body, p, h1, h2, h3, h4, h5, h6, span, div, li, a {
+/* Force document elements to obey dynamic CSS variable overrides when actively applied */
+html[data-adaptai-transformed="true"] body, 
+html[data-adaptai-transformed="true"] p, 
+html[data-adaptai-transformed="true"] h1, 
+html[data-adaptai-transformed="true"] h2, 
+html[data-adaptai-transformed="true"] h3, 
+html[data-adaptai-transformed="true"] h4, 
+html[data-adaptai-transformed="true"] h5, 
+html[data-adaptai-transformed="true"] h6, 
+html[data-adaptai-transformed="true"] span, 
+html[data-adaptai-transformed="true"] div, 
+html[data-adaptai-transformed="true"] li, 
+html[data-adaptai-transformed="true"] a {
   background-color: var(--adapt-bg-color) !important;
   color: var(--adapt-text-color) !important;
   font-family: var(--adapt-font-family) !important;
   transition: background-color 0.3s ease, color 0.3s ease !important;
 }
+
 
 /* Motor target expansion for click accessibility */
 .adapt-motor-assist button, 

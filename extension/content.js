@@ -299,10 +299,12 @@ function ensureDyslexicFont(enable) {
 function applyCssTransformations(cssUpdates) {
   if (!cssUpdates) return;
   const root = document.documentElement;
+  root.setAttribute('data-adaptai-transformed', 'true');
   Object.entries(cssUpdates).forEach(([varName, val]) => {
     root.style.setProperty(varName, val);
   });
 }
+
 
 /**
  * Toggles motor accessibility target expansion

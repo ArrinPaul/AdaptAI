@@ -4,12 +4,7 @@
 
 ### Context & Persona-Aware Web Transformation & Reading Assist System
 
-![Manifest V3](https://img.shields.io/badge/Chrome_Extension-MV3-000000?style=for-the-badge&logo=googlechrome)
-![JavaScript](https://img.shields.io/badge/JavaScript-ES2024-F7DF1E?style=for-the-badge&logo=javascript)
-![CSS3](https://img.shields.io/badge/CSS3-Luxury_Zinc-1572B6?style=for-the-badge&logo=css3)
-![Google Gemini](https://img.shields.io/badge/Gemini_AI-2.0_Flash-4285F4?style=for-the-badge&logo=google)
-![Groq](https://img.shields.io/badge/Groq_Llama3-8B-FF4B4B?style=for-the-badge)
-![Web Speech API](https://img.shields.io/badge/Web_Speech_API-Audio_TTS-34D399?style=for-the-badge)
+**`Chrome Extension MV3`** • **`JavaScript ES2024`** • **`CSS3 Luxury Zinc`** • **`Google Gemini 2.0 Flash`** • **`Groq Llama 3`** • **`Web Speech API`**
 
 AdaptAI is an industry-grade accessibility protocol and browser extension engine designed to dynamically transform web typography, contrast, and cognitive density based on real-time user diagnostic profiling. Powered by Google Gemini AI, Groq LLM inference, and an open-source Filter Inversion Engine, AdaptAI eliminates digital reading barriers for users with low vision, light sensitivity, dyslexia, and cognitive overload.
 
@@ -44,30 +39,29 @@ AdaptAI operates as a high-speed client-side DOM intelligence engine coupled wit
 ```mermaid
 graph TB
     subgraph EXTENSION_CLIENT["Extension Client & Injector"]
-        A[Floating Shadow DOM Toolbar] --> B[Audio Speech Engine]
-        A --> C[Theme Switch Engine]
-        A --> D[AI Assistant Overlay]
+        A["Floating Shadow DOM Toolbar"] --> B["Audio Speech Engine"]
+        A --> C["Theme Switch Engine"]
+        A --> D["AI Assistant Overlay"]
     end
 
     subgraph ONBOARDING["Diagnostic Onboarding Center"]
-        E[Visual Legibility Test]
-        F[Cognitive Readability Test]
-        G[Motor Precision Test]
-        E & F & G --> H[Persona Matrix Synthesizer]
+        E["Visual Legibility Test"] --> H["Persona Matrix Synthesizer"]
+        F["Cognitive Readability Test"] --> H
+        G["Motor Precision Test"] --> H
     end
 
     subgraph BACKGROUND["MV3 Service Worker — background.js"]
-        I[Storage State Manager]
-        J[DOM Scraper Pipeline]
-        K[AI Processor Routing]
+        I["Storage State Manager"]
+        J["DOM Scraper Pipeline"]
+        K["AI Processor Routing"]
     end
 
     subgraph AI_SERVICES["Inference Providers"]
-        L[Google Gemini 2.0 Flash]
-        M[Groq Llama 3 Inference]
+        L["Google Gemini 2.0 Flash"]
+        M["Groq Llama 3 Inference"]
     end
 
-    ONBOARDING -->|Save User Profile| I
+    H -->|Save User Profile| I
     EXTENSION_CLIENT -->|Message Dispatch| BACKGROUND
     BACKGROUND <-->|AI Process Request| AI_SERVICES
     BACKGROUND -->|Inject Transformations| EXTENSION_CLIENT
@@ -181,19 +175,23 @@ The Onboarding Assessment Center (`onboarding.html`) runs interactive diagnostic
 
 ```mermaid
 graph TD
-    A[User Takes Assessment] --> B[Visual Legibility Test]
-    A --> C[Cognitive Readability Test]
-    A --> D[Motor Precision Test]
+    A["User Takes Assessment"] --> B["Visual Legibility Test"]
+    A --> C["Cognitive Readability Test"]
+    A --> D["Motor Precision Test"]
 
-    B -->|High Contrast| E[High Contrast Mode]
-    B -->|Scaled Text| F[1.5x Typography Scaling]
+    B -->|High Contrast| E["High Contrast Mode"]
+    B -->|Scaled Text| F["1.5x Typography Scaling"]
     
-    C -->|Dyslexic| G[OpenDyslexic Font Injection]
-    C -->|Simplified| H[AI Text Simplification]
+    C -->|Dyslexic| G["OpenDyslexic Font Injection"]
+    C -->|Simplified| H["AI Text Simplification"]
 
-    E & F & G & H --> I[Dynamic Persona Synthesizer]
+    E --> I["Dynamic Persona Synthesizer"]
+    F --> I
+    G --> I
+    H --> I
     I --> J["Example: High Contrast + Dyslexia Assist Persona"]
 ```
+
 
 ---
 

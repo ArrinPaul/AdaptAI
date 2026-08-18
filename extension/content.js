@@ -108,55 +108,56 @@ function mountShadowWidget() {
     .widget-container {
       display: flex;
       align-items: center;
-      gap: 6px;
-      background: rgba(18, 18, 22, 0.85);
+      gap: 8px;
+      background: rgba(18, 18, 22, 0.9);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 9999px;
-      padding: 6px 10px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      padding: 8px 14px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .widget-container:hover {
-      border-color: rgba(255, 255, 255, 0.2);
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 20px 56px rgba(0, 0, 0, 0.8), 0 0 24px rgba(255, 255, 255, 0.08);
     }
     .widget-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       color: #fafafa;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 600;
       letter-spacing: 0.3px;
       cursor: pointer;
-      padding: 8px 14px;
+      padding: 10px 18px;
       border-radius: 9999px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .widget-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.35);
       color: #ffffff;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
     }
     .widget-btn:active {
       transform: translateY(0) scale(0.96);
     }
     .widget-btn svg {
-      width: 13px;
-      height: 13px;
+      width: 16px;
+      height: 16px;
       fill: none;
       stroke: currentColor;
-      stroke-width: 2;
+      stroke-width: 2.2;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
   `;
+
 
   const container = document.createElement('div');
   container.className = 'widget-container';

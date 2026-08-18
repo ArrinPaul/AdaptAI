@@ -282,4 +282,58 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // Auto-inject UI toolbar on load
 injectFloatingToolbar();
 
+// -------------------------------------------------------------
+// TRACK A AUTOMATED SUITE (Run window.__runTrackATests() in console)
+// -------------------------------------------------------------
+window.__runTrackATests = function() {
+  console.group("🧪 [AdaptAI Track A Validation Suite]");
+  let passed = 0;
+  let total = 0;
+
+  function assert(condition, testName) {
+    total++;
+    if (condition) {
+      console.log(`✅ PASS: ${testName}`);
+      passed++;
+    } else {
+      console.error(`❌ FAIL: ${testName}`);
+    }
+  }
+
+  // 1. Scraper Test
+  const scraped = scrapePageDOM();
+  assert(typeof scraped === 'string' && scraped.length > 0, "Scraper extracts non-empty string payload");
+  assert(scraped.length <= 2005, "Scraper payload does not exceed character cap ceiling");
+
+  // 2. Toolbar Injection Test
+  const toolbar = document.getElementById('adaptai-toolbar');
+  assert(toolbar !== null, "Floating toolbar element #adaptai-toolbar is injected");
+  assert(document.getElementById('adaptai-read-aloud') !== null, "Read Aloud button is rendered");
+  assert(document.getElementById('adaptai-voice-cmd') !== null, "Voice Command button is rendered");
+
+  // 3. CSS Variable Override Test
+  applyCssTransformations({ "--adapt-bg-color": "#000000", "--adapt-font-scale": "1.4" });
+  assert(document.documentElement.style.getPropertyValue("--adapt-bg-color") === "#000000", "CSS variable --adapt-bg-color injected correctly");
+  assert(document.documentElement.style.getPropertyValue("--adapt-font-scale") === "1.4", "CSS variable --adapt-font-scale injected correctly");
+
+  // 4. Dyslexic Font Injection Test
+  ensureDyslexicFont(true);
+  assert(document.getElementById('adaptai-dyslexic-style') !== null, "Dyslexic font style element injected into document head");
+  assert(document.documentElement.style.getPropertyValue('--adapt-font-family') === "'OpenDyslexic', sans-serif", "Dyslexic font family variable set");
+
+  // 5. Motor Assist Toggle Test
+  applyMotorAssist(true);
+  assert(document.body.classList.contains('adapt-motor-assist'), "Motor assist class added to body tag");
+
+  // 6. Text Simplification Test
+  applyTextSimplification(["Test simplified paragraph text."]);
+  const firstP = document.querySelector('p:not(#adaptai-toolbar p)');
+  assert(firstP && firstP.innerText === "Test simplified paragraph text.", "First paragraph text swapped with simplified string");
+
+  console.log(`\n📊 Test Results: ${passed}/${total} assertions passed.`);
+  console.groupEnd();
+  return passed === total;
+};
+
+
 

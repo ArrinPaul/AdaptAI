@@ -64,14 +64,44 @@ document.addEventListener('DOMContentLoaded', () => {
     triggerBtn.addEventListener('click', () => {
       if (typeof chrome !== 'undefined' && chrome.tabs) {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          if (tabs && tabs[0]) {
-            chrome.tabs.sendMessage(tabs[0].id, { action: "scrape_page" });
+          if (tabs && tabs[0] && tabs[0].id) {
+            const tabId = tabs[0].id;
+            const tabUrl = tabs[0].url || '';
+
+            // Guard against restricted chrome:// and edge:// URLs
+            if (tabUrl.startsWith('chrome://') || tabUrl.startsWith('edge://') || tabUrl.startsWith('chrome-extension://')) {
+              alert("AdaptAI cannot modify browser internal pages. Try opening an external site (e.g. Wikipedia).");
+              return;
+            }
+
+            chrome.tabs.sendMessage(tabId, { action: "scrape_page" }, (res) => {
+              if (chrome.runtime.lastError) {
+                console.warn("[AdaptAI Popup] Content script missing on target tab. Dynamically injecting content script...");
+                chrome.scripting.executeScript({
+                  target: { tabId: tabId },
+                  files: ['content.js']
+                }, () => {
+                  if (chrome.runtime.lastError) {
+                    console.error("[AdaptAI Popup] Script injection error:", chrome.runtime.lastError.message);
+                  } else {
+                    setTimeout(() => {
+                      chrome.tabs.sendMessage(tabId, { action: "scrape_page" }, () => {
+                        if (chrome.runtime.lastError) {
+                          console.warn("[AdaptAI Popup] Retry error:", chrome.runtime.lastError.message);
+                        }
+                      });
+                    }, 100);
+                  }
+                });
+              }
+            });
             window.close();
           }
         });
       }
     });
   }
+
 
   // Bind Navigation Routing for all Popup Links to http://localhost:8080
   const linkMappings = [

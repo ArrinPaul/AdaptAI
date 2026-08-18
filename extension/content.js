@@ -109,17 +109,22 @@ function mountShadowWidget() {
       display: flex;
       align-items: center;
       gap: 6px;
-      background: #09090b;
-      color: #fafafa;
-      border: 1px solid #27272a;
+      background: rgba(18, 18, 22, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 9999px;
       padding: 6px 10px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-      transition: all 0.2s ease;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .widget-container:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 255, 255, 0.05);
     }
     .widget-btn {
-      background: #18181b;
-      border: 1px solid #27272a;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       color: #fafafa;
       font-size: 11px;
       font-weight: 600;
@@ -129,22 +134,45 @@ function mountShadowWidget() {
       border-radius: 9999px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
+      gap: 6px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .widget-btn:hover {
-      background: #27272a;
-      border-color: #a1a1aa;
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
       color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    .widget-btn:active {
+      transform: translateY(0) scale(0.96);
+    }
+    .widget-btn svg {
+      width: 13px;
+      height: 13px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
   `;
 
   const container = document.createElement('div');
   container.className = 'widget-container';
   container.innerHTML = `
-    <button id="tts-btn" class="widget-btn" title="Text to Speech (Read Selected Text / Page)">Audio</button>
-    <button id="theme-btn" class="widget-btn" title="Toggle Extension Theme (Light / Dark)">Theme</button>
-    <button id="assistant-btn" class="widget-btn" title="Toggle AI Assistant Overlay (Ctrl+Shift+U)">AI</button>
+    <button id="tts-btn" class="widget-btn" title="Text to Speech (Read Selected Text / Page)">
+      <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+      <span>Audio</span>
+    </button>
+    <button id="theme-btn" class="widget-btn" title="Toggle Extension Theme (Light / Dark)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      <span>Theme</span>
+    </button>
+    <button id="assistant-btn" class="widget-btn" title="Toggle AI Assistant Overlay (Ctrl+Shift+U)">
+      <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 12L2.5 7.5"></path><path d="M12 12v10"></path></svg>
+      <span>AI</span>
+    </button>
   `;
 
   shadowRoot.appendChild(styleEl);
@@ -160,6 +188,7 @@ function mountShadowWidget() {
   if (themeBtn) themeBtn.addEventListener('click', toggleExtensionTheme);
   if (assistantBtn) assistantBtn.addEventListener('click', toggleAiAssistant);
 }
+
 
 
 

@@ -39,21 +39,22 @@
 ---
 
 ### B.2 Storage Retrieval & Dynamic Gemini Prompt Engineering
-- [ ] Fetch user profile (`userProfile` / persona context) from `chrome.storage.local`
-- [ ] Build dynamic Gemini System & User Prompt incorporating profile preferences and scraped DOM text
-- [ ] Inject strict JSON Output instructions matching Frozen Data Contract
-- [ ] Build defensive mock prompt generator for standalone background worker testing
+- [x] Fetch user profile (`userProfile` / persona context) from `chrome.storage.local`
+- [x] Build dynamic Gemini System & User Prompt incorporating profile preferences and scraped DOM text
+- [x] Inject strict JSON Output instructions matching Frozen Data Contract
+- [x] Build defensive mock prompt generator for standalone background worker testing
 
 **Tests:**
-- [ ] Storage handler handles missing/default profiles gracefully
-- [ ] System prompt correctly adapts instructions based on high contrast, dyslexic font, and text simplification flags
-- [ ] Prompt text length capped safely to avoid API context window overflows
-- [ ] Context payload formatted into clean Gemini REST API payload
+- [x] Storage handler handles missing/default profiles gracefully
+- [x] System prompt correctly adapts instructions based on high contrast, dyslexic font, and text simplification flags
+- [x] Prompt text length capped safely to avoid API context window overflows
+- [x] Context payload formatted into clean Gemini REST API payload
 
 **Quality Gate:**
-- [ ] System prompt produces exact key names: `cssUpdates`, `simplifiedText`, `voiceIntent`
-- [ ] Zero unhandled promise rejections on storage read errors
-- [ ] Sub-task committed to `Track-B`
+- [x] System prompt produces exact key names: `cssUpdates`, `simplifiedText`, `voiceIntent`
+- [x] Zero unhandled promise rejections on storage read errors
+- [x] Sub-task committed to `Track-B`
+
 
 ---
 

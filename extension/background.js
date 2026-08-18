@@ -210,6 +210,7 @@ You MUST respond strictly using the required JSON schema. Do NOT include markdow
   return { systemInstruction, userContent };
 }
 
+
 // -------------------------------------------------------------
 // SUB-TASK B3: GEMINI API INTEGRATION & STRUCTURED OUTPUTS
 // -------------------------------------------------------------
@@ -382,11 +383,27 @@ async function handleAiProcessRequest(pageText, tabId) {
     }
   }
 
-  // Ensure static profile flags are passed along for the UI to read
-  transformationData.dyslexicFont = profile.cognitive?.dyslexicFont;
-  transformationData.motorAssist = profile.audio?.enabled; // Using audio enabled as motor assist proxy for this build
+  // 4. Override transformation output with exact user profile persona settings
+  const visual = profile.visual || {};
+  const cognitive = profile.cognitive || {};
 
-  // 4. Dispatch result back to Content Script
+  if (!transformationData.cssUpdates) transformationData.cssUpdates = {};
+
+  if (visual.highContrast) {
+    transformationData.cssUpdates["--adapt-bg-color"] = "#121212";
+    transformationData.cssUpdates["--adapt-text-color"] = "#FFFF00";
+  }
+
+  if (visual.fontScale && visual.fontScale > 1.0) {
+    transformationData.cssUpdates["--adapt-font-scale"] = String(visual.fontScale);
+  }
+
+  transformationData.dyslexicFont = Boolean(cognitive.dyslexicFont);
+  transformationData.motorAssist = Boolean(profile.audio?.enabled);
+
+  console.log("[AdaptAI Pipeline] Final Profile-Enforced Payload:", transformationData);
+
+  // 5. Dispatch result back to Content Script
   if (tabId && typeof chrome !== 'undefined' && chrome.tabs) {
     chrome.tabs.sendMessage(tabId, {
       action: "apply_transformations",
@@ -399,6 +416,7 @@ async function handleAiProcessRequest(pageText, tabId) {
       }
     });
   }
+
 
   return transformationData;
 }

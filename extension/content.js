@@ -614,7 +614,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 
 // Auto-inject UI toolbar on load
-injectFloatingToolbar();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', injectFloatingToolbar);
+} else {
+  injectFloatingToolbar();
+}
+window.addEventListener('load', injectFloatingToolbar);
+
 
 
 // -------------------------------------------------------------

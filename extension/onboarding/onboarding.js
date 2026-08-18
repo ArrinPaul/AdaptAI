@@ -127,17 +127,27 @@ document.getElementById('profile-form').addEventListener('submit', (e) => {
     }, 1500);
   }
 
+  const statePayload = {
+    userProfile: profilePayload,
+    onboardingCompleted: true,
+    extensionEnabled: true,
+    testCompleted: true
+  };
+
   if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-    chrome.storage.local.set({ userProfile: profilePayload }, () => {
-      console.log("Personalized Persona saved to chrome.storage.local:", profilePayload);
+    chrome.storage.local.set(statePayload, () => {
+      console.log("Personalized Persona and onboarding state saved to chrome.storage.local:", statePayload);
       handleSuccessRedirect();
     });
   } else {
-    localStorage.setItem('userProfile', JSON.stringify(profilePayload));
-    console.log("Personalized Persona saved to localStorage:", profilePayload);
+    Object.entries(statePayload).forEach(([key, val]) => {
+      localStorage.setItem(key, typeof val === 'object' ? JSON.stringify(val) : val);
+    });
+    console.log("Personalized Persona and onboarding state saved to localStorage:", statePayload);
     handleSuccessRedirect();
   }
 });
+
 
 
 

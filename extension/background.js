@@ -14,14 +14,31 @@ chrome.runtime.onInstalled.addListener((details) => {
   }
 });
 
-// Helper: Sends scrape_page trigger to target tab
+// Helper: Sends scrape_page trigger to target tab if extension is enabled and onboarding is complete
 function triggerPageAdaptation(tab) {
   if (!tab || !tab.id) return;
-  console.log(`[AdaptAI Service Worker] Triggering page scrape on Tab ID: ${tab.id}`);
-  chrome.tabs.sendMessage(tab.id, { action: "scrape_page" }, (response) => {
-    if (chrome.runtime.lastError) {
-      console.warn("[AdaptAI Service Worker] Tab listener error:", chrome.runtime.lastError.message);
+
+  chrome.storage.local.get(['extensionEnabled', 'onboardingCompleted'], (res) => {
+    const isEnabled = res.extensionEnabled !== false;
+    const isCompleted = res.onboardingCompleted === true;
+
+    if (!isCompleted) {
+      console.log("[AdaptAI Service Worker] Onboarding incomplete. Opening onboarding setup...");
+      chrome.tabs.create({ url: 'onboarding/onboarding.html' });
+      return;
     }
+
+    if (!isEnabled) {
+      console.log("[AdaptAI Service Worker] Extension is currently OFF / Disabled.");
+      return;
+    }
+
+    console.log(`[AdaptAI Service Worker] Triggering page scrape on Tab ID: ${tab.id}`);
+    chrome.tabs.sendMessage(tab.id, { action: "scrape_page" }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.warn("[AdaptAI Service Worker] Tab listener error:", chrome.runtime.lastError.message);
+      }
+    });
   });
 }
 
@@ -47,16 +64,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "process_with_ai") {
     console.log("[AdaptAI Service Worker] Received scraped text payload from content script.");
     const tabId = sender.tab ? sender.tab.id : null;
-    
-    // Delegate to processing pipeline
-    if (typeof handleAiProcessRequest === 'function') {
-      handleAiProcessRequest(request.pageText, tabId);
-    } else {
-      console.log("[AdaptAI Service Worker Placeholder] Pipeline pending B.2 & B.3 implementation.");
-    }
+
+    chrome.storage.local.get(['extensionEnabled'], (res) => {
+      if (res.extensionEnabled === false) {
+        console.log("[AdaptAI Service Worker] Extension is OFF. Ignoring process_with_ai request.");
+        return;
+      }
+      if (typeof handleAiProcessRequest === 'function') {
+        handleAiProcessRequest(request.pageText, tabId);
+      }
+    });
   }
   return true; // Keep message channel open for async responses
 });
+
 
 // -------------------------------------------------------------
 // SUB-TASK B2: STORAGE RETRIEVAL & GEMINI PROMPT ENGINEERING

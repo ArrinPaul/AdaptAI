@@ -3,18 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AdaptAI Extension Controls</title>
+  <title>AdaptAI Extension Control Center</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0d1117;
-      --card-bg: #161b22;
-      --text-bright: #f0f6fc;
-      --text-subtle: #8b949e;
-      --accent: #2f81f7;
-      --border: rgba(240, 246, 252, 0.1);
+      --bg: #0b0f19;
+      --card-bg: #141a29;
+      --text-bright: #f8fafc;
+      --text-subtle: #94a3b8;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --border: rgba(255, 255, 255, 0.08);
     }
 
     * {
@@ -25,10 +27,11 @@
     }
 
     body {
-      width: 320px;
+      width: 330px;
       background-color: var(--bg);
       color: var(--text-bright);
       padding: 16px;
+      user-select: none;
     }
 
     .header {
@@ -45,19 +48,121 @@
       align-items: center;
       gap: 8px;
       font-weight: 800;
-      font-size: 16px;
+      font-size: 17px;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-green);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-badge.disabled {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--accent-red);
+      border-color: rgba(239, 68, 68, 0.3);
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
-      background: #3fb950;
+      width: 7px;
+      height: 7px;
+      background: var(--accent-green);
       border-radius: 50%;
-      box-shadow: 0 0 8px #3fb950;
+      box-shadow: 0 0 8px var(--accent-green);
+    }
+
+    .status-badge.disabled .status-dot {
+      background: var(--accent-red);
+      box-shadow: 0 0 8px var(--accent-red);
+    }
+
+    /* Master ON/OFF Toggle Box */
+    .master-toggle-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 14px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .toggle-info h4 {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .toggle-info p {
+      font-size: 11px;
+      color: var(--text-subtle);
+    }
+
+    .master-switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .master-switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #334155;
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider { background-color: var(--accent-blue); }
+    input:checked + .slider:before { transform: translateX(20px); }
+
+    /* Persona Summary Banner */
+    .persona-banner {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    .persona-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .persona-name {
+      font-size: 14px;
+      font-weight: 700;
+      margin-top: 2px;
     }
 
     .btn-adapt-now {
-      background: linear-gradient(135deg, #238636, #2ea043);
+      background: linear-gradient(135deg, var(--accent-blue), #2563eb);
       color: white;
       border: none;
       width: 100%;
@@ -66,136 +171,91 @@
       font-weight: 700;
       font-size: 14px;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(46, 160, 67, 0.4);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
       transition: all 0.2s;
       margin-bottom: 14px;
     }
 
     .btn-adapt-now:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(46, 160, 67, 0.6);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
     }
 
-    .quick-toggles {
+    .btn-adapt-now:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .menu-list {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
 
-    .toggle-row {
+    .menu-item {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      padding: 10px 14px;
+      padding: 10px 12px;
       border-radius: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 36px;
-      height: 20px;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #30363d;
-      transition: .3s;
-      border-radius: 20px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 14px;
-      width: 14px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .3s;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider {
-      background-color: var(--accent);
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(16px);
-    }
-
-    .footer-links {
-      margin-top: 14px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-    }
-
-    .footer-links a {
-      color: var(--text-subtle);
+      color: var(--text-bright);
       text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s;
     }
 
-    .footer-links a:hover {
-      color: var(--accent);
+    .menu-item:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+      background: rgba(255, 255, 255, 0.04);
     }
   </style>
 </head>
 <body>
   <div class="header">
     <div class="brand">⚡ AdaptAI</div>
-    <div style="display:flex; align-items:center; gap:6px; font-size:11px; color:#8b949e;">
-      <span class="status-dot"></span> Active
+    <div id="status-badge" class="status-badge">
+      <span class="status-dot"></span> <span id="status-text">ON</span>
     </div>
   </div>
 
-  <button class="btn-adapt-now" id="trigger-adapt">✨ Adapt Page Now (Ctrl+Shift+A)</button>
-
-  <div class="quick-toggles">
-    <div class="toggle-row">
-      <span>👁️ High Contrast Theme</span>
-      <label class="switch">
-        <input type="checkbox" id="toggle-contrast" checked>
-        <span class="slider"></span>
-      </label>
+  <!-- Master ON/OFF Switch -->
+  <div class="master-toggle-box">
+    <div class="toggle-info">
+      <h4>Extension Protection</h4>
+      <p id="toggle-desc">DOM transformations active</p>
     </div>
-
-    <div class="toggle-row">
-      <span>📖 OpenDyslexic Font</span>
-      <label class="switch">
-        <input type="checkbox" id="toggle-dyslexic" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
-
-    <div class="toggle-row">
-      <span>🧠 AI Text Simplification</span>
-      <label class="switch">
-        <input type="checkbox" id="toggle-simplify" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
+    <label class="master-switch">
+      <input type="checkbox" id="master-toggle" checked>
+      <span class="slider"></span>
+    </label>
   </div>
 
-  <div class="footer-links">
-    <a href="/extension/onboarding/onboarding.html" target="_blank">⚙️ Settings & Assessment</a>
-    <a href="/demo/index.html" target="_blank">🧪 Launch Demo</a>
+  <!-- User Persona Summary -->
+  <div class="persona-banner" id="persona-banner">
+    <div class="persona-title">Active AI Persona</div>
+    <div class="persona-name" id="persona-name">High-Contrast Assist</div>
+  </div>
+
+  <button class="btn-adapt-now" id="trigger-adapt">✨ Adapt Current Page (Ctrl+Shift+A)</button>
+
+  <!-- Quick Action Navigation -->
+  <div class="menu-list">
+    <a href="/index.html" target="_blank" class="menu-item">
+      <span>🌐 Public Landing Page</span> ➔
+    </a>
+    <a href="/extension/onboarding/onboarding.html" target="_blank" class="menu-item">
+      <span>🧠 Take Accessibility Diagnostic Test</span> ➔
+    </a>
+    <a href="/demo/index.html" target="_blank" class="menu-item">
+      <span>⚙️ Profile Settings & Demo Workbench</span> ➔
+    </a>
   </div>
 
   <script src="popup.js"></script>
 </body>
 </html>
+

@@ -22,38 +22,38 @@ const mockGeminiResponse = {
 // -------------------------------------------------------------
 function scrapePageDOM() {
   try {
-    // Target main content tags: h1, h2, h3, article, section, p
-    const selectors = 'h1, h2, h3, p, article p, main p';
+    // Target key structural elements across the document: headings, articles, sections, main, p, nav
+    const selectors = 'h1, h2, h3, h4, p, article, section, main, header, nav, aside';
     const elements = Array.from(document.querySelectorAll(selectors));
 
-    // Filter out hidden, script/style, or toolbar elements
-    const validTexts = elements
+    // Analyze DOM structure dynamically for site-specific layout profiling
+    const structuredNodes = elements
       .filter(el => {
-        // Exclude AdaptAI toolbar elements
         if (el.closest('#adaptai-toolbar') || el.closest('#adaptai-widget-host') || el.closest('#adaptai-assistant-overlay')) return false;
-        // Check visibility
         const style = window.getComputedStyle(el);
         return style.display !== 'none' && style.visibility !== 'hidden' && el.innerText.trim().length > 0;
       })
-      .map(el => el.innerText.trim());
+      .slice(0, 30) // Analyze first 30 structural DOM nodes
+      .map(el => {
+        const tag = el.tagName.toLowerCase();
+        const text = el.innerText.trim().slice(0, 150).replace(/\s+/g, ' ');
+        return `<${tag}>${text}</${tag}>`;
+      });
 
-    // Remove duplicates while maintaining document order
-    const uniqueTexts = Array.from(new Set(validTexts));
-    
-    // Join and cap to 2000 characters maximum for fast LLM processing
-    const fullScrapedText = uniqueTexts.join('\n\n');
-    const cappedText = fullScrapedText.length > 2000 
-      ? fullScrapedText.slice(0, 2000) + '...' 
-      : fullScrapedText;
+    const pageMeta = {
+      domain: window.location.hostname,
+      title: document.title,
+      structuredDOM: structuredNodes.join('\n')
+    };
 
-    console.log(`[AdaptAI Scraper] Scraped ${uniqueTexts.length} elements (${cappedText.length} chars).`);
-    return cappedText || "Fallback: Page contains no readable paragraph or heading content.";
+    const payloadString = JSON.stringify(pageMeta, null, 2);
+    console.log(`[AdaptAI Structural Analyzer] Analyzed ${structuredNodes.length} DOM elements for domain: ${pageMeta.domain}`);
+    return payloadString;
   } catch (err) {
     console.error("[AdaptAI Scraper Error]", err);
-    return "Fallback: Exception occurred while scraping DOM content.";
+    return JSON.stringify({ domain: window.location.hostname, structuredDOM: document.body.innerText.slice(0, 1500) });
   }
 }
-
 
 
 
@@ -100,9 +100,7 @@ function mountShadowWidget() {
 
   shadowHost = document.createElement('div');
   shadowHost.id = 'adaptai-widget-host';
-  shadowHost.style.cssText = 'position: fixed; bottom: 20px; right: 20px; z-index: 2147483647;';
-
-
+  shadowHost.style.cssText = 'position: fixed; bottom: 24px; right: 24px; z-index: 2147483647;';
   
   const shadowRoot = shadowHost.attachShadow({ mode: 'open' });
 
@@ -450,7 +448,7 @@ function runFullTransformation(payload) {
     return;
   }
 
-  console.log("[AdaptAI] Applying visual persona transformation payload:", payload);
+  console.log("[AdaptAI] Applying full persona transformation payload:", payload);
 
   // 1. Apply CSS variable overrides
   if (payload.cssUpdates) {
@@ -467,9 +465,9 @@ function runFullTransformation(payload) {
     applyMotorAssist(true);
   }
 
-  // 4. Cache active simplified text array for AI Assistant / TTS without overwriting paragraph DOM content
+  // 4. Swap paragraph inner text
   if (payload.simplifiedText) {
-    activeSimplifiedText = payload.simplifiedText;
+    applyTextSimplification(payload.simplifiedText);
   }
 
   // 5. Execute voice intent if returned
@@ -479,7 +477,6 @@ function runFullTransformation(payload) {
 
   isPageAdaptedState = true;
 }
-
 
 
 // -------------------------------------------------------------
@@ -574,9 +571,9 @@ function toggleAiAssistant() {
   const panel = document.getElementById('adaptai-assistant-overlay');
   if (!panel) return;
 
-  const isHidden = panel.style.display === 'none' || window.getComputedStyle(panel).display === 'none';
+  const isHidden = panel.style.display === 'none';
   if (isHidden) {
-    panel.style.setProperty('display', 'flex', 'important');
+    panel.style.display = 'flex';
     panel.classList.add('active');
 
     // Check for user-selected text on page
@@ -599,11 +596,10 @@ function toggleAiAssistant() {
       if (inputEl) inputEl.focus();
     }, 100);
   } else {
-    panel.style.setProperty('display', 'none', 'important');
+    panel.style.display = 'none';
     panel.classList.remove('active');
   }
 }
-
 
 /**
  * Dispatches Assistant Prompt to Background Service Worker

@@ -14,10 +14,11 @@ html[data-adaptai-transformed="true"] body {
   color: #f4f4f5 !important;
 }
 
-/* Transform layout containers to dark zinc when transformed */
+/* Transform layout containers, headers, articles, and cards to dark zinc */
 html[data-adaptai-transformed="true"] main,
 html[data-adaptai-transformed="true"] article,
 html[data-adaptai-transformed="true"] section,
+html[data-adaptai-transformed="true"] div,
 html[data-adaptai-transformed="true"] header,
 html[data-adaptai-transformed="true"] footer,
 html[data-adaptai-transformed="true"] nav,
@@ -27,13 +28,7 @@ html[data-adaptai-transformed="true"] aside {
   border-color: #27272a !important;
 }
 
-/* Enforce consistent enlarged typography scaling across ALL themes (Light & Dark) */
-p, h1, h2, h3, h4, h5, h6, li {
-  font-size: calc(1.15em * var(--adapt-font-scale, 1.25)) !important;
-  line-height: 1.65 !important;
-}
-
-/* Dark mode text color override */
+/* Ensure clean white text legibility on headings, paragraphs, spans, and links */
 html[data-adaptai-transformed="true"] p,
 html[data-adaptai-transformed="true"] h1,
 html[data-adaptai-transformed="true"] h2,
@@ -41,17 +36,18 @@ html[data-adaptai-transformed="true"] h3,
 html[data-adaptai-transformed="true"] h4,
 html[data-adaptai-transformed="true"] h5,
 html[data-adaptai-transformed="true"] h6,
-html[data-adaptai-transformed="true"] li {
+html[data-adaptai-transformed="true"] span,
+html[data-adaptai-transformed="true"] li,
+html[data-adaptai-transformed="true"] label,
+html[data-adaptai-transformed="true"] a {
   color: #f4f4f5 !important;
 }
 
-/* Highlight links with high-contrast accessibility accent in dark theme */
+/* Highlight links with high-contrast accessibility accent */
 html[data-adaptai-transformed="true"] a {
   color: #ffff00 !important;
   text-decoration: underline !important;
 }
-
-
 
 
 
@@ -114,37 +110,29 @@ html[data-adaptai-transformed="true"] a {
 
 }
 
-/* Floating AI Assistant Overlay Panel (Fixed Full-Height Right-Side Chatbot Panel) */
+/* Floating AI Assistant Overlay Panel */
 #adaptai-assistant-overlay {
-  position: fixed !important;
-  top: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 400px !important;
-  max-width: 100vw !important;
-  height: 100vh !important;
-  background: #09090b !important;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-left: 1px solid #27272a !important;
-  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  z-index: 9999999 !important;
+  position: fixed;
+  bottom: 84px;
+  right: 24px;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  height: 500px;
+  max-height: calc(100vh - 120px);
+  background: rgba(18, 18, 22, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  z-index: 999999;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   color: #fafafa !important;
-  overflow: hidden !important;
-  filter: none !important;
-  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  overflow: hidden;
+  animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(100%); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-
-
 
 @keyframes slideInUp {
   from { opacity: 0; transform: translateY(20px); }

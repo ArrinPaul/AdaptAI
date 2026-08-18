@@ -572,9 +572,9 @@ function toggleAiAssistant() {
   const panel = document.getElementById('adaptai-assistant-overlay');
   if (!panel) return;
 
-  const isHidden = panel.style.display === 'none';
+  const isHidden = panel.style.display === 'none' || window.getComputedStyle(panel).display === 'none';
   if (isHidden) {
-    panel.style.display = 'flex';
+    panel.style.setProperty('display', 'flex', 'important');
     panel.classList.add('active');
 
     // Check for user-selected text on page
@@ -597,10 +597,11 @@ function toggleAiAssistant() {
       if (inputEl) inputEl.focus();
     }, 100);
   } else {
-    panel.style.display = 'none';
+    panel.style.setProperty('display', 'none', 'important');
     panel.classList.remove('active');
   }
 }
+
 
 /**
  * Dispatches Assistant Prompt to Background Service Worker

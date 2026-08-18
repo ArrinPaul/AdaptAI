@@ -1,10 +1,6 @@
 // background.js - Track B Intelligence Engine & Service Worker
 
-try {
-  importScripts('env.js');
-} catch (e) {
-  console.warn("[AdaptAI Service Worker] env.js not found or optional, using default ENV fallback.");
-}
+importScripts('env.js');
 
 self.ENV = self.ENV || {
   GEMINI_API_KEY: "YOUR_GEMINI_API_KEY",
@@ -14,6 +10,7 @@ self.ENV = self.ENV || {
 // -------------------------------------------------------------
 // SUB-TASK B1: SERVICE WORKER LIFECYCLE & EVENT WIRING
 // -------------------------------------------------------------
+
 
 
 // 1. Open Onboarding Setup Tab on Installation

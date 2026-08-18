@@ -38,7 +38,7 @@ try {
     console.log('✅ Test 2 Passed: GEMINI_API_KEY environment variable detected.');
   } else {
     console.log('⚠️ Test 2 Warning: GEMINI_API_KEY environment variable is not set yet.');
-    console.log('   (Set process.env.GEMINI_API_KEY or provide in .env before running Module 2 AI backend)');
+    console.log('   (Set process.env.GEMINI_API_KEY or provide in module2-ai/.env before Phase 3 backend execution)');
   }
 } catch (err) {
   console.error('❌ Test 2 Failed:', err.message);

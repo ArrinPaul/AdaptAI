@@ -3,8 +3,11 @@
 // Dynamically import gitignored env.js configuration file
 import './env.js';
 
-// Environment Variable Fallback Guard
-self.ENV = self.ENV || {};
+// Environment Variable Configuration Placeholder
+self.ENV = self.ENV || {
+  GEMINI_API_KEY: "YOUR_GEMINI_API_KEY",
+  GROQ_API_KEY: "YOUR_GROQ_API_KEY"
+};
 
 // -------------------------------------------------------------
 // SUB-TASK B1: SERVICE WORKER LIFECYCLE & EVENT WIRING

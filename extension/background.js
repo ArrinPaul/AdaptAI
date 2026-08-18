@@ -283,38 +283,32 @@ function buildSystemPrompt(userProfile, scrapedPageText) {
   const visual = userProfile?.visual || {};
   const cognitive = userProfile?.cognitive || {};
 
-  const systemInstruction = `You are AdaptAI's Dynamic DOM Architecture & Web Restructuring Intelligence Engine.
-You receive structured HTML metadata and DOM content scraped from a user's active webpage alongside their personalized Accessibility Profile.
+  const systemInstruction = `You are AdaptAI, an intelligent real-time web accessibility adaptation engine.
+Analyze the user's accessibility profile and the provided webpage text content.
 
-YOUR CORE MULTI-STEP TASK:
-STEP 1: DOM & CODE ANALYSIS
-- Analyze the website's DOM layout architecture, tag hierarchy (headings vs body paragraphs), density, and structural category (e.g. News site like BBC/Wikipedia vs Technical Docs vs E-commerce vs Blog).
+User Persona: ${userProfile?.personaName || 'Accessibility User'}
+Preferences:
+- High Contrast Theme Required: ${visual.highContrast ? 'YES' : 'NO'}
+- Font Scale Required: ${visual.fontScale || 1.0}x
+- Dyslexia-Friendly Font Required: ${cognitive.dyslexicFont ? 'YES' : 'NO'}
+- AI Text Simplification Required: ${cognitive.simplifyText ? 'YES' : 'NO'}
 
-STEP 2: ADAPTIVE RESTRUCTURING & TRANSFORMATIONS
-- Generate custom, site-specific paragraph restructurings and bullet-point summaries tailored to the page's exact layout structure and reading complexity.
-- Default to Dark Zinc High Contrast styling across all sites unless explicitly instructed otherwise.
-
-USER ACCESSIBILITY PROFILE REQUIREMENTS:
-- Target High Contrast Theme: FORCE Dark Mode ("--adapt-bg-color": "#09090b", "--adapt-text-color": "#f4f4f5", "--adapt-link-color": "#ffff00").
-- Font Scale Requested: ${visual.fontScale ? "YES (" + visual.fontScale + "x)" : "NO"}.
-- Text Simplification Requested: ${cognitive.simplifyText ? "YES" : "NO"}.
-- Dyslexia Assist Requested: ${cognitive.dyslexicFont ? "YES" : "NO"}.
-
-OUTPUT REQUIREMENTS:
-1. CSS Updates:
-   - Always set "--adapt-bg-color": "#09090b" and "--adapt-text-color": "#f4f4f5".
-   - If Font Scale is requested: set "--adapt-font-scale": "${visual.fontScale || 1.5}".
+CRITICAL INSTRUCTIONS:
+1. CSS Variable Overrides:
+   - If High Contrast is YES: set "--adapt-bg-color": "#09090b", "--adapt-text-color": "#f4f4f5", "--adapt-font-scale": "${visual.fontScale || 1.5}".
+   - Else: set "--adapt-font-scale": "${visual.fontScale || 1.0}".
 2. Simplified Text:
-   - Provide clean, dynamically restructured paragraph summaries adapted specifically to this site's structural content.
+   - If Text Simplification is YES: return an array of simplified, clear bullet-point string summaries corresponding to the input webpage paragraphs.
 3. Voice Intent:
    - Determine if navigation intent (e.g. "scroll_down") is requested or set to null.
 
-You MUST respond strictly using the required JSON schema without markdown wrappers.`;
+You MUST respond strictly using the required JSON schema without markdown formatting.`;
 
-  const userContent = `Scraped Webpage Architectural Metadata:\n${scrapedPageText}`;
+  const userContent = `Webpage Content Scraped From DOM:\n${scrapedPageText}`;
 
   return { systemInstruction, userContent };
 }
+
 
 
 

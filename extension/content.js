@@ -1,43 +1,107 @@
-// content.js - Person A's Domain (DOM & UI)
+// content.js - Track A Implementation Skeleton
 
-// MOCK DATA FOR PARALLEL DEVELOPMENT
-// Person A: Use this to test your CSS injection and Text Swapping without waiting for Gemini
+// -------------------------------------------------------------
+// MOCK RESPONSE FOR TRACK A PARALLEL TESTING
+// -------------------------------------------------------------
 const mockGeminiResponse = {
   cssUpdates: {
     "--adapt-font-scale": "1.5",
     "--adapt-bg-color": "#121212",
-    "--adapt-text-color": "#e0e0e0"
+    "--adapt-text-color": "#FFFF00",
+    "--adapt-line-height": "1.6"
   },
   simplifiedText: [
-    "This is fake simplified text for paragraph 1.",
-    "This is fake simplified text for paragraph 2."
-  ]
+    "Simplified Summary 1: This is a placeholder for paragraph simplification.",
+    "Simplified Summary 2: AI simplifies complex web content for easy reading."
+  ],
+  voiceIntent: null
 };
 
-// 1. Listen for instructions from the background script
+// -------------------------------------------------------------
+// SUB-TASK A2: DOM SCRAPER ENGINE
+// -------------------------------------------------------------
+function scrapePageDOM() {
+  // TODO: Extract text from h1, h2, h3 and p elements
+  const headingsAndParagraphs = Array.from(document.querySelectorAll('h1, h2, h3, p'));
+  const scrapedText = headingsAndParagraphs
+    .map(el => el.innerText.trim())
+    .filter(text => text.length > 0)
+    .join('\n')
+    .slice(0, 2000); // cap to keep payload fast
+
+  return scrapedText || "Fallback: Sample scraped text from DOM.";
+}
+
+// -------------------------------------------------------------
+// SUB-TASK A3: ACCESSIBILITY TOOLBAR & SPEECH SYNTHESIS
+// -------------------------------------------------------------
+function injectFloatingToolbar() {
+  if (document.getElementById('adaptai-toolbar')) return;
+
+  const toolbar = document.createElement('div');
+  toolbar.id = 'adaptai-toolbar';
+  toolbar.className = 'adaptai-floating-panel';
+  toolbar.innerHTML = `
+    <button id="adaptai-read-aloud" title="Read Aloud">🔊</button>
+    <button id="adaptai-voice-cmd" title="Voice Command">🎤</button>
+  `;
+  document.body.appendChild(toolbar);
+
+  document.getElementById('adaptai-read-aloud').addEventListener('click', handleReadAloud);
+  document.getElementById('adaptai-voice-cmd').addEventListener('click', handleVoiceCommand);
+}
+
+function handleReadAloud() {
+  // SpeechSynthesis Web API integration
+  const firstSimplifiedPara = mockGeminiResponse.simplifiedText.join(' ');
+  const utterance = new SpeechSynthesisUtterance(firstSimplifiedPara);
+  window.speechSynthesis.speak(utterance);
+}
+
+function handleVoiceCommand() {
+  console.log("Voice Command Listener Triggered");
+}
+
+// -------------------------------------------------------------
+// SUB-TASK A4: DOM TRANSFORMATION ENGINE
+// -------------------------------------------------------------
+function applyCssTransformations(cssUpdates) {
+  if (!cssUpdates) return;
+  const root = document.documentElement;
+  Object.entries(cssUpdates).forEach(([varName, val]) => {
+    root.style.setProperty(varName, val);
+  });
+}
+
+function applyTextSimplification(simplifiedTextArray) {
+  if (!Array.isArray(simplifiedTextArray) || simplifiedTextArray.length === 0) return;
+  const paragraphs = document.querySelectorAll('p');
+  paragraphs.forEach((p, idx) => {
+    if (simplifiedTextArray[idx]) {
+      p.innerText = simplifiedTextArray[idx];
+    }
+  });
+}
+
+// -------------------------------------------------------------
+// MESSAGE LISTENER & RUNTIME HANDLERS
+// -------------------------------------------------------------
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "scrape_page") {
-    // TODO (Person A): Write logic to grab text from h1, h2, p tags.
-    // Limit to the first ~1500 chars to save tokens.
-    const fakeScrapedText = "Fake text scraped from the DOM.";
-    
-    // Send it back to background.js
+    const pageText = scrapePageDOM();
     chrome.runtime.sendMessage({ 
       action: "process_with_ai", 
-      pageText: fakeScrapedText 
+      pageText: pageText 
     });
   }
-  
+
   if (request.action === "apply_transformations") {
-    // This is where you receive the REAL data from Gemini (or your mock data for now)
-    const data = request.data; // Change to `mockGeminiResponse` to test locally
-    
-    // TODO (Person A):
-    // 1. Loop through data.cssUpdates and apply them to document.documentElement.style
-    // 2. Loop through paragraphs and replace innerText with data.simplifiedText array
-    console.log("Applying transformations...", data);
+    const payload = request.data || mockGeminiResponse;
+    applyCssTransformations(payload.cssUpdates);
+    applyTextSimplification(payload.simplifiedText);
   }
 });
 
-// TODO (Person A): Inject the floating 🔊 and 🎤 buttons into the bottom corner of the webpage.
-// Wire the 🔊 button to use window.speechSynthesis
+// Auto-inject UI toolbar on load
+injectFloatingToolbar();
+

@@ -117,9 +117,15 @@ CRITICAL INSTRUCTIONS:
 
 You MUST respond strictly using the required JSON schema. Do NOT include markdown formatting.`;
 
+  const userContent = `Webpage Content Scraped From DOM:\n${scrapedPageText}`;
+
+  return { systemInstruction, userContent };
+}
+
 // -------------------------------------------------------------
 // SUB-TASK B3: GEMINI API INTEGRATION & STRUCTURED OUTPUTS
 // -------------------------------------------------------------
+
 
 // Fallback JSON in case of API error, offline status, or missing key
 const mockGeminiFallback = {
@@ -242,4 +248,56 @@ async function handleAiProcessRequest(pageText, tabId, apiKey = null) {
 
   return transformationData;
 }
+
+
+// -------------------------------------------------------------
+// SUB-TASK B4: BACKGROUND WORKER AUTOMATED SUITE
+// -------------------------------------------------------------
+async function runTrackBTests() {
+  console.group("🧪 [AdaptAI Track B Validation Suite]");
+  let passed = 0;
+  let total = 0;
+
+  function assert(condition, testName) {
+    total++;
+    if (condition) {
+      console.log(`✅ PASS: ${testName}`);
+      passed++;
+    } else {
+      console.error(`❌ FAIL: ${testName}`);
+    }
+  }
+
+  // 1. Storage Retrieval Test
+  const profile = await getUserProfileFromStorage();
+  assert(profile !== null && typeof profile === 'object', "Storage retrieval returns valid profile object");
+  assert(profile.visual !== undefined, "Profile contains visual preferences block");
+
+  // 2. Prompt Engineering Test
+  const sampleScrapedText = "Sample academic text scraped from DOM.";
+  const { systemInstruction, userContent } = buildGeminiSystemPrompt(profile, sampleScrapedText);
+  assert(systemInstruction.includes("AdaptAI"), "System prompt includes core instruction persona");
+  assert(userContent.includes(sampleScrapedText), "User content prompt includes scraped page text");
+
+  // 3. Fallback Gemini API Execution Test
+  const fallbackResult = await callGeminiApi(systemInstruction, userContent, null);
+  assert(fallbackResult.cssUpdates !== undefined, "Fallback API call returns valid cssUpdates object");
+  assert(Array.isArray(fallbackResult.simplifiedText), "Fallback API call returns valid simplifiedText array");
+  assert(fallbackResult.cssUpdates["--adapt-font-scale"] !== undefined, "CSS updates contain required --adapt-font-scale key");
+
+  // 4. Processing Pipeline Orchestration Test
+  const pipelineResult = await handleAiProcessRequest(sampleScrapedText, null, null);
+  assert(pipelineResult !== null && pipelineResult.simplifiedText.length > 0, "Full pipeline processes scraped text and yields valid transformation payload");
+
+  console.log(`\n📊 Track B Test Results: ${passed}/${total} assertions passed.`);
+  console.groupEnd();
+  return passed === total;
+}
+
+// Export for module/global test runners
+if (typeof self !== 'undefined') {
+  self.runTrackBTests = runTrackBTests;
+}
+
+
 

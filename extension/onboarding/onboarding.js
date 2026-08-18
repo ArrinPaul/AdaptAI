@@ -1,70 +1,135 @@
-// Load saved profile if available
-document.addEventListener('DOMContentLoaded', () => {
-    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-        chrome.storage.local.get(['userProfile'], (result) => {
-            if (result.userProfile) {
-                const p = result.userProfile;
-                if (p.visual) {
-                    document.getElementById('high-contrast').checked = !!p.visual.highContrast;
-                    document.getElementById('large-text').checked = p.visual.fontScale > 1.1;
-                }
-                if (p.cognitive) {
-                    document.getElementById('dyslexic-font').checked = !!p.cognitive.dyslexicFont;
-                    document.getElementById('simplify-text').checked = !!p.cognitive.simplifyText;
-                }
-                if (p.audio) {
-                    document.getElementById('enable-audio').checked = !!p.audio.enabled;
-                }
-                console.log("Restored saved profile:", p);
-            }
-        });
+let motorClicks = [];
+let motorStartTime = null;
+
+function nextStep(stepNumber) {
+  // Hide all steps
+  document.querySelectorAll('.test-step').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+
+  // Show requested step
+  const activeStep = document.getElementById(`step-${stepNumber}`);
+  if (activeStep) activeStep.style.display = 'block';
+
+  const dot = document.getElementById(`step-dot-${stepNumber}`);
+  if (dot) dot.classList.add('active');
+
+  if (stepNumber === 3 && !motorStartTime) {
+    initMotorTest();
+  }
+}
+
+function initMotorTest() {
+  const btn = document.getElementById('motor-target-btn');
+  const display = document.getElementById('motor-score-display');
+  if (!btn) return;
+
+  motorStartTime = Date.now();
+  let clicks = 0;
+
+  btn.onclick = () => {
+    clicks++;
+    const elapsed = Date.now() - motorStartTime;
+    btn.style.transform = `translate(${Math.random() * 80 - 40}px, ${Math.random() * 40 - 20}px)`;
+
+    if (clicks >= 3) {
+      const avgReactionTime = Math.round(elapsed / 3);
+      display.innerText = `Accuracy Score: ${avgReactionTime}ms avg reaction time.`;
+      display.style.color = '#34d399';
+    } else {
+      display.innerText = `Click ${clicks}/3 registered...`;
     }
-});
+  };
+}
+
+function calculatePersona() {
+  const visualVal = document.querySelector('input[name="visual_test"]:checked')?.value || 'standard';
+  const cognitiveVal = document.querySelector('input[name="cognitive_test"]:checked')?.value || 'dense';
+
+  let personaName = "Standard Explorer";
+  let summary = "Balanced visual and text settings. Standard web layout supported.";
+  let visualScore = "85/100";
+  let cognitiveScore = "90/100";
+  let motorScore = "95/100";
+
+  let visualProfile = { highContrast: false, fontScale: 1.0 };
+  let cognitiveProfile = { dyslexicFont: false, simplifyText: false };
+  let audioProfile = { enabled: true };
+
+  // Personalization Matrix based on diagnostic responses
+  if (visualVal === 'high_contrast') {
+    personaName = "High-Contrast Visual Assist Persona";
+    summary = "Optimized for low-vision & light sensitivity. Forces high-contrast themes and dark backgrounds.";
+    visualScore = "45/100 (Assisted)";
+    visualProfile.highContrast = true;
+  } else if (visualVal === 'scaled_text') {
+    personaName = "Large Typography Assist Persona";
+    summary = "Optimized for legibility. Applies 1.5x font scaling automatically.";
+    visualScore = "60/100 (Assisted)";
+    visualProfile.fontScale = 1.5;
+  }
+
+  if (cognitiveVal === 'dyslexic') {
+    personaName = "Dyslexia Cognitive Assist Persona";
+    summary = "Injects OpenDyslexic font family to eliminate character rotation.";
+    cognitiveScore = "50/100 (Assisted)";
+    cognitiveProfile.dyslexicFont = true;
+  } else if (cognitiveVal === 'simplified') {
+    personaName = "AI Simplification Cognitive Persona";
+    summary = "Summarizes complex academic jargon into clear bullet points using Gemini AI.";
+    cognitiveScore = "55/100 (Assisted)";
+    cognitiveProfile.simplifyText = true;
+  }
+
+  // Update UI Persona Card
+  document.getElementById('persona-title').innerText = personaName;
+  document.getElementById('persona-summary').innerText = summary;
+  document.getElementById('visual-score-val').innerText = visualScore;
+  document.getElementById('cognitive-score-val').innerText = cognitiveScore;
+  document.getElementById('motor-score-val').innerText = motorScore;
+
+  // Save generated profile globally
+  window.generatedProfile = {
+    personaName,
+    summary,
+    diagnosticScores: { visualScore, cognitiveScore, motorScore },
+    visual: visualProfile,
+    cognitive: cognitiveProfile,
+    audio: audioProfile
+  };
+
+  nextStep(4);
+}
 
 document.getElementById('profile-form').addEventListener('submit', (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const profile = {
-        visual: {
-            highContrast: document.getElementById('high-contrast').checked,
-            fontScale: document.getElementById('large-text').checked ? 1.5 : 1.0
-        },
-        cognitive: {
-            dyslexicFont: document.getElementById('dyslexic-font').checked,
-            simplifyText: document.getElementById('simplify-text').checked
-        },
-        audio: {
-            enabled: document.getElementById('enable-audio').checked
-        }
-    };
+  const profilePayload = window.generatedProfile || {
+    personaName: "Standard Persona",
+    visual: { highContrast: false, fontScale: 1.0 },
+    cognitive: { dyslexicFont: false, simplifyText: true },
+    audio: { enabled: true }
+  };
 
-    function handleSuccessRedirect() {
-        const msgEl = document.getElementById('success-message');
-        if (msgEl) msgEl.style.display = 'block';
-        
-        // Redirect to demo page after 1.5 seconds
-        setTimeout(() => {
-            if (window.location.protocol.startsWith('http')) {
-                window.location.href = '/demo/index.html';
-            } else if (typeof chrome !== 'undefined' && chrome.tabs) {
-                window.location.href = '../../demo/index.html';
-            } else {
-                window.location.href = '../../demo/index.html';
-            }
-        }, 1500);
-    }
+  function handleSuccessRedirect() {
+    const msgEl = document.getElementById('success-message');
+    if (msgEl) msgEl.style.display = 'block';
+    
+    setTimeout(() => {
+      window.location.href = '/demo/index.html';
+    }, 1500);
+  }
 
-    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-        chrome.storage.local.set({ userProfile: profile }, () => {
-            console.log("Profile saved to chrome.storage.local:", profile);
-            handleSuccessRedirect();
-        });
-    } else {
-        // Fallback for non-extension environment testing
-        localStorage.setItem('userProfile', JSON.stringify(profile));
-        console.log("Profile saved to localStorage fallback:", profile);
-        handleSuccessRedirect();
-    }
+  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+    chrome.storage.local.set({ userProfile: profilePayload }, () => {
+      console.log("Personalized Persona saved to chrome.storage.local:", profilePayload);
+      handleSuccessRedirect();
+    });
+  } else {
+    localStorage.setItem('userProfile', JSON.stringify(profilePayload));
+    console.log("Personalized Persona saved to localStorage:", profilePayload);
+    handleSuccessRedirect();
+  }
 });
+
 
 

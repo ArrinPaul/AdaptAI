@@ -7,7 +7,7 @@ const mockGeminiResponse = {
   cssUpdates: {
     "--adapt-font-scale": "1.5",
     "--adapt-bg-color": "#121212",
-    "--adapt-text-color": "#FFFF00",
+    "--adapt-text-color": "#f4f4f5",
     "--adapt-line-height": "1.6"
   },
   simplifiedText: [
@@ -374,7 +374,7 @@ function ensureDyslexicFont(enable) {
 }
 
 /**
- * Applies CSS variables to document root
+ * Applies CSS variables to document root and synchronizes theme attribute
  */
 function applyCssTransformations(cssUpdates) {
   if (!cssUpdates) return;
@@ -384,6 +384,17 @@ function applyCssTransformations(cssUpdates) {
   Object.entries(cssUpdates).forEach(([varName, val]) => {
     root.style.setProperty(varName, val);
   });
+
+  // Synchronize data-adaptai-theme attribute based on background color or current state
+  const bg = cssUpdates['--adapt-bg-color'];
+  if (bg) {
+    const isLight = bg === '#ffffff' || bg.toLowerCase() === '#fff' || bg.toLowerCase() === 'white' || bg === '#f4f4f5';
+    const theme = isLight ? 'light' : 'dark';
+    root.setAttribute('data-adaptai-theme', theme);
+    extensionThemeState = theme;
+  } else if (!root.hasAttribute('data-adaptai-theme')) {
+    root.setAttribute('data-adaptai-theme', extensionThemeState || 'dark');
+  }
 }
 
 
@@ -410,10 +421,12 @@ function restoreOriginalPageDOM() {
 
   // 1. Remove CSS variables and attribute overrides
   root.removeAttribute('data-adaptai-transformed');
+  root.removeAttribute('data-adaptai-theme');
   root.style.removeProperty('--adapt-bg-color');
   root.style.removeProperty('--adapt-text-color');
   root.style.removeProperty('--adapt-font-scale');
   root.style.removeProperty('--adapt-font-family');
+  root.style.removeProperty('--adapt-line-height');
 
   // 2. Remove Dyslexic font
   ensureDyslexicFont(false);
@@ -423,12 +436,13 @@ function restoreOriginalPageDOM() {
 
   // 4. Restore original paragraph texts
   if (originalParagraphTexts.length > 0) {
-    const paragraphs = Array.from(document.querySelectorAll('p')).filter(p => !p.closest('#adaptai-toolbar'));
+    const paragraphs = Array.from(document.querySelectorAll('p')).filter(p => !p.closest('#adaptai-toolbar') && !p.closest('#adaptai-widget-host') && !p.closest('#adaptai-assistant-overlay'));
     paragraphs.forEach((p, idx) => {
       if (originalParagraphTexts[idx] !== undefined) {
         p.innerText = originalParagraphTexts[idx];
       }
     });
+    originalParagraphTexts = [];
   }
 
   isPageAdaptedState = false;
@@ -441,16 +455,16 @@ function restoreOriginalPageDOM() {
 function applyTextSimplification(simplifiedTextArray) {
   if (!Array.isArray(simplifiedTextArray) || simplifiedTextArray.length === 0) return;
   
+  const paragraphs = Array.from(document.querySelectorAll('p')).filter(p => !p.closest('#adaptai-toolbar') && !p.closest('#adaptai-widget-host') && !p.closest('#adaptai-assistant-overlay'));
+
   // Cache original paragraph text first time
   if (originalParagraphTexts.length === 0) {
-    const paragraphs = Array.from(document.querySelectorAll('p')).filter(p => !p.closest('#adaptai-toolbar'));
     originalParagraphTexts = paragraphs.map(p => p.innerText);
   }
 
   // Store active simplified text for Web Speech TTS engine
   activeSimplifiedText = simplifiedTextArray;
 
-  const paragraphs = Array.from(document.querySelectorAll('p')).filter(p => !p.closest('#adaptai-toolbar'));
   paragraphs.forEach((p, idx) => {
     if (simplifiedTextArray[idx]) {
       p.innerText = simplifiedTextArray[idx];

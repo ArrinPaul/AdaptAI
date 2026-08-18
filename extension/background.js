@@ -319,17 +319,17 @@ You MUST respond strictly using the required JSON schema without markdown format
 // Fallback JSON in case of API error, offline status, or missing key
 const mockGeminiFallback = {
   cssUpdates: {
-    "--adapt-font-scale": "1.5",
-    "--adapt-bg-color": "#121212",
-    "--adapt-text-color": "#FFFF00",
+    "--adapt-font-scale": "1.4",
+    "--adapt-bg-color": "#09090b",
+    "--adapt-text-color": "#f4f4f5",
     "--adapt-line-height": "1.6"
   },
   simplifiedText: [
     "Simplified Summary 1: High performance cloud architecture boosted operational margins.",
     "Simplified Summary 2: Real-time client-side DOM adaptation models transform web layouts safely."
   ],
-  dyslexicFont: true,
-  motorAssist: true,
+  dyslexicFont: false,
+  motorAssist: false,
   voiceIntent: null
 };
 
@@ -435,7 +435,7 @@ async function callGroqAPI(systemInstruction, userContent, apiKey) {
 }`;
 
   const requestBody = {
-    model: "groq/compound-mini",
+    model: "llama-3.3-70b-versatile",
     messages: [
       { role: "system", content: groqSystemInstruction },
       { role: "user", content: userContent }
@@ -499,20 +499,28 @@ async function handleAiProcessRequest(pageText, tabId) {
   // 4. Override transformation output with exact user profile persona settings
   const visual = profile.visual || {};
   const cognitive = profile.cognitive || {};
+  const motor = profile.motor || {};
 
   if (!transformationData.cssUpdates) transformationData.cssUpdates = {};
 
   if (visual.highContrast) {
-    transformationData.cssUpdates["--adapt-bg-color"] = "#121212";
-    transformationData.cssUpdates["--adapt-text-color"] = "#FFFFFF";
+    transformationData.cssUpdates["--adapt-bg-color"] = "#09090b";
+    transformationData.cssUpdates["--adapt-text-color"] = "#f4f4f5";
+  } else {
+    transformationData.cssUpdates["--adapt-bg-color"] = transformationData.cssUpdates["--adapt-bg-color"] || "#09090b";
+    transformationData.cssUpdates["--adapt-text-color"] = transformationData.cssUpdates["--adapt-text-color"] || "#f4f4f5";
   }
 
   if (visual.fontScale && visual.fontScale > 1.0) {
     transformationData.cssUpdates["--adapt-font-scale"] = String(visual.fontScale);
   }
 
+  if (visual.lineHeight) {
+    transformationData.cssUpdates["--adapt-line-height"] = String(visual.lineHeight);
+  }
+
   transformationData.dyslexicFont = Boolean(cognitive.dyslexicFont);
-  transformationData.motorAssist = Boolean(profile.audio?.enabled);
+  transformationData.motorAssist = Boolean(motor.targetExpansion);
 
   console.log("[AdaptAI Pipeline] Final Profile-Enforced Payload:", transformationData);
 
@@ -560,7 +568,7 @@ async function runTrackBTests() {
 
   // 2. Prompt Engineering Test
   const sampleScrapedText = "Sample academic text scraped from DOM.";
-  const { systemInstruction, userContent } = buildGeminiSystemPrompt(profile, sampleScrapedText);
+  const { systemInstruction, userContent } = buildSystemPrompt(profile, sampleScrapedText);
   assert(systemInstruction.includes("AdaptAI"), "System prompt includes core instruction persona");
   assert(userContent.includes(sampleScrapedText), "User content prompt includes scraped page text");
 

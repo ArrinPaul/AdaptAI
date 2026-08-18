@@ -7,32 +7,177 @@
   --adapt-font-family: inherit;
 }
 
-/* /* Clean high-contrast container adaptation without breaking inline element backgrounds */
-html[data-adaptai-transformed="true"] body, 
-html[data-adaptai-transformed="true"] main,
-html[data-adaptai-transformed="true"] article,
-html[data-adaptai-transformed="true"] section {
+/* Clean high-contrast container adaptation for Dark Mode (Default) */
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"],
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]),
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] body, 
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) body,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] main,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) main,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] article,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) article,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] section,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) section,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] header,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) header,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] footer,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) footer,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] nav,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) nav,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] aside,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) aside {
   background-color: var(--adapt-bg-color, #09090b) !important;
   color: var(--adapt-text-color, #f4f4f5) !important;
   font-family: var(--adapt-font-family, inherit) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
   transition: background-color 0.3s ease, color 0.3s ease !important;
 }
 
-html[data-adaptai-transformed="true"] p, 
-html[data-adaptai-transformed="true"] h1, 
-html[data-adaptai-transformed="true"] h2, 
-html[data-adaptai-transformed="true"] h3, 
-html[data-adaptai-transformed="true"] h4, 
-html[data-adaptai-transformed="true"] h5, 
-html[data-adaptai-transformed="true"] h6, 
-html[data-adaptai-transformed="true"] span:not(.brand-dot), 
-html[data-adaptai-transformed="true"] li, 
-html[data-adaptai-transformed="true"] label,
-html[data-adaptai-transformed="true"] a:not(.btn-hero-primary):not(.btn-nav-cta) {
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] p, 
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) p,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] h1, 
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h1,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] h2, 
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h2,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] h3, 
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h3,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] h4, 
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h4,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] h5, 
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h5,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] h6, 
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h6,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] span:not(.brand-dot):not(#adaptai-widget-host *):not(#adaptai-assistant-overlay *), 
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) span:not(.brand-dot):not(#adaptai-widget-host *):not(#adaptai-assistant-overlay *),
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] li, 
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) li,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] dt,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) dt,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] dd,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) dd,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] label,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) label,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] td,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) td,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] th,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) th,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] b,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) b,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] strong,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) strong,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] i,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) i,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] em,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) em {
   background-color: transparent !important;
   color: var(--adapt-text-color, #f4f4f5) !important;
   font-family: var(--adapt-font-family, inherit) !important;
+  line-height: var(--adapt-line-height, 1.6) !important;
   transition: color 0.3s ease !important;
+}
+
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] a:not(.btn-hero-primary):not(.btn-nav-cta):not(.widget-btn):not(#adaptai-assistant-overlay *),
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) a:not(.btn-hero-primary):not(.btn-nav-cta):not(.widget-btn):not(#adaptai-assistant-overlay *) {
+  background-color: transparent !important;
+  color: #60a5fa !important;
+  text-decoration: underline !important;
+  font-family: var(--adapt-font-family, inherit) !important;
+  line-height: var(--adapt-line-height, 1.6) !important;
+  transition: color 0.2s ease !important;
+}
+
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] a:not(.btn-hero-primary):not(.btn-nav-cta):not(.widget-btn):not(#adaptai-assistant-overlay *):hover,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) a:not(.btn-hero-primary):not(.btn-nav-cta):not(.widget-btn):not(#adaptai-assistant-overlay *):hover {
+  color: #93c5fd !important;
+}
+
+/* Master Light Theme Transformation Engine */
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"],
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] body,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] main,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] article,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] section,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] header,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] footer,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] nav,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] aside,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .sandbox-card,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .sandbox-preview {
+  background-color: #ffffff !important;
+  color: #09090b !important;
+  font-family: var(--adapt-font-family, inherit) !important;
+  border-color: #e4e4e7 !important;
+  transition: background-color 0.3s ease, color 0.3s ease !important;
+}
+
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] p,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] h1,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] h2,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] h3,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] h4,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] h5,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] h6,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] span:not(.brand-dot):not(#adaptai-widget-host *):not(#adaptai-assistant-overlay *),
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] li,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] dt,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] dd,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] label,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] td,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] th,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] b,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] strong,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] i,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] em {
+  background-color: transparent !important;
+  color: #09090b !important;
+  font-family: var(--adapt-font-family, inherit) !important;
+  line-height: var(--adapt-line-height, 1.6) !important;
+}
+
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .lead,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .nav-link,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .section-header p {
+  color: #52525b !important;
+}
+
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] a:not(.btn-hero-primary):not(.btn-nav-cta):not(.widget-btn):not(#adaptai-assistant-overlay *) {
+  background-color: transparent !important;
+  color: #1d4ed8 !important;
+  text-decoration: underline !important;
+  font-family: var(--adapt-font-family, inherit) !important;
+  line-height: var(--adapt-line-height, 1.6) !important;
+  transition: color 0.2s ease !important;
+}
+
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] a:not(.btn-hero-primary):not(.btn-nav-cta):not(.widget-btn):not(#adaptai-assistant-overlay *):hover {
+  color: #2563eb !important;
+}
+
+/* Dynamic Font Scaling Engine */
+html[data-adaptai-transformed="true"] p,
+html[data-adaptai-transformed="true"] li,
+html[data-adaptai-transformed="true"] dd,
+html[data-adaptai-transformed="true"] dt,
+html[data-adaptai-transformed="true"] blockquote {
+  font-size: calc(1rem * var(--adapt-font-scale, 1)) !important;
+}
+
+html[data-adaptai-transformed="true"] h1 {
+  font-size: calc(2rem * var(--adapt-font-scale, 1)) !important;
+}
+
+html[data-adaptai-transformed="true"] h2 {
+  font-size: calc(1.5rem * var(--adapt-font-scale, 1)) !important;
+}
+
+html[data-adaptai-transformed="true"] h3 {
+  font-size: calc(1.25rem * var(--adapt-font-scale, 1)) !important;
+}
+
+html[data-adaptai-transformed="true"] h4,
+html[data-adaptai-transformed="true"] h5,
+html[data-adaptai-transformed="true"] h6 {
+  font-size: calc(1.1rem * var(--adapt-font-scale, 1)) !important;
 }
 
 /* High contrast text rules for badges, buttons, pills, and UI cards */
@@ -68,13 +213,26 @@ html[data-adaptai-transformed="true"][data-adaptai-theme="light"] a.btn-nav-cta 
   font-weight: 700 !important;
 }
 
+html[data-adaptai-transformed="true"] .btn-hero-secondary {
+  background: transparent !important;
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
+}
+
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .btn-hero-secondary {
+  background: #ffffff !important;
+  border-color: #d4d4d8 !important;
+  color: #09090b !important;
+}
+
 html[data-adaptai-transformed="true"] .pill-announcement {
   background: #18181b !important;
   color: #e4e4e7 !important;
   border-color: #3f3f46 !important;
 }
 
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .pill-announcement {
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .pill-announcement,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .toggle-chip {
   background: #f4f4f5 !important;
   color: #09090b !important;
   border-color: #d4d4d8 !important;
@@ -106,112 +264,69 @@ html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .stat-label {
   color: #52525b !important;
 }
 
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] p,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] h1,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] h2,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] h3,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] h4,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] h5,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] h6,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] span:not(.brand-dot),
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] li,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] label,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] a:not(.btn-hero-primary):not(.btn-nav-cta) {
-  color: #09090b !important;
-}
-
-
-
-
-
-
-
 /* Motor target expansion for click accessibility */
-.adapt-motor-assist button, 
-.adapt-motor-assist a {
-  padding: 16px 28px !important;
-  margin: 8px !important;
-  font-size: 1.1em !important;
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.4) !important;
-}
-
-/* Floating Assistant Glassmorphic Toolbar Panel */
-#adaptai-toolbar,
-#adaptai-assistant-panel {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 40px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
-  z-index: 999999;
-}
-
-#adaptai-toolbar button,
-#adaptai-assistant-panel button {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  cursor: pointer;
-  padding: 8px 14px !important;
-  border-radius: 9999px !important;
-  display: flex !important;
+.adapt-motor-assist button:not(#adaptai-widget-host *):not(#adaptai-assistant-overlay *),
+.adapt-motor-assist input[type="button"],
+.adapt-motor-assist input[type="submit"],
+.adapt-motor-assist input[type="reset"],
+.adapt-motor-assist [role="button"]:not(#adaptai-widget-host *):not(#adaptai-assistant-overlay *),
+.adapt-motor-assist .btn:not(#adaptai-widget-host *):not(#adaptai-assistant-overlay *),
+.adapt-motor-assist nav a:not(#adaptai-widget-host *):not(#adaptai-assistant-overlay *) {
+  min-height: 44px !important;
+  min-width: 44px !important;
+  padding: 10px 18px !important;
+  margin: 4px !important;
+  font-size: 1.05em !important;
+  display: inline-flex !important;
   align-items: center !important;
-  gap: 6px !important;
-  width: auto !important;
-  height: auto !important;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  justify-content: center !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.6) !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
 }
 
-#adaptai-toolbar button:hover,
-#adaptai-assistant-panel button:hover {
-  background: rgba(255, 255, 255, 0.18) !important;
-  border-color: rgba(255, 255, 255, 0.35) !important;
-  transform: translateY(-2px) !important;
+/* Comfortable inline link target expansion for readable body paragraphs */
+.adapt-motor-assist p a:not(#adaptai-widget-host *):not(#adaptai-assistant-overlay *),
+.adapt-motor-assist li a:not(#adaptai-widget-host *):not(#adaptai-assistant-overlay *),
+.adapt-motor-assist td a:not(#adaptai-widget-host *):not(#adaptai-assistant-overlay *),
+.adapt-motor-assist dd a:not(#adaptai-widget-host *):not(#adaptai-assistant-overlay *) {
+  padding: 2px 6px !important;
+  margin: 0 1px !important;
+  border-radius: 4px !important;
+  background: rgba(59, 130, 246, 0.15) !important;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.4) !important;
+  display: inline !important;
 }
 
-
-}
-
-/* Floating AI Assistant Overlay Panel (Floating Pop-up Window) */
+/* Floating AI Assistant Overlay Panel (Consistent Right-Floating Window) */
 #adaptai-assistant-overlay {
   position: fixed !important;
-  bottom: 84px !important;
+  top: 50% !important;
   right: 24px !important;
-  top: auto !important;
-  transform: none !important;
+  transform: translateY(-50%) !important;
   width: 380px !important;
   max-width: calc(100vw - 32px) !important;
-  height: 500px !important;
-  max-height: calc(100vh - 120px) !important;
-  background: rgba(18, 18, 22, 0.95) !important;
+  height: 540px !important;
+  max-height: calc(100vh - 48px) !important;
+  background: rgba(18, 18, 22, 0.96) !important;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
   border-radius: 16px !important;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
   display: flex !important;
   flex-direction: column !important;
-  z-index: 9999999 !important;
+  z-index: 2147483647 !important;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   color: #fafafa !important;
   overflow: hidden !important;
   filter: none !important;
-  animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-@keyframes slideInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes slideInRight {
+  from { opacity: 0; transform: translate(20px, -50%); }
+  to { opacity: 1; transform: translate(0, -50%); }
 }
 
 #adaptai-assistant-overlay .assistant-header {

@@ -53,7 +53,7 @@ function toggleHighContrast() {
     document.documentElement.style.removeProperty('--adapt-text-color');
   } else {
     document.documentElement.style.setProperty('--adapt-bg-color', '#121212');
-    document.documentElement.style.setProperty('--adapt-text-color', '#ffff00');
+    document.documentElement.style.setProperty('--adapt-text-color', '#ffffff');
   }
 }
 

@@ -332,13 +332,14 @@ async function callGroqAPI(systemInstruction, userContent, apiKey) {
 }`;
 
   const requestBody = {
-    model: "llama-3.1-8b-instant",
+    model: "groq/compound-mini",
     messages: [
       { role: "system", content: groqSystemInstruction },
       { role: "user", content: userContent }
     ],
     response_format: { type: "json_object" }
   };
+
 
   const response = await fetch(endpoint, {
     method: "POST",

@@ -283,38 +283,51 @@ function updateTtsBtnIcon(iconText) {
 function toggleExtensionTheme() {
   const root = document.documentElement;
 
-  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-    chrome.storage.local.get(['extensionTheme'], (res) => {
-      // Default theme is 'dark'
-      const currentTheme = res.extensionTheme || 'dark';
+  try {
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local && chrome.runtime && chrome.runtime.id) {
+      chrome.storage.local.get(['extensionTheme'], (res) => {
+        if (chrome.runtime.lastError) {
+          fallbackToggleTheme(root);
+          return;
+        }
+        const currentTheme = res ? (res.extensionTheme || 'dark') : 'dark';
 
-      if (currentTheme === 'dark') {
-        // Toggle to Light / Original Normal Mode
-        extensionThemeState = 'light';
-        root.removeAttribute('data-adaptai-transformed');
-        console.log("[AdaptAI Theme] Toggled to Light / Original Theme across website.");
-      } else {
-        // Toggle to High-Contrast Dark Mode (Flawless Dark Inversion)
-        extensionThemeState = 'dark';
-        root.setAttribute('data-adaptai-transformed', 'true');
-        console.log("[AdaptAI Theme] Toggled to High-Contrast Dark Theme across website.");
-      }
+        if (currentTheme === 'dark') {
+          extensionThemeState = 'light';
+          root.removeAttribute('data-adaptai-transformed');
+          console.log("[AdaptAI Theme] Toggled to Light / Original Theme across website.");
+        } else {
+          extensionThemeState = 'dark';
+          root.setAttribute('data-adaptai-transformed', 'true');
+          console.log("[AdaptAI Theme] Toggled to High-Contrast Dark Theme across website.");
+        }
 
-      chrome.storage.local.set({ extensionTheme: extensionThemeState });
+        try {
+          chrome.storage.local.set({ extensionTheme: extensionThemeState });
+        } catch (e) {}
 
-      // Re-mount widget with new theme styles
-      removeFloatingToolbar();
-      mountShadowWidget();
-    });
-  } else {
-    // Standalone fallback toggle (Defaults to Dark Mode)
-    if (root.getAttribute('data-adaptai-transformed') === 'true') {
-      root.removeAttribute('data-adaptai-transformed');
+        removeFloatingToolbar();
+        mountShadowWidget();
+      });
     } else {
-      root.setAttribute('data-adaptai-transformed', 'true');
+      fallbackToggleTheme(root);
     }
+  } catch (err) {
+    console.warn("[AdaptAI Theme] Extension context invalidated, using fallback DOM theme toggle.");
+    fallbackToggleTheme(root);
   }
 }
+
+function fallbackToggleTheme(root) {
+  if (root.getAttribute('data-adaptai-transformed') === 'true') {
+    root.removeAttribute('data-adaptai-transformed');
+    extensionThemeState = 'light';
+  } else {
+    root.setAttribute('data-adaptai-transformed', 'true');
+    extensionThemeState = 'dark';
+  }
+}
+
 
 
 

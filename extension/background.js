@@ -369,7 +369,8 @@ async function handleAiProcessRequest(pageText, tabId) {
   const profile = await getUserProfileFromStorage();
 
   // 2. Engineer Gemini System Prompt
-  const { systemInstruction, userContent } = buildGeminiSystemPrompt(profile, pageText);
+  const { systemInstruction, userContent } = buildSystemPrompt(profile, pageText);
+
 
   // Get keys from env.js
   const geminiKey = self.ENV?.GEMINI_API_KEY;

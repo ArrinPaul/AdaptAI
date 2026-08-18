@@ -7,8 +7,17 @@
   --adapt-font-family: inherit;
 }
 
-/* Force document elements to obey dynamic CSS variable overrides when actively applied */
+/* Clean high-contrast container adaptation without breaking inline element backgrounds */
 html[data-adaptai-transformed="true"] body, 
+html[data-adaptai-transformed="true"] main,
+html[data-adaptai-transformed="true"] article,
+html[data-adaptai-transformed="true"] section {
+  background-color: var(--adapt-bg-color) !important;
+  color: var(--adapt-text-color) !important;
+  font-family: var(--adapt-font-family) !important;
+  transition: background-color 0.3s ease, color 0.3s ease !important;
+}
+
 html[data-adaptai-transformed="true"] p, 
 html[data-adaptai-transformed="true"] h1, 
 html[data-adaptai-transformed="true"] h2, 
@@ -17,23 +26,15 @@ html[data-adaptai-transformed="true"] h4,
 html[data-adaptai-transformed="true"] h5, 
 html[data-adaptai-transformed="true"] h6, 
 html[data-adaptai-transformed="true"] span, 
-html[data-adaptai-transformed="true"] div, 
-html[data-adaptai-transformed="true"] section,
-html[data-adaptai-transformed="true"] article,
-html[data-adaptai-transformed="true"] main,
-html[data-adaptai-transformed="true"] header,
-html[data-adaptai-transformed="true"] footer,
-html[data-adaptai-transformed="true"] aside,
-html[data-adaptai-transformed="true"] nav,
 html[data-adaptai-transformed="true"] li, 
-html[data-adaptai-transformed="true"] button,
 html[data-adaptai-transformed="true"] label,
 html[data-adaptai-transformed="true"] a {
-  background-color: var(--adapt-bg-color) !important;
+  background-color: transparent !important;
   color: var(--adapt-text-color) !important;
   font-family: var(--adapt-font-family) !important;
-  transition: background-color 0.3s ease, color 0.3s ease !important;
+  transition: color 0.3s ease !important;
 }
+
 
 
 

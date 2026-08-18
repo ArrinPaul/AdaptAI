@@ -14,11 +14,10 @@ html[data-adaptai-transformed="true"] body {
   color: #f4f4f5 !important;
 }
 
-/* Transform layout containers, headers, articles, and cards to dark zinc */
+/* Transform layout containers, headers, articles, and cards to dark zinc when transformed */
 html[data-adaptai-transformed="true"] main,
 html[data-adaptai-transformed="true"] article,
 html[data-adaptai-transformed="true"] section,
-html[data-adaptai-transformed="true"] div,
 html[data-adaptai-transformed="true"] header,
 html[data-adaptai-transformed="true"] footer,
 html[data-adaptai-transformed="true"] nav,
@@ -28,7 +27,7 @@ html[data-adaptai-transformed="true"] aside {
   border-color: #27272a !important;
 }
 
-/* Ensure clean white text legibility & enlarged typography scaling on headings, paragraphs, spans, and links */
+/* Scope typography scaling & contrast legibility to content text elements */
 html[data-adaptai-transformed="true"] p,
 html[data-adaptai-transformed="true"] h1,
 html[data-adaptai-transformed="true"] h2,
@@ -36,21 +35,18 @@ html[data-adaptai-transformed="true"] h3,
 html[data-adaptai-transformed="true"] h4,
 html[data-adaptai-transformed="true"] h5,
 html[data-adaptai-transformed="true"] h6,
-html[data-adaptai-transformed="true"] span,
-html[data-adaptai-transformed="true"] li,
-html[data-adaptai-transformed="true"] label,
-html[data-adaptai-transformed="true"] a {
+html[data-adaptai-transformed="true"] li {
   color: #f4f4f5 !important;
-  font-size: calc(1.15em * var(--adapt-font-scale, 1.35)) !important;
-  line-height: 1.7 !important;
+  font-size: calc(1.1em * var(--adapt-font-scale, 1.25)) !important;
+  line-height: 1.6 !important;
 }
-
 
 /* Highlight links with high-contrast accessibility accent */
 html[data-adaptai-transformed="true"] a {
   color: #ffff00 !important;
   text-decoration: underline !important;
 }
+
 
 
 
@@ -85,7 +81,8 @@ html[data-adaptai-transformed="true"] a {
   z-index: 999999;
 }
 
-#adaptai-toolbar button {
+#adaptai-toolbar button,
+#adaptai-assistant-panel button {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #ffffff;
@@ -102,38 +99,39 @@ html[data-adaptai-transformed="true"] a {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-#adaptai-toolbar button:hover {
+#adaptai-toolbar button:hover,
+#adaptai-assistant-panel button:hover {
   background: rgba(255, 255, 255, 0.18) !important;
   border-color: rgba(255, 255, 255, 0.35) !important;
   transform: translateY(-2px) !important;
 }
 
 
+}
+
 /* Floating AI Assistant Overlay Panel */
 #adaptai-assistant-overlay {
-  position: fixed !important;
-  bottom: 84px !important;
-  right: 24px !important;
-  width: 380px !important;
-  max-width: calc(100vw - 32px) !important;
-  height: 500px !important;
-  max-height: calc(100vh - 120px) !important;
-  background: #121215 !important;
+  position: fixed;
+  bottom: 84px;
+  right: 24px;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  height: 500px;
+  max-height: calc(100vh - 120px);
+  background: rgba(18, 18, 22, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 16px !important;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
   display: flex;
   flex-direction: column;
-  z-index: 9999999 !important;
+  z-index: 999999;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   color: #fafafa !important;
   overflow: hidden;
-  filter: none !important;
   animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 
 @keyframes slideInUp {
   from { opacity: 0; transform: translateY(20px); }

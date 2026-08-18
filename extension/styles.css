@@ -110,20 +110,21 @@ html[data-adaptai-transformed="true"] a {
 
 }
 
-/* Floating AI Assistant Overlay Panel (Fixed Full-Height Right-Side Chatbot Panel) */
+/* Floating AI Assistant Overlay Panel (Exact Chatbot UI from Commit 203b2e6) */
 #adaptai-assistant-overlay {
   position: fixed !important;
-  top: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 400px !important;
-  max-width: 100vw !important;
-  height: 100vh !important;
-  background: #09090b !important;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-left: 1px solid #27272a !important;
-  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8) !important;
+  bottom: 84px !important;
+  right: 24px !important;
+  width: 380px !important;
+  max-width: calc(100vw - 32px) !important;
+  height: 500px !important;
+  max-height: calc(100vh - 120px) !important;
+  background: rgba(18, 18, 22, 0.95) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7) !important;
   display: flex !important;
   flex-direction: column !important;
   z-index: 9999999 !important;
@@ -131,13 +132,14 @@ html[data-adaptai-transformed="true"] a {
   color: #fafafa !important;
   overflow: hidden !important;
   filter: none !important;
-  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(100%); }
-  to { opacity: 1; transform: translateX(0); }
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
+
 
 
 #adaptai-assistant-overlay .assistant-header {

@@ -132,15 +132,24 @@
           </div>
         </div>
 
-        <button type="submit" class="submit-btn">
-          Save Persona & Open Workbench
-        </button>
+        <div class="btn-row">
+          <button type="submit" class="submit-btn">
+            Save Persona & Open Workbench
+          </button>
+          <button type="button" class="submit-btn" id="btn-proceed-browsing" style="background: transparent !important; color: #ffffff !important; border: 1px solid var(--card-border) !important;">
+            Proceed Browsing
+          </button>
+        </div>
+        <div style="text-align: center; margin-top: 16px;">
+          <a href="../profile/profile.html" style="color: var(--text-muted); font-size: 12px; text-decoration: none;">View Profile</a>
+        </div>
       </div>
     </form>
 
     <div id="success-message">
-      Persona saved successfully. Redirecting to Workbench...
+      Persona saved successfully. Redirecting...
     </div>
+
   </div>
 
   <script src="onboarding.js"></script>

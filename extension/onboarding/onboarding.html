@@ -51,6 +51,8 @@
     .btn-primary:hover { transform: scale(1.02); opacity: 0.9; }
     .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--text); }
     .btn-secondary:hover { background: var(--bg); border-color: #444; }
+    .sub-link { color: var(--text-muted); font-size: 0.8125rem; text-decoration: none; transition: color 0.3s ease; }
+    .sub-link:hover { color: var(--text); text-decoration: underline; }
     
     .target-btn { padding: 1rem 3rem; background: var(--border); color: var(--text); border: none; border-radius: 9999px; cursor: pointer; margin-bottom: 2rem; transition: background 0.3s ease; }
     .target-btn:active { background: #444; }
@@ -170,8 +172,11 @@
           </div>
 
           <div class="btn-row">
-            <a href="../profile/profile.html" class="btn btn-secondary">View Profile</a>
-            <a href="../../demo/index.html" class="btn btn-primary">Launch Demo</a>
+            <a href="../../demo/index.html" class="btn btn-secondary">Launch Demo</a>
+            <button type="button" class="btn btn-primary" id="btn-proceed-browsing">Proceed Browsing</button>
+          </div>
+          <div style="text-align: center; margin-top: 1.5rem;">
+            <a href="../profile/profile.html" class="sub-link">View Profile</a>
           </div>
         </div>
       </form>

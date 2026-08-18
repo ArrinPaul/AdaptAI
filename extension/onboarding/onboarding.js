@@ -63,6 +63,43 @@ document.addEventListener('DOMContentLoaded', () => {
     saveProfileAndRedirect('profile/profile.html');
   });
 
+  // Proceed Browsing action - saves state & closes onboarding tab
+  document.getElementById('btn-proceed-browsing')?.addEventListener('click', () => {
+    if (!window.generatedProfile) {
+      calculatePersona();
+    }
+
+    const profilePayload = window.generatedProfile || {
+      personaName: "Standard Accessibility Persona",
+      summary: "Balanced visual and text settings.",
+      diagnosticScores: { visualScore: "85/100", cognitiveScore: "90/100", motorScore: "95/100" },
+      visual: { highContrast: false, fontScale: 1.0, lineHeight: 1.6 },
+      cognitive: { dyslexicFont: false, simplifyText: true },
+      audio: { enabled: true, speechRate: 1.0 },
+      motor: { targetExpansion: false }
+    };
+
+    const statePayload = {
+      userProfile: profilePayload,
+      onboardingCompleted: true,
+      extensionEnabled: true,
+      testCompleted: true
+    };
+
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.set(statePayload, () => {
+        console.log("[AdaptAI Onboarding] State saved. Closing onboarding window...");
+        window.close();
+      });
+    } else {
+      localStorage.setItem('userProfile', JSON.stringify(profilePayload));
+      localStorage.setItem('onboardingCompleted', 'true');
+      localStorage.setItem('extensionEnabled', 'true');
+      console.log("[AdaptAI Onboarding] State saved. Closing onboarding window...");
+      window.close();
+    }
+  });
+
   // Universal Navigation Routing Helper
   function navigateTo(relPath) {
     if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {

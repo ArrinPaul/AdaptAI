@@ -111,9 +111,34 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 
+// 5. Chrome Storage Change Listener (Cross-Tab Synchronization)
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === 'local') {
+    chrome.tabs.query({}, (tabs) => {
+      tabs.forEach((tab) => {
+        if (tab && tab.id) {
+          if (changes.extensionEnabled) {
+            chrome.tabs.sendMessage(tab.id, { 
+              action: "extension_state_changed", 
+              enabled: changes.extensionEnabled.newValue !== false 
+            }, () => { if (chrome.runtime.lastError) {} });
+          }
+          if (changes.extensionTheme) {
+            chrome.tabs.sendMessage(tab.id, { 
+              action: "extension_theme_changed", 
+              theme: changes.extensionTheme.newValue || 'dark' 
+            }, () => { if (chrome.runtime.lastError) {} });
+          }
+        }
+      });
+    });
+  }
+});
+
 // -------------------------------------------------------------
 // SUB-TASK B2: STORAGE RETRIEVAL & GEMINI PROMPT ENGINEERING
 // -------------------------------------------------------------
+
 
 /**
  * Retrieves User Accessibility Profile / Persona from storage

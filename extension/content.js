@@ -56,85 +56,214 @@ function scrapePageDOM() {
 
 
 // -------------------------------------------------------------
-// SUB-TASK A3: ACCESSIBILITY TOOLBAR & SPEECH SYNTHESIS
+// SUB-TASK A3: ISOLATED SHADOW DOM FLOATING WIDGET (TTS & THEME CONTROL)
 // -------------------------------------------------------------
 let activeSimplifiedText = [];
+let currentSpeechUtterance = null;
+let currentSpeechState = 'idle'; // 'idle' | 'speaking' | 'paused'
+let extensionThemeState = 'dark';
 
+
+/**
+ * Injects or updates isolated Shadow DOM floating widget
+ */
 function injectFloatingToolbar() {
-  if (document.getElementById('adaptai-toolbar')) return;
+  // Check if extension is globally enabled before mounting
+  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+    chrome.storage.local.get(['extensionEnabled', 'extensionTheme'], (res) => {
+      if (res.extensionEnabled === false) {
+        removeFloatingToolbar();
+        return;
+      }
+      if (res.extensionTheme) extensionThemeState = res.extensionTheme;
+      mountShadowWidget();
+    });
+  } else {
+    mountShadowWidget();
+  }
+}
 
-  const toolbar = document.createElement('div');
-  toolbar.id = 'adaptai-toolbar';
-  toolbar.className = 'adaptai-floating-panel';
-  toolbar.innerHTML = `
-    <button id="adaptai-read-aloud" title="Read Aloud (Text-to-Speech)">🔊</button>
-    <button id="adaptai-voice-cmd" title="Voice Command Listener">🎤</button>
+function removeFloatingToolbar() {
+  const shadowHost = document.getElementById('adaptai-widget-host');
+  if (shadowHost) shadowHost.remove();
+  const legacyBar = document.getElementById('adaptai-toolbar');
+  if (legacyBar) legacyBar.remove();
+
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+function mountShadowWidget() {
+  let shadowHost = document.getElementById('adaptai-widget-host');
+  if (shadowHost) return;
+
+  shadowHost = document.createElement('div');
+  shadowHost.id = 'adaptai-widget-host';
+  shadowHost.style.cssText = 'position: fixed; bottom: 24px; right: 24px; z-index: 2147483647;';
+  
+  const shadowRoot = shadowHost.attachShadow({ mode: 'open' });
+
+  const styleEl = document.createElement('style');
+  styleEl.textContent = `
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    .widget-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: ${extensionThemeState === 'light' ? '#ffffff' : 'rgba(15, 23, 42, 0.92)'};
+      color: ${extensionThemeState === 'light' ? '#0f172a' : '#f8fafc'};
+      border: 1px solid ${extensionThemeState === 'light' ? '#e2e8f0' : 'rgba(255, 255, 255, 0.15)'};
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 30px;
+      padding: 8px 12px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease;
+    }
+    .widget-btn {
+      background: ${extensionThemeState === 'light' ? '#f1f5f9' : 'rgba(255, 255, 255, 0.08)'};
+      border: 1px solid ${extensionThemeState === 'light' ? '#cbd5e1' : 'rgba(255, 255, 255, 0.15)'};
+      color: ${extensionThemeState === 'light' ? '#0f172a' : '#ffffff'};
+      font-size: 16px;
+      cursor: pointer;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .widget-btn:hover {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: #ffffff;
+      transform: scale(1.08);
+    }
   `;
-  document.body.appendChild(toolbar);
 
-  const readBtn = document.getElementById('adaptai-read-aloud');
-  const voiceBtn = document.getElementById('adaptai-voice-cmd');
-  if (readBtn) readBtn.addEventListener('click', handleReadAloud);
-  if (voiceBtn) voiceBtn.addEventListener('click', handleVoiceCommand);
+  const container = document.createElement('div');
+  container.className = 'widget-container';
+  container.innerHTML = `
+    <button id="tts-btn" class="widget-btn" title="Text to Speech (Read Selected Text / Page)">🔊</button>
+    <button id="theme-btn" class="widget-btn" title="Toggle Extension Theme (Light / Dark)">${extensionThemeState === 'light' ? '☀' : '☾'}</button>
+    <button id="assistant-btn" class="widget-btn" title="Toggle AI Assistant Overlay (Ctrl+Shift+Y)">⚡</button>
+  `;
+
+  shadowRoot.appendChild(styleEl);
+  shadowRoot.appendChild(container);
+  document.body.appendChild(shadowHost);
+
+  // Widget event listeners
+  const ttsBtn = shadowRoot.getElementById('tts-btn');
+  const themeBtn = shadowRoot.getElementById('theme-btn');
+  const assistantBtn = shadowRoot.getElementById('assistant-btn');
+
+  if (ttsBtn) ttsBtn.addEventListener('click', handleReadAloud);
+  if (themeBtn) themeBtn.addEventListener('click', toggleExtensionTheme);
+  if (assistantBtn) assistantBtn.addEventListener('click', toggleAiAssistant);
 }
 
 
+/**
+ * Handles Text-to-Speech prioritizing user selected text first, then simplified/scraped text
+ */
 function handleReadAloud() {
   if (!('speechSynthesis' in window)) {
-    alert("Web Speech API is not supported in this browser environment.");
+    alert("Web Speech API is not supported in this browser.");
     return;
   }
 
-  const readBtn = document.getElementById('adaptai-read-aloud');
-
-  // Toggle stop speaking if currently speaking
+  // Toggle Pause/Resume/Stop if currently active
   if (window.speechSynthesis.speaking) {
-    window.speechSynthesis.cancel();
-    if (readBtn) readBtn.innerText = '🔊';
-    console.log("[AdaptAI TTS] Speech canceled by user.");
-    return;
+    if (currentSpeechState === 'speaking') {
+      window.speechSynthesis.pause();
+      currentSpeechState = 'paused';
+      updateTtsBtnIcon('▶');
+      console.log("[AdaptAI TTS] Speech paused.");
+      return;
+    } else if (currentSpeechState === 'paused') {
+      window.speechSynthesis.resume();
+      currentSpeechState = 'speaking';
+      updateTtsBtnIcon('⏸');
+      console.log("[AdaptAI TTS] Speech resumed.");
+      return;
+    }
   }
 
-  // Determine text content to read: simplified text if available, else first page paragraphs
-  const textToRead = activeSimplifiedText.length > 0 
-    ? activeSimplifiedText.join('. ')
-    : mockGeminiResponse.simplifiedText.join('. ');
+  window.speechSynthesis.cancel();
 
+  // Priority 1: User highlighted selected text on page
+  const selectedText = window.getSelection().toString().trim();
+  let textToRead = selectedText;
+
+  // Priority 2: AI simplified paragraphs
+  if (!textToRead && activeSimplifiedText.length > 0) {
+    textToRead = activeSimplifiedText.join('. ');
+  }
+
+  // Priority 3: Scraped DOM page headings & text
   if (!textToRead) {
+    textToRead = scrapePageDOM();
+  }
+
+  if (!textToRead || textToRead.length === 0) {
     console.warn("[AdaptAI TTS] No readable text found.");
     return;
   }
 
-  const utterance = new SpeechSynthesisUtterance(textToRead);
-  utterance.rate = 1.0;
-  utterance.pitch = 1.0;
+  currentSpeechUtterance = new SpeechSynthesisUtterance(textToRead);
+  currentSpeechUtterance.rate = 1.0;
+  currentSpeechUtterance.pitch = 1.0;
 
-  utterance.onstart = () => {
-    if (readBtn) readBtn.innerText = '⏹️';
-    console.log("[AdaptAI TTS] Speech started.");
+  currentSpeechUtterance.onstart = () => {
+    currentSpeechState = 'speaking';
+    updateTtsBtnIcon('⏸');
+    console.log("[AdaptAI TTS] Reading aloud started.");
   };
 
-  utterance.onend = () => {
-    if (readBtn) readBtn.innerText = '🔊';
-    console.log("[AdaptAI TTS] Speech completed.");
+  currentSpeechUtterance.onend = () => {
+    currentSpeechState = 'idle';
+    updateTtsBtnIcon('🔊');
+    console.log("[AdaptAI TTS] Reading aloud completed.");
   };
 
-  utterance.onerror = (e) => {
-    if (readBtn) readBtn.innerText = '🔊';
+  currentSpeechUtterance.onerror = (e) => {
+    currentSpeechState = 'idle';
+    updateTtsBtnIcon('🔊');
     console.error("[AdaptAI TTS Error]", e);
   };
 
-  window.speechSynthesis.speak(utterance);
+  window.speechSynthesis.speak(currentSpeechUtterance);
+}
+
+function updateTtsBtnIcon(iconChar) {
+  const shadowHost = document.getElementById('adaptai-widget-host');
+  if (!shadowHost || !shadowHost.shadowRoot) return;
+  const ttsBtn = shadowHost.shadowRoot.getElementById('tts-btn');
+  if (ttsBtn) ttsBtn.innerText = iconChar;
+}
+
+/**
+ * Toggles Extension Light / Dark Mode without modifying host website colors
+ */
+function toggleExtensionTheme() {
+  extensionThemeState = extensionThemeState === 'light' ? 'dark' : 'light';
+  
+  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+    chrome.storage.local.set({ extensionTheme: extensionThemeState }, () => {
+      console.log("[AdaptAI Theme] Extension theme saved:", extensionThemeState);
+    });
+  }
+
+  // Re-mount widget with new theme styles
+  removeFloatingToolbar();
+  mountShadowWidget();
 }
 
 function handleVoiceCommand() {
-  console.log("[AdaptAI Voice Command] Speech Recognition listener placeholder triggered.");
-  const btn = document.getElementById('adaptai-voice-cmd');
-  if (btn) {
-    btn.style.transform = 'scale(1.2)';
-    setTimeout(() => { btn.style.transform = 'scale(1)'; }, 300);
-  }
+  toggleAiAssistant();
 }
+
 
 
 // -------------------------------------------------------------
@@ -466,7 +595,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "toggle_assistant") {
     toggleAiAssistant();
   }
+
+  if (request.action === "extension_state_changed") {
+    if (request.enabled) {
+      injectFloatingToolbar();
+    } else {
+      removeFloatingToolbar();
+    }
+  }
+
+  if (request.action === "extension_theme_changed") {
+    extensionThemeState = request.theme || 'dark';
+    removeFloatingToolbar();
+    mountShadowWidget();
+  }
 });
+
 
 // Auto-inject UI toolbar on load
 injectFloatingToolbar();

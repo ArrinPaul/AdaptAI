@@ -108,36 +108,34 @@ function mountShadowWidget() {
     .widget-container {
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: ${extensionThemeState === 'light' ? '#ffffff' : 'rgba(15, 23, 42, 0.92)'};
-      color: ${extensionThemeState === 'light' ? '#0f172a' : '#f8fafc'};
-      border: 1px solid ${extensionThemeState === 'light' ? '#e2e8f0' : 'rgba(255, 255, 255, 0.15)'};
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 30px;
-      padding: 8px 12px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
-      transition: all 0.3s ease;
+      gap: 6px;
+      background: #09090b;
+      color: #fafafa;
+      border: 1px solid #27272a;
+      border-radius: 9999px;
+      padding: 6px 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      transition: all 0.2s ease;
     }
     .widget-btn {
-      background: ${extensionThemeState === 'light' ? '#f1f5f9' : 'rgba(255, 255, 255, 0.08)'};
-      border: 1px solid ${extensionThemeState === 'light' ? '#cbd5e1' : 'rgba(255, 255, 255, 0.15)'};
-      color: ${extensionThemeState === 'light' ? '#0f172a' : '#ffffff'};
-      font-size: 16px;
+      background: #18181b;
+      border: 1px solid #27272a;
+      color: #fafafa;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
       cursor: pointer;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
+      padding: 8px 14px;
+      border-radius: 9999px;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.2s ease;
     }
     .widget-btn:hover {
-      background: #3b82f6;
-      border-color: #3b82f6;
+      background: #27272a;
+      border-color: #a1a1aa;
       color: #ffffff;
-      transform: scale(1.08);
     }
   `;
 
@@ -162,6 +160,7 @@ function mountShadowWidget() {
   if (themeBtn) themeBtn.addEventListener('click', toggleExtensionTheme);
   if (assistantBtn) assistantBtn.addEventListener('click', toggleAiAssistant);
 }
+
 
 
 /**

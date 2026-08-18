@@ -9,12 +9,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #000000;
-      --card-bg: #0a0a0a;
-      --card-border: #1a1a1a;
-      --text-bright: #ffffff;
-      --text-muted: #888888;
-      --text-dim: #444444;
+      --bg: #09090b;
+      --card-bg: #121215;
+      --card-border: #27272a;
+      --card-hover: #18181b;
+      --text-bright: #fafafa;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+      --accent-glow: rgba(255, 255, 255, 0.03);
     }
 
     * {
@@ -29,6 +31,7 @@
       color: var(--text-bright);
       line-height: 1.6;
       overflow-x: hidden;
+      background-image: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
     }
 
     nav {

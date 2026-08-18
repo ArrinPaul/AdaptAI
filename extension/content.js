@@ -108,55 +108,56 @@ function mountShadowWidget() {
     .widget-container {
       display: flex;
       align-items: center;
-      gap: 10px;
-      background: rgba(18, 18, 22, 0.92);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      gap: 12px;
+      background: rgba(18, 18, 22, 0.94);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1.5px solid rgba(255, 255, 255, 0.22);
       border-radius: 9999px;
-      padding: 10px 18px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      padding: 12px 22px;
+      box-shadow: 0 24px 72px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.1);
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .widget-container:hover {
-      border-color: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.9), 0 0 30px rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.35);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.95), 0 0 36px rgba(255, 255, 255, 0.12);
     }
     .widget-btn {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       color: #ffffff;
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: 0.4px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
       cursor: pointer;
-      padding: 12px 22px;
+      padding: 16px 28px;
       border-radius: 9999px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .widget-btn:hover {
-      background: rgba(255, 255, 255, 0.22);
-      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.5);
       color: #ffffff;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
     }
     .widget-btn:active {
       transform: translateY(0) scale(0.96);
     }
     .widget-btn svg {
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       fill: none;
       stroke: currentColor;
-      stroke-width: 2.3;
+      stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
   `;
+
 
 
 

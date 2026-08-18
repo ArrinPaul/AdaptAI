@@ -168,22 +168,34 @@ function calculatePersona() {
     diagnosticScores: { visualScore, cognitiveScore, motorScore },
     visual: visualProfile,
     cognitive: cognitiveProfile,
-    audio: audioProfile
+    audio: audioProfile,
+    updatedAt: new Date().toISOString()
   };
 
   nextStep(4);
 }
 
-
-document.getElementById('profile-form').addEventListener('submit', (e) => {
+document.getElementById('profile-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const profilePayload = window.generatedProfile || {
     personaName: "Standard Persona",
+    diagnosticScores: { visualScore: "85/100", cognitiveScore: "90/100", motorScore: "95/100" },
     visual: { highContrast: false, fontScale: 1.0 },
     cognitive: { dyslexicFont: false, simplifyText: true },
-    audio: { enabled: true }
+    audio: { enabled: true },
+    updatedAt: new Date().toISOString()
   };
+
+  // Dispatch background message to generate structured Gemini AI recommendations
+  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+    chrome.runtime.sendMessage({
+      action: "generate_personalization_recommendations",
+      profile: profilePayload
+    }, (res) => {
+      console.log("[AdaptAI Onboarding] AI Personalization recommendations generated:", res);
+    });
+  }
 
   function handleSuccessRedirect() {
     const msgEl = document.getElementById('success-message');
@@ -214,6 +226,7 @@ document.getElementById('profile-form').addEventListener('submit', (e) => {
     handleSuccessRedirect();
   }
 });
+
 
 
 

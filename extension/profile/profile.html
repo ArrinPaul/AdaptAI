@@ -205,12 +205,25 @@
         </div>
       </div>
 
+      <div style="margin-bottom: 24px; border-top: 1px solid var(--card-border); padding-top: 24px;">
+        <div class="card-title">AI Personalization Recommendations</div>
+        <ul id="recommendations-list" style="list-style: none; padding: 0; margin-top: 12px; display: flex; flex-direction: column; gap: 10px;">
+          <li style="font-size: 13px; color: var(--text-muted); line-height: 1.5; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 6px; border: 1px solid var(--card-border);">
+            • Enforce Dark Zinc High-Contrast background (#09090b) and white text hierarchy.
+          </li>
+          <li style="font-size: 13px; color: var(--text-muted); line-height: 1.5; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 6px; border: 1px solid var(--card-border);">
+            • Apply 1.5x typography font scaling and expanded paragraph line spacing.
+          </li>
+        </ul>
+      </div>
+
       <div class="action-row">
         <a href="http://localhost:8080/extension/onboarding/onboarding.html" class="btn-primary">Recalibrate Profile</a>
         <a href="http://localhost:8080/demo/index.html" class="btn-secondary">Open Workbench</a>
       </div>
     </div>
   </div>
+
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -232,7 +245,19 @@
           if (p.diagnosticScores.cognitiveScore) document.getElementById('score-cognitive').innerText = p.diagnosticScores.cognitiveScore;
           if (p.diagnosticScores.motorScore) document.getElementById('score-motor').innerText = p.diagnosticScores.motorScore;
         }
+
+        if (Array.isArray(p.personalizationRecommendations) && p.personalizationRecommendations.length > 0) {
+          const listEl = document.getElementById('recommendations-list');
+          if (listEl) {
+            listEl.innerHTML = p.personalizationRecommendations.map(rec => 
+              `<li style="font-size: 13px; color: var(--text-muted); line-height: 1.5; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 6px; border: 1px solid var(--card-border);">
+                • <strong>${rec.type.toUpperCase()}</strong>: ${rec.instruction}
+              </li>`
+            ).join('');
+          }
+        }
       }
+
     });
   </script>
 </body>

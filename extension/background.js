@@ -114,8 +114,104 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
     });
   }
+
+  if (request.action === "generate_personalization_recommendations") {
+    console.log("[AdaptAI Service Worker] Generating AI Personalization Recommendations for profile:", request.profile);
+    generateAndStorePersonalization(request.profile).then(recommendations => {
+      sendResponse({ status: "success", recommendations });
+    }).catch(err => {
+      console.warn("[AdaptAI Service Worker] AI Personalization generation failed:", err.message);
+      sendResponse({ status: "fallback", recommendations: getFallbackRecommendations() });
+    });
+    return true; // Keep async channel open
+  }
+
   return true; // Keep message channel open for async responses
 });
+
+/**
+ * Fallback recommendations if AI API fails or is offline
+ */
+function getFallbackRecommendations() {
+  return [
+    { type: "visual", instruction: "Enforce Dark Zinc High-Contrast background (#09090b) and white text hierarchy." },
+    { type: "reading", instruction: "Apply 1.5x typography font scaling and expanded paragraph line spacing." },
+    { type: "content", instruction: "Prioritize primary headings and synthesize concise paragraph summaries." },
+    { type: "interaction", instruction: "Highlight action targets and links with high-contrast yellow accents." }
+  ];
+}
+
+/**
+ * Validates Gemini AI recommendation output structure
+ */
+function validatePersonalizationPayload(payload) {
+  if (!payload || typeof payload !== 'object') return false;
+  if (!Array.isArray(payload.recommendations)) return false;
+  return payload.recommendations.every(rec => typeof rec.type === 'string' && typeof rec.instruction === 'string');
+}
+
+/**
+ * Invokes Gemini AI to synthesize structured recommendations and caches profile locally
+ */
+async function generateAndStorePersonalization(userProfile) {
+  const geminiKey = self.ENV?.GEMINI_API_KEY;
+  const systemInstruction = `You are AdaptAI's Expert Accessibility Personalization Engine.
+Analyze the user's test score diagnostics and profile settings:
+Persona: ${userProfile.personaName || 'Custom Assist Persona'}
+Scores: Visual ${userProfile.diagnosticScores?.visualScore || '85/100'}, Cognitive ${userProfile.diagnosticScores?.cognitiveScore || '90/100'}, Motor ${userProfile.diagnosticScores?.motorScore || '95/100'}
+
+Generate exactly 4 structured, actionable UI personalization recommendations.
+You MUST return a JSON object strictly matching this schema:
+{
+  "persona": "${userProfile.personaName || 'Custom Assist Persona'}",
+  "recommendations": [
+    { "type": "visual", "instruction": "string" },
+    { "type": "reading", "instruction": "string" },
+    { "type": "content", "instruction": "string" },
+    { "type": "interaction", "instruction": "string" }
+  ]
+}`;
+
+  let recommendations = getFallbackRecommendations();
+
+  if (geminiKey && geminiKey !== "YOUR_GEMINI_API_KEY") {
+    try {
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: systemInstruction }] }],
+          generationConfig: { responseMimeType: "application/json" }
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (rawText) {
+          const parsed = JSON.parse(rawText);
+          if (validatePersonalizationPayload(parsed)) {
+            recommendations = parsed.recommendations;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("[AdaptAI Service Worker] Gemini recommendation call failed, using fallback:", e.message);
+    }
+  }
+
+  // Update profile with cached recommendations
+  userProfile.personalizationRecommendations = recommendations;
+  userProfile.lastUpdated = new Date().toISOString();
+
+  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+    chrome.storage.local.set({ userProfile: userProfile });
+  }
+
+  return recommendations;
+}
+
 
 
 // 5. Chrome Storage Change Listener (Cross-Tab Synchronization)

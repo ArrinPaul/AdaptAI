@@ -25,7 +25,6 @@
     "default_title": "Adapt this page",
     "default_popup": "popup/popup.html"
   },
-
   "commands": {
     "trigger_adaptation": {
       "suggested_key": {
@@ -36,11 +35,11 @@
     },
     "activate_ai_assistant": {
       "suggested_key": {
-        "default": "Ctrl+Shift+Y",
-        "mac": "Command+Shift+Y"
+        "default": "Ctrl+Shift+U",
+        "mac": "Command+Shift+U"
       },
       "description": "Activate the Floating AI Assistant Panel"
     }
   }
-
 }
+

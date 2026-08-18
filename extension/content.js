@@ -561,9 +561,9 @@ function submitAssistantQuery(userQuery) {
   chrome.runtime.onMessage.addListener(responseHandler);
 }
 
-// Global Keyboard Shortcut Listener for Chrome & Safari (Ctrl+Shift+Y / Command+Shift+Y / Esc)
+// Global Keyboard Shortcut Listener for Chrome & Safari (Ctrl+Shift+U / Ctrl+Shift+Y / Esc)
 document.addEventListener('keydown', (e) => {
-  if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'Y' || e.key === 'y')) {
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'U' || e.key === 'u' || e.key === 'Y' || e.key === 'y')) {
     e.preventDefault();
     toggleAiAssistant();
   }
@@ -574,6 +574,7 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
+
 
 // -------------------------------------------------------------
 // MESSAGE LISTENER & RUNTIME HANDLERS

@@ -379,12 +379,55 @@ function applyMotorAssist(enable) {
   }
 }
 
+// Store original paragraph text before AI simplification for full DOM restore capability
+let originalParagraphTexts = [];
+let isPageAdaptedState = false;
+
+/**
+ * Restores the webpage back to its original un-adapted DOM state
+ */
+function restoreOriginalPageDOM() {
+  const root = document.documentElement;
+
+  // 1. Remove CSS variables and attribute overrides
+  root.removeAttribute('data-adaptai-transformed');
+  root.style.removeProperty('--adapt-bg-color');
+  root.style.removeProperty('--adapt-text-color');
+  root.style.removeProperty('--adapt-font-scale');
+  root.style.removeProperty('--adapt-font-family');
+
+  // 2. Remove Dyslexic font
+  ensureDyslexicFont(false);
+
+  // 3. Remove motor assistance
+  applyMotorAssist(false);
+
+  // 4. Restore original paragraph texts
+  if (originalParagraphTexts.length > 0) {
+    const paragraphs = Array.from(document.querySelectorAll('p')).filter(p => !p.closest('#adaptai-toolbar'));
+    paragraphs.forEach((p, idx) => {
+      if (originalParagraphTexts[idx] !== undefined) {
+        p.innerText = originalParagraphTexts[idx];
+      }
+    });
+  }
+
+  isPageAdaptedState = false;
+  console.log("[AdaptAI] Restored page back to original DOM state.");
+}
+
 /**
  * Swaps original paragraph innerText with simplified AI texts
  */
 function applyTextSimplification(simplifiedTextArray) {
   if (!Array.isArray(simplifiedTextArray) || simplifiedTextArray.length === 0) return;
   
+  // Cache original paragraph text first time
+  if (originalParagraphTexts.length === 0) {
+    const paragraphs = Array.from(document.querySelectorAll('p')).filter(p => !p.closest('#adaptai-toolbar'));
+    originalParagraphTexts = paragraphs.map(p => p.innerText);
+  }
+
   // Store active simplified text for Web Speech TTS engine
   activeSimplifiedText = simplifiedTextArray;
 
@@ -398,38 +441,16 @@ function applyTextSimplification(simplifiedTextArray) {
 }
 
 /**
- * Executes navigation / scrolling voice intents
- */
-function executeVoiceIntent(intent) {
-  if (!intent) return;
-  console.log(`[AdaptAI Voice Intent Execution] Executing intent: ${intent}`);
-  
-  switch (intent.toLowerCase()) {
-    case 'scroll_down':
-      window.scrollBy({ top: 500, behavior: 'smooth' });
-      break;
-    case 'scroll_up':
-      window.scrollBy({ top: -500, behavior: 'smooth' });
-      break;
-    case 'scroll_top':
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      break;
-    case 'scroll_bottom':
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      break;
-    case 'read_page':
-      handleReadAloud();
-      break;
-    default:
-      console.warn(`[AdaptAI Voice Intent] Unrecognized intent: ${intent}`);
-  }
-}
-
-/**
- * Master transformation pipeline entrypoint
+ * Master transformation pipeline entrypoint with Toggle ON / Restore ORIGINAL support
  */
 function runFullTransformation(payload) {
-  console.log("[AdaptAI] Applying full transformations payload:", payload);
+  // If page is already adapted, toggle back to original DOM state!
+  if (isPageAdaptedState) {
+    restoreOriginalPageDOM();
+    return;
+  }
+
+  console.log("[AdaptAI] Applying full persona transformation payload:", payload);
 
   // 1. Apply CSS variable overrides
   if (payload.cssUpdates) {
@@ -455,7 +476,10 @@ function runFullTransformation(payload) {
   if (payload.voiceIntent) {
     executeVoiceIntent(payload.voiceIntent);
   }
+
+  isPageAdaptedState = true;
 }
+
 
 // -------------------------------------------------------------
 // FLOATING AI ASSISTANT OVERLAY PANEL (CHROME & SAFARI ADAPTER)

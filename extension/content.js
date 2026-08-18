@@ -292,16 +292,18 @@ function toggleExtensionTheme() {
         }
         const currentTheme = res ? (res.extensionTheme || 'light') : 'light';
 
-        if (currentTheme === 'light' || root.getAttribute('data-adaptai-transformed') !== 'true') {
+        if (currentTheme === 'light') {
           // Toggle to High-Contrast Dark Mode
           extensionThemeState = 'dark';
           root.setAttribute('data-adaptai-transformed', 'true');
+          root.setAttribute('data-adaptai-theme', 'dark');
           console.log("[AdaptAI Theme] Toggled to High-Contrast Dark Theme across website.");
         } else {
-          // Toggle to Light / Original Normal Mode
+          // Toggle to High-Contrast Light Mode
           extensionThemeState = 'light';
-          root.removeAttribute('data-adaptai-transformed');
-          console.log("[AdaptAI Theme] Toggled to Light / Original Theme across website.");
+          root.setAttribute('data-adaptai-transformed', 'true');
+          root.setAttribute('data-adaptai-theme', 'light');
+          console.log("[AdaptAI Theme] Toggled to High-Contrast Light Theme across website.");
         }
 
         try {
@@ -321,11 +323,13 @@ function toggleExtensionTheme() {
 }
 
 function fallbackToggleTheme(root) {
-  if (root.getAttribute('data-adaptai-transformed') === 'true') {
-    root.removeAttribute('data-adaptai-transformed');
+  root.setAttribute('data-adaptai-transformed', 'true');
+  const current = root.getAttribute('data-adaptai-theme');
+  if (current === 'dark') {
+    root.setAttribute('data-adaptai-theme', 'light');
     extensionThemeState = 'light';
   } else {
-    root.setAttribute('data-adaptai-transformed', 'true');
+    root.setAttribute('data-adaptai-theme', 'dark');
     extensionThemeState = 'dark';
   }
 }

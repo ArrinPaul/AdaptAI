@@ -21,16 +21,39 @@ const mockGeminiResponse = {
 // SUB-TASK A2: DOM SCRAPER ENGINE
 // -------------------------------------------------------------
 function scrapePageDOM() {
-  // TODO: Extract text from h1, h2, h3 and p elements
-  const headingsAndParagraphs = Array.from(document.querySelectorAll('h1, h2, h3, p'));
-  const scrapedText = headingsAndParagraphs
-    .map(el => el.innerText.trim())
-    .filter(text => text.length > 0)
-    .join('\n')
-    .slice(0, 2000); // cap to keep payload fast
+  try {
+    // Target main content tags: h1, h2, h3, article, section, p
+    const selectors = 'h1, h2, h3, p, article p, main p';
+    const elements = Array.from(document.querySelectorAll(selectors));
 
-  return scrapedText || "Fallback: Sample scraped text from DOM.";
+    // Filter out hidden, script/style, or toolbar elements
+    const validTexts = elements
+      .filter(el => {
+        // Exclude AdaptAI toolbar elements
+        if (el.closest('#adaptai-toolbar')) return false;
+        // Check visibility
+        const style = window.getComputedStyle(el);
+        return style.display !== 'none' && style.visibility !== 'hidden' && el.innerText.trim().length > 0;
+      })
+      .map(el => el.innerText.trim());
+
+    // Remove duplicates while maintaining document order
+    const uniqueTexts = Array.from(new Set(validTexts));
+    
+    // Join and cap to 2000 characters maximum for fast LLM processing
+    const fullScrapedText = uniqueTexts.join('\n\n');
+    const cappedText = fullScrapedText.length > 2000 
+      ? fullScrapedText.slice(0, 2000) + '...' 
+      : fullScrapedText;
+
+    console.log(`[AdaptAI Scraper] Scraped ${uniqueTexts.length} elements (${cappedText.length} chars).`);
+    return cappedText || "Fallback: Page contains no readable paragraph or heading content.";
+  } catch (err) {
+    console.error("[AdaptAI Scraper Error]", err);
+    return "Fallback: Exception occurred while scraping DOM content.";
+  }
 }
+
 
 // -------------------------------------------------------------
 // SUB-TASK A3: ACCESSIBILITY TOOLBAR & SPEECH SYNTHESIS

@@ -39,21 +39,22 @@
 ---
 
 ### A.2 DOM Scraper Engine & Event Wiring
-- [ ] Write `scrapePageDOM()` function targeting `<h1>`-`<h3>` and `<p>` elements (`content.js`)
-- [ ] Sanitize scraped inner text and enforce 2000 character maximum limit
-- [ ] Wire scraper to trigger on `chrome.runtime.onMessage` action `"scrape_page"`
-- [ ] Emit structured `process_with_ai` message payload to background worker
+- [x] Write `scrapePageDOM()` function targeting `<h1>`-`<h3>` and `<p>` elements (`content.js`)
+- [x] Sanitize scraped inner text and enforce 2000 character maximum limit
+- [x] Wire scraper to trigger on `chrome.runtime.onMessage` action `"scrape_page"`
+- [x] Emit structured `process_with_ai` message payload to background worker
 
 **Tests:**
-- [ ] Scraper extracts text from dense sample HTML structures
-- [ ] Truncation logic caps output at 2000 characters without crashing
-- [ ] Empty or image-only DOMs return fallback text gracefully
-- [ ] Message payload successfully received by runtime listener
+- [x] Scraper extracts text from dense sample HTML structures
+- [x] Truncation logic caps output at 2000 characters without crashing
+- [x] Empty or image-only DOMs return fallback text gracefully
+- [x] Message payload successfully received by runtime listener
 
 **Quality Gate:**
-- [ ] Clean text payload output with zero DOM element references
-- [ ] Message passing confirmed in extension background console
-- [ ] Pushed to `main` via git merge workflow
+- [x] Clean text payload output with zero DOM element references
+- [x] Message passing confirmed in extension background console
+- [x] Sub-task baseline verified on `track-A` branch
+
 
 ---
 

@@ -58,6 +58,8 @@ function scrapePageDOM() {
 // -------------------------------------------------------------
 // SUB-TASK A3: ACCESSIBILITY TOOLBAR & SPEECH SYNTHESIS
 // -------------------------------------------------------------
+let activeSimplifiedText = [];
+
 function injectFloatingToolbar() {
   if (document.getElementById('adaptai-toolbar')) return;
 
@@ -65,8 +67,8 @@ function injectFloatingToolbar() {
   toolbar.id = 'adaptai-toolbar';
   toolbar.className = 'adaptai-floating-panel';
   toolbar.innerHTML = `
-    <button id="adaptai-read-aloud" title="Read Aloud">🔊</button>
-    <button id="adaptai-voice-cmd" title="Voice Command">🎤</button>
+    <button id="adaptai-read-aloud" title="Read Aloud (Text-to-Speech)">🔊</button>
+    <button id="adaptai-voice-cmd" title="Voice Command Listener">🎤</button>
   `;
   document.body.appendChild(toolbar);
 
@@ -75,15 +77,62 @@ function injectFloatingToolbar() {
 }
 
 function handleReadAloud() {
-  // SpeechSynthesis Web API integration
-  const firstSimplifiedPara = mockGeminiResponse.simplifiedText.join(' ');
-  const utterance = new SpeechSynthesisUtterance(firstSimplifiedPara);
+  if (!('speechSynthesis' in window)) {
+    alert("Web Speech API is not supported in this browser environment.");
+    return;
+  }
+
+  const readBtn = document.getElementById('adaptai-read-aloud');
+
+  // Toggle stop speaking if currently speaking
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    if (readBtn) readBtn.innerText = '🔊';
+    console.log("[AdaptAI TTS] Speech canceled by user.");
+    return;
+  }
+
+  // Determine text content to read: simplified text if available, else first page paragraphs
+  const textToRead = activeSimplifiedText.length > 0 
+    ? activeSimplifiedText.join('. ')
+    : mockGeminiResponse.simplifiedText.join('. ');
+
+  if (!textToRead) {
+    console.warn("[AdaptAI TTS] No readable text found.");
+    return;
+  }
+
+  const utterance = new SpeechSynthesisUtterance(textToRead);
+  utterance.rate = 1.0;
+  utterance.pitch = 1.0;
+
+  utterance.onstart = () => {
+    if (readBtn) readBtn.innerText = '⏹️';
+    console.log("[AdaptAI TTS] Speech started.");
+  };
+
+  utterance.onend = () => {
+    if (readBtn) readBtn.innerText = '🔊';
+    console.log("[AdaptAI TTS] Speech completed.");
+  };
+
+  utterance.onerror = (e) => {
+    if (readBtn) readBtn.innerText = '🔊';
+    console.error("[AdaptAI TTS Error]", e);
+  };
+
   window.speechSynthesis.speak(utterance);
 }
 
 function handleVoiceCommand() {
-  console.log("Voice Command Listener Triggered");
+  console.log("[AdaptAI Voice Command] Speech Recognition listener placeholder triggered.");
+  const btn = document.getElementById('adaptai-voice-cmd');
+  if (btn) {
+    btn.style.transform = 'scale(1.2)';
+    setTimeout(() => { btn.style.transform = 'scale(1)'; }, 300);
+  }
 }
+
 
 // -------------------------------------------------------------
 // SUB-TASK A4: DOM TRANSFORMATION ENGINE

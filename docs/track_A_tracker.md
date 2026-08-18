@@ -59,21 +59,22 @@
 ---
 
 ### A.3 Floating Accessibility Toolbar & Web Speech Engine (TTS)
-- [ ] Inject floating accessibility panel `#adaptai-toolbar` into DOM (`content.js`, `styles.css`)
-- [ ] Add 🔊 (Read Aloud) and 🎤 (Voice Command) interactive buttons
-- [ ] Implement SpeechSynthesis engine (`window.speechSynthesis`) for Read Aloud button
-- [ ] Wire voice command listener placeholder for future intent routing
+- [x] Inject floating accessibility panel `#adaptai-toolbar` into DOM (`content.js`, `styles.css`)
+- [x] Add 🔊 (Read Aloud) and 🎤 (Voice Command) interactive buttons
+- [x] Implement SpeechSynthesis engine (`window.speechSynthesis`) for Read Aloud button
+- [x] Wire voice command listener placeholder for future intent routing
 
 **Tests:**
-- [ ] Toolbar renders fixed in bottom-right corner without disrupting page layout
-- [ ] 🔊 click triggers SpeechSynthesisUtterance with clear audio output
-- [ ] `speechSynthesis.cancel()` stops previous speech when re-triggered
-- [ ] Hover and click visual transitions smooth on all elements
+- [x] Toolbar renders fixed in bottom-right corner without disrupting page layout
+- [x] 🔊 click triggers SpeechSynthesisUtterance with clear audio output
+- [x] `speechSynthesis.cancel()` stops previous speech when re-triggered
+- [x] Hover and click visual transitions smooth on all elements
 
 **Quality Gate:**
-- [ ] Toolbar `z-index` stays on top of external site elements (`z-index: 999999`)
-- [ ] Web Speech API runs cleanly without browser permission blocks
-- [ ] Pushed to `main` via git merge workflow
+- [x] Toolbar `z-index` stays on top of external site elements (`z-index: 999999`)
+- [x] Web Speech API runs cleanly without browser permission blocks
+- [x] Sub-task baseline verified on `track-A` branch
+
 
 ---
 

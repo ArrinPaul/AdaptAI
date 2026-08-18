@@ -33,6 +33,14 @@
         "mac": "Command+Shift+A"
       },
       "description": "Trigger the AI adaptation layer"
+    },
+    "activate_ai_assistant": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "Activate the Floating AI Assistant Panel"
     }
   }
+
 }

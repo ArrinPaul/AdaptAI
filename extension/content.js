@@ -72,9 +72,12 @@ function injectFloatingToolbar() {
   `;
   document.body.appendChild(toolbar);
 
-  document.getElementById('adaptai-read-aloud').addEventListener('click', handleReadAloud);
-  document.getElementById('adaptai-voice-cmd').addEventListener('click', handleVoiceCommand);
+  const readBtn = document.getElementById('adaptai-read-aloud');
+  const voiceBtn = document.getElementById('adaptai-voice-cmd');
+  if (readBtn) readBtn.addEventListener('click', handleReadAloud);
+  if (voiceBtn) voiceBtn.addEventListener('click', handleVoiceCommand);
 }
+
 
 function handleReadAloud() {
   if (!('speechSynthesis' in window)) {
@@ -262,6 +265,188 @@ function runFullTransformation(payload) {
 }
 
 // -------------------------------------------------------------
+// FLOATING AI ASSISTANT OVERLAY PANEL (CHROME & SAFARI ADAPTER)
+// -------------------------------------------------------------
+function injectAiAssistantPanel() {
+  if (document.getElementById('adaptai-assistant-overlay')) return;
+
+  const panel = document.createElement('div');
+  panel.id = 'adaptai-assistant-overlay';
+  panel.className = 'adaptai-assistant-container';
+  panel.style.display = 'none';
+
+  panel.innerHTML = `
+    <div class="assistant-header">
+      <div class="assistant-title">
+        <span class="logo-spark">⚡</span> AdaptAI Floating Assistant
+      </div>
+      <button class="assistant-close-btn" id="adaptai-assistant-close" title="Close (Esc)">✕</button>
+    </div>
+
+    <div class="assistant-body" id="adaptai-assistant-body">
+      <div class="assistant-welcome">
+        <p class="welcome-heading">Hello! How can I assist you on this page?</p>
+        <p class="welcome-sub">Context & Persona aware assistant for accessibility and reading ease.</p>
+      </div>
+
+      <div class="suggested-chips" id="adaptai-suggested-chips">
+        <button class="chip-btn" data-query="Summarize this page content briefly.">📄 Summarize Page</button>
+        <button class="chip-btn" data-query="Explain complex concepts on this page simply.">🧠 Explain This</button>
+        <button class="chip-btn" data-query="Highlight key action items or decisions.">🎯 Key Takeaways</button>
+      </div>
+
+      <div id="adaptai-chat-history" class="chat-history"></div>
+    </div>
+
+    <div class="assistant-footer">
+      <div id="adaptai-context-indicator" class="context-indicator" style="display:none;">
+        <span class="context-icon">📌</span> Selected Text Context Attached
+      </div>
+      <div class="input-row">
+        <textarea id="adaptai-assistant-input" rows="1" placeholder="Ask anything about this page... (Enter to send, Shift+Enter for new line)"></textarea>
+        <button id="adaptai-assistant-send" class="send-btn">➤</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(panel);
+
+  // Close event listener
+  const closeBtn = document.getElementById('adaptai-assistant-close');
+  if (closeBtn) closeBtn.addEventListener('click', toggleAiAssistant);
+
+  // Suggested chip listeners
+  const chips = document.querySelectorAll('#adaptai-suggested-chips .chip-btn');
+  if (chips) {
+    chips.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const promptText = e.target.getAttribute('data-query');
+        submitAssistantQuery(promptText);
+      });
+    });
+  }
+
+  // Input keyboard navigation
+  const inputEl = document.getElementById('adaptai-assistant-input');
+  if (inputEl) {
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        submitAssistantQuery(inputEl.value);
+      }
+    });
+  }
+
+  const sendBtn = document.getElementById('adaptai-assistant-send');
+  if (sendBtn) {
+    sendBtn.addEventListener('click', () => {
+      const inputVal = inputEl ? inputEl.value : '';
+      submitAssistantQuery(inputVal);
+    });
+  }
+}
+
+
+/**
+ * Toggles Assistant Overlay Display & Automatically Focuses Input
+ */
+function toggleAiAssistant() {
+  injectAiAssistantPanel();
+  const panel = document.getElementById('adaptai-assistant-overlay');
+  if (!panel) return;
+
+  const isHidden = panel.style.display === 'none';
+  if (isHidden) {
+    panel.style.display = 'flex';
+    panel.classList.add('active');
+
+    // Check for user-selected text on page
+    const selectedText = window.getSelection().toString().trim();
+    const contextIndicator = document.getElementById('adaptai-context-indicator');
+    if (selectedText.length > 0) {
+      if (contextIndicator) {
+        contextIndicator.style.display = 'block';
+        contextIndicator.innerText = `📌 Context: "${selectedText.slice(0, 40)}..."`;
+      }
+      window.__adaptAiSelectedText = selectedText;
+    } else {
+      if (contextIndicator) contextIndicator.style.display = 'none';
+      window.__adaptAiSelectedText = null;
+    }
+
+    // Auto-focus input
+    setTimeout(() => {
+      const inputEl = document.getElementById('adaptai-assistant-input');
+      if (inputEl) inputEl.focus();
+    }, 100);
+  } else {
+    panel.style.display = 'none';
+    panel.classList.remove('active');
+  }
+}
+
+/**
+ * Dispatches Assistant Prompt to Background Service Worker
+ */
+function submitAssistantQuery(userQuery) {
+  if (!userQuery || userQuery.trim().length === 0) return;
+  
+  const historyEl = document.getElementById('adaptai-chat-history');
+  const inputEl = document.getElementById('adaptai-assistant-input');
+  
+  // Render User Message
+  const userMsgEl = document.createElement('div');
+  userMsgEl.className = 'chat-msg user-msg';
+  userMsgEl.innerText = userQuery;
+  historyEl.appendChild(userMsgEl);
+
+  inputEl.value = '';
+
+  // Render Thinking State
+  const thinkingEl = document.createElement('div');
+  thinkingEl.className = 'chat-msg ai-msg thinking';
+  thinkingEl.innerText = 'AI is analyzing page context... ● ● ●';
+  historyEl.appendChild(thinkingEl);
+
+  historyEl.scrollTop = historyEl.scrollHeight;
+
+  // Send request to background pipeline
+  const pageText = scrapePageDOM();
+  const selectedText = window.__adaptAiSelectedText || '';
+
+  chrome.runtime.sendMessage({
+    action: "process_with_ai",
+    pageText: `User Query: ${userQuery}\nSelected Context: ${selectedText}\nPage Text: ${pageText}`
+  });
+
+  // Listen for single-shot response
+  const responseHandler = (request) => {
+    if (request.action === 'apply_transformations') {
+      thinkingEl.className = 'chat-msg ai-msg';
+      const summaryText = request.data?.simplifiedText?.[0] || "I have analyzed the page content and applied visual typography adaptations.";
+      thinkingEl.innerText = `⚡ ${summaryText}`;
+      historyEl.scrollTop = historyEl.scrollHeight;
+      chrome.runtime.onMessage.removeListener(responseHandler);
+    }
+  };
+  chrome.runtime.onMessage.addListener(responseHandler);
+}
+
+// Global Keyboard Shortcut Listener for Chrome & Safari (Ctrl+Shift+Y / Command+Shift+Y / Esc)
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'Y' || e.key === 'y')) {
+    e.preventDefault();
+    toggleAiAssistant();
+  }
+  if (e.key === 'Escape') {
+    const panel = document.getElementById('adaptai-assistant-overlay');
+    if (panel && panel.style.display !== 'none') {
+      toggleAiAssistant();
+    }
+  }
+});
+
+// -------------------------------------------------------------
 // MESSAGE LISTENER & RUNTIME HANDLERS
 // -------------------------------------------------------------
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -277,10 +462,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const payload = request.data || mockGeminiResponse;
     runFullTransformation(payload);
   }
+
+  if (request.action === "toggle_assistant") {
+    toggleAiAssistant();
+  }
 });
 
 // Auto-inject UI toolbar on load
 injectFloatingToolbar();
+
 
 // -------------------------------------------------------------
 // TRACK A AUTOMATED SUITE (Run window.__runTrackATests() in console)

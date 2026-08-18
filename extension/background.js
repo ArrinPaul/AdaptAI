@@ -47,17 +47,49 @@ chrome.action.onClicked.addListener((tab) => {
   triggerPageAdaptation(tab);
 });
 
-// 3. Listen for Keyboard Commands (e.g. Ctrl+Shift+A)
+// Helper: Toggles Floating AI Assistant overlay on target tab
+function triggerAssistantActivation(tab) {
+  if (!tab || !tab.id) return;
+
+  chrome.storage.local.get(['extensionEnabled', 'onboardingCompleted'], (res) => {
+    const isEnabled = res.extensionEnabled !== false;
+    const isCompleted = res.onboardingCompleted === true;
+
+    if (!isCompleted) {
+      console.log("[AdaptAI Service Worker] Onboarding incomplete. Directing user to onboarding...");
+      chrome.tabs.create({ url: 'onboarding/onboarding.html' });
+      return;
+    }
+
+    if (!isEnabled) {
+      console.log("[AdaptAI Service Worker] Extension is OFF. AI Assistant activation ignored.");
+      return;
+    }
+
+    console.log(`[AdaptAI Service Worker] Opening AI Assistant overlay on Tab ID: ${tab.id}`);
+    chrome.tabs.sendMessage(tab.id, { action: "toggle_assistant" }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.warn("[AdaptAI Service Worker] Assistant listener error:", chrome.runtime.lastError.message);
+      }
+    });
+  });
+}
+
+// 3. Listen for Keyboard Commands (Chrome Ctrl+Shift+A / Ctrl+Shift+Y & Safari WebExtension Command Adapter)
 chrome.commands.onCommand.addListener((command) => {
   if (command === "trigger_adaptation") {
     console.log("[AdaptAI Service Worker] Keyboard command trigger_adaptation received.");
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs && tabs[0]) {
-        triggerPageAdaptation(tabs[0]);
-      }
+      if (tabs && tabs[0]) triggerPageAdaptation(tabs[0]);
+    });
+  } else if (command === "activate_ai_assistant") {
+    console.log("[AdaptAI Service Worker] Keyboard command activate_ai_assistant received.");
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs && tabs[0]) triggerAssistantActivation(tabs[0]);
     });
   }
 });
+
 
 // 4. Runtime Message Listener Router
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {

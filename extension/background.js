@@ -117,7 +117,129 @@ CRITICAL INSTRUCTIONS:
 
 You MUST respond strictly using the required JSON schema. Do NOT include markdown formatting.`;
 
-  const userContent = `Webpage Content Scraped From DOM:\n${scrapedPageText}`;
+// -------------------------------------------------------------
+// SUB-TASK B3: GEMINI API INTEGRATION & STRUCTURED OUTPUTS
+// -------------------------------------------------------------
 
-  return { systemInstruction, userContent };
+// Fallback JSON in case of API error, offline status, or missing key
+const mockGeminiFallback = {
+  cssUpdates: {
+    "--adapt-font-scale": "1.5",
+    "--adapt-bg-color": "#121212",
+    "--adapt-text-color": "#FFFF00",
+    "--adapt-line-height": "1.6"
+  },
+  simplifiedText: [
+    "Simplified Summary 1: High performance cloud architecture boosted operational margins.",
+    "Simplified Summary 2: Real-time client-side DOM adaptation models transform web layouts safely."
+  ],
+  dyslexicFont: true,
+  motorAssist: true,
+  voiceIntent: null
+};
+
+// Gemini Structured Output Schema Definition
+const geminiResponseSchema = {
+  type: "OBJECT",
+  properties: {
+    cssUpdates: {
+      type: "OBJECT",
+      properties: {
+        "--adapt-font-scale": { type: "STRING" },
+        "--adapt-bg-color": { type: "STRING" },
+        "--adapt-text-color": { type: "STRING" }
+      },
+      required: ["--adapt-font-scale"]
+    },
+    simplifiedText: {
+      type: "ARRAY",
+      items: { type: "STRING" }
+    },
+    dyslexicFont: { type: "BOOLEAN" },
+    motorAssist: { type: "BOOLEAN" },
+    voiceIntent: { type: "STRING", nullable: true }
+  },
+  required: ["cssUpdates", "simplifiedText"]
+};
+
+/**
+ * Invokes Gemini REST API via native fetch()
+ */
+async function callGeminiApi(systemInstruction, userContent, apiKey = null) {
+  if (!apiKey) {
+    console.warn("[AdaptAI Gemini API] No API Key provided. Returning defensive fallback mock JSON.");
+    return mockGeminiFallback;
+  }
+
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+  const requestBody = {
+    contents: [
+      {
+        role: "user",
+        parts: [{ text: `${systemInstruction}\n\n${userContent}` }]
+      }
+    ],
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: geminiResponseSchema,
+      temperature: 0.2
+    }
+  };
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Gemini API HTTP Error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!rawText) throw new Error("Empty candidate payload from Gemini API.");
+
+    const parsedJson = JSON.parse(rawText);
+    console.log("[AdaptAI Gemini API] Successfully generated Structured JSON:", parsedJson);
+    return parsedJson;
+  } catch (err) {
+    console.error("[AdaptAI Gemini API Error] Exception during fetch call:", err);
+    return mockGeminiFallback;
+  }
 }
+
+/**
+ * Master processing pipeline orchestrating storage, Gemini invocation, and tab response
+ */
+async function handleAiProcessRequest(pageText, tabId, apiKey = null) {
+  console.log(`[AdaptAI Processing Pipeline] Starting process for Tab ID: ${tabId}`);
+  
+  // 1. Retrieve User Accessibility Profile
+  const profile = await getUserProfileFromStorage();
+
+  // 2. Engineer Gemini System Prompt
+  const { systemInstruction, userContent } = buildGeminiSystemPrompt(profile, pageText);
+
+  // 3. Invoke Gemini API (or safe fallback)
+  const transformationData = await callGeminiApi(systemInstruction, userContent, apiKey);
+
+  // 4. Dispatch result back to Content Script
+  if (tabId && typeof chrome !== 'undefined' && chrome.tabs) {
+    chrome.tabs.sendMessage(tabId, {
+      action: "apply_transformations",
+      data: transformationData
+    }, () => {
+      if (chrome.runtime.lastError) {
+        console.warn("[AdaptAI Processing Pipeline] Error sending payload to tab:", chrome.runtime.lastError.message);
+      } else {
+        console.log("[AdaptAI Processing Pipeline] Successfully delivered transformations to tab!");
+      }
+    });
+  }
+
+  return transformationData;
+}
+

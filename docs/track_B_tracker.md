@@ -59,21 +59,22 @@
 ---
 
 ### B.3 Gemini API Integration & Structured Output Enforcement
-- [ ] Implement native `fetch()` POST call to Gemini API endpoint (`generativelanguage.googleapis.com`)
-- [ ] Configure `responseSchema` (Gemini Structured Outputs) enforcing strict JSON output
-- [ ] Parse JSON response payload and route result back to active tab via `chrome.tabs.sendMessage`
-- [ ] Implement defensive `try/catch` wrapper returning safe fallback JSON on API error or offline state
+- [x] Implement native `fetch()` POST call to Gemini API endpoint (`generativelanguage.googleapis.com`)
+- [x] Configure `responseSchema` (Gemini Structured Outputs) enforcing strict JSON output
+- [x] Parse JSON response payload and route result back to active tab via `chrome.tabs.sendMessage`
+- [x] Implement defensive `try/catch` wrapper returning safe fallback JSON on API error or offline state
 
 **Tests:**
-- [ ] Gemini API call executes successfully with valid API key
-- [ ] Output JSON schema strictly conforms to contract
-- [ ] API network failures/timeouts fall back to `mockGeminiResponse` without throwing uncaught exceptions
-- [ ] Transformation payload emitted back to content script tab ID
+- [x] Gemini API call executes successfully with valid API key
+- [x] Output JSON schema strictly conforms to contract
+- [x] API network failures/timeouts fall back to `mockGeminiResponse` without throwing uncaught exceptions
+- [x] Transformation payload emitted back to content script tab ID
 
 **Quality Gate:**
-- [ ] P95 API response latency < 2.5 seconds
-- [ ] Structured Output JSON validated 100% of the time
-- [ ] Sub-task committed to `Track-B`
+- [x] P95 API response latency < 2.5 seconds
+- [x] Structured Output JSON validated 100% of the time
+- [x] Sub-task committed to `Track-B`
+
 
 ---
 

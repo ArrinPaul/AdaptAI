@@ -272,38 +272,29 @@ function updateTtsBtnIcon(iconText) {
 }
 
 /**
- * Toggles Extension Light / Dark / Persona High-Contrast Mode on page and UI
+ * Toggles Extension Light / Dark Mode across external web pages
  */
 function toggleExtensionTheme() {
   const root = document.documentElement;
 
-  // Retrieve User Accessibility Profile from Chrome storage or fallback
   if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-    chrome.storage.local.get(['userProfile', 'extensionTheme'], (res) => {
-      const profile = res.userProfile || {};
+    chrome.storage.local.get(['extensionTheme'], (res) => {
       const currentTheme = res.extensionTheme || 'dark';
 
       if (currentTheme === 'dark') {
-        // Switch to High-Contrast Persona Theme (Yellow on Black)
-        extensionThemeState = 'high_contrast';
-        root.setAttribute('data-adaptai-transformed', 'true');
-        root.style.setProperty('--adapt-bg-color', '#121212');
-        root.style.setProperty('--adapt-text-color', '#FFFF00');
-        console.log("[AdaptAI Theme] Applied Persona High-Contrast Theme (Yellow on Black).");
-      } else if (currentTheme === 'high_contrast') {
-        // Switch to High-Contrast Light Theme (Black on White)
+        // Toggle to Light Mode (Black text on White background)
         extensionThemeState = 'light';
         root.setAttribute('data-adaptai-transformed', 'true');
-        root.style.setProperty('--adapt-bg-color', '#FFFFFF');
-        root.style.setProperty('--adapt-text-color', '#000000');
-        console.log("[AdaptAI Theme] Applied Persona Light Theme (Black on White).");
+        root.style.setProperty('--adapt-bg-color', '#ffffff');
+        root.style.setProperty('--adapt-text-color', '#0f172a');
+        console.log("[AdaptAI Theme] Toggled to Light Theme across website.");
       } else {
-        // Reset to Standard Default Theme
+        // Toggle to Dark Mode (Yellow text on Dark background)
         extensionThemeState = 'dark';
-        root.removeAttribute('data-adaptai-transformed');
-        root.style.removeProperty('--adapt-bg-color');
-        root.style.removeProperty('--adapt-text-color');
-        console.log("[AdaptAI Theme] Reset to Default Page Theme.");
+        root.setAttribute('data-adaptai-transformed', 'true');
+        root.style.setProperty('--adapt-bg-color', '#09090b');
+        root.style.setProperty('--adapt-text-color', '#ffff00');
+        console.log("[AdaptAI Theme] Toggled to Dark Theme across website.");
       }
 
       chrome.storage.local.set({ extensionTheme: extensionThemeState });
@@ -313,18 +304,19 @@ function toggleExtensionTheme() {
       mountShadowWidget();
     });
   } else {
-    // Non-extension fallback toggle
-    if (!root.getAttribute('data-adaptai-transformed')) {
-      root.setAttribute('data-adaptai-transformed', 'true');
-      root.style.setProperty('--adapt-bg-color', '#121212');
-      root.style.setProperty('--adapt-text-color', '#FFFF00');
-    } else {
+    // Standalone fallback toggle
+    if (root.getAttribute('data-adaptai-transformed') === 'true') {
       root.removeAttribute('data-adaptai-transformed');
       root.style.removeProperty('--adapt-bg-color');
       root.style.removeProperty('--adapt-text-color');
+    } else {
+      root.setAttribute('data-adaptai-transformed', 'true');
+      root.style.setProperty('--adapt-bg-color', '#09090b');
+      root.style.setProperty('--adapt-text-color', '#ffff00');
     }
   }
 }
+
 
 
 function handleVoiceCommand() {

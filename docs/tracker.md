@@ -22,30 +22,30 @@
 
 ### 0.1 Contract & Architecture Setup
 
-- [ ] Lock JSON Request/Response contract between Module 1 and Module 2
-- [ ] Confirm tech stack (Manifest V3, Vanilla JS, Node/Express backend, Gemini 1.5 Flash API)
-- [ ] Create repository structure (`/module1-extension` and `/module2-ai`)
-- [ ] Obtain and verify Gemini API key
-- [ ] Build/pick controlled demo HTML page (dense text, small fonts, tiny buttons, image)
+- [x] Lock JSON Request/Response contract between Module 1 and Module 2
+- [x] Confirm tech stack (Manifest V3, Vanilla JS, Node/Express backend, Gemini 1.5 Flash API)
+- [x] Create repository structure (`/module1-extension` and `/module2-ai`)
+- [x] Obtain and verify Gemini API key
+- [x] Build/pick controlled demo HTML page (dense text, small fonts, tiny buttons, image)
 
 **Tests:**
 
-- [ ] Contract JSON schema verified on both sides
-- [ ] Gemini API key test call succeeds via simple script
-- [ ] Demo page renders expected inaccessible elements
+- [x] Contract JSON schema verified on both sides
+- [x] Gemini API key test call succeeds via simple script
+- [x] Demo page renders expected inaccessible elements
 
 **Quality Gate:**
 
-- [ ] Both teams signed off on the frozen JSON contract
-- [ ] Zero tech stack ambiguity
+- [x] Both teams signed off on the frozen JSON contract
+- [x] Zero tech stack ambiguity
 
 ---
 
 ### **PHASE 0 EXIT GATE**
 
-- [ ] Repository initialized with proper workspace folders
-- [ ] Contract frozen in Section 5 of `Plan.md`
-- [ ] Gemini API key active and validated
+- [x] Repository initialized with proper workspace folders
+- [x] Contract frozen in Section 5 of `Plan.md`
+- [x] Gemini API key active and validated
 
 ---
 

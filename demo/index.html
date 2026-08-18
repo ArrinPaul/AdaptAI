@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdaptAI Controlled Demo Page — Financial & Tech Portal</title>
+  <style>
+    /* Deliberately inaccessible styling for demo purposes */
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      line-height: 1.1;
+      color: #999999; /* Extremely low contrast */
+      background-color: #ffffff;
+      margin: 0;
+      padding: 20px;
+    }
+    header nav {
+      background: #eeeeee;
+      padding: 5px;
+      margin-bottom: 15px;
+    }
+    header nav a {
+      font-size: 9px;
+      color: #bbbbbb;
+      margin-right: 10px;
+      text-decoration: none;
+    }
+    .headline {
+      font-size: 14px;
+      color: #777777;
+      margin-bottom: 5px;
+    }
+    .subheading {
+      font-size: 12px;
+      color: #888888;
+    }
+    .dense-paragraph {
+      margin-bottom: 15px;
+      text-align: justify;
+    }
+    .tiny-btn {
+      font-size: 8px;
+      padding: 2px 4px;
+      background-color: #e0e0e0;
+      color: #666666;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+    .animated-banner {
+      width: 100%;
+      height: 30px;
+      background: linear-gradient(90deg, #ff0000, #00ff00, #0000ff);
+      animation: flashBanner 1s infinite alternate;
+      margin-bottom: 15px;
+      text-align: center;
+      line-height: 30px;
+      color: white;
+      font-weight: bold;
+    }
+    @keyframes flashBanner {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+    img {
+      max-width: 200px;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="animated-banner">FLASHING PROMOTIONAL BANNER</div>
+
+  <header>
+    <nav id="top-nav">
+      <a href="#home">Home</a>
+      <a href="#services">Services</a>
+      <a href="#products">Products</a>
+      <a href="#investors">Investor Relations</a>
+      <a href="#careers">Careers</a>
+      <a href="#contact">Contact Support</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1 class="headline">Quarterly Financial & Technology Performance Synopsis</h1>
+    <h2 class="subheading">Executive Overview for Fiscal Year 2026 Q2</h2>
+
+    <p class="dense-paragraph" id="main-para">
+      In the second quarter of fiscal year 2026, our enterprise recorded exponential algorithmic productivity increases, driven primarily by hyper-scaled cloud architecture deployments and automated cross-domain data synchronization pipelines. Despite macroeconomic volatility in global supply chains, net operational margins expanded by 14.2%, attributable to optimized resource allocation strategies, streamlined microservice topologies, and reduced infrastructure overhead. Stakeholders are advised to review the comprehensive tabular breakdowns in Section 4.B for granular metrics on regional throughput and compliance audits.
+    </p>
+
+    <p class="dense-paragraph">
+      Furthermore, ongoing research initiatives in autonomous accessibility orchestration have yielded breakthrough heuristics capable of dynamic client-side DOM adaptation. These proprietary models analyze real-time DOM structural node trees, synthesizing semantic context and transforming visual style assets without altering core business logic or underlying REST API integration boundaries.
+    </p>
+
+    <div class="actions">
+      <button class="tiny-btn">Download PDF Report</button>
+      <button class="tiny-btn">Request Callback</button>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <img id="demo-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='100'><rect width='200' height='100' fill='%23ccc'/><text x='20' y='55' fill='%23666' font-size='12'>Sample Financial Chart</text></svg>" />
+    </div>
+  </main>
+</body>
+</html>

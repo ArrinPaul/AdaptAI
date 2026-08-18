@@ -84,6 +84,67 @@ html[data-adaptai-transformed="true"][data-adaptai-theme="light"] aside {
   border-color: #e4e4e7 !important;
 }
 
+/* High contrast text rules for badges, buttons, pills, and UI cards */
+html[data-adaptai-transformed="true"] .brand-badge {
+  background: #18181b !important;
+  color: #f4f4f5 !important;
+  border-color: #3f3f46 !important;
+}
+
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .brand-badge {
+  background: #f4f4f5 !important;
+  color: #09090b !important;
+  border-color: #d4d4d8 !important;
+}
+
+html[data-adaptai-transformed="true"] .btn-nav-cta {
+  background: #ffffff !important;
+  color: #09090b !important;
+}
+
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .btn-nav-cta {
+  background: #09090b !important;
+  color: #ffffff !important;
+}
+
+html[data-adaptai-transformed="true"] .pill-announcement {
+  background: #18181b !important;
+  color: #e4e4e7 !important;
+  border-color: #3f3f46 !important;
+}
+
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .pill-announcement {
+  background: #f4f4f5 !important;
+  color: #09090b !important;
+  border-color: #d4d4d8 !important;
+}
+
+html[data-adaptai-transformed="true"] .stat-card {
+  background: #18181b !important;
+  border-color: #27272a !important;
+}
+
+html[data-adaptai-transformed="true"] .stat-num {
+  color: #ffffff !important;
+}
+
+html[data-adaptai-transformed="true"] .stat-label {
+  color: #a1a1aa !important;
+}
+
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .stat-card {
+  background: #f4f4f5 !important;
+  border-color: #e4e4e7 !important;
+}
+
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .stat-num {
+  color: #09090b !important;
+}
+
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .stat-label {
+  color: #52525b !important;
+}
+
 html[data-adaptai-transformed="true"][data-adaptai-theme="light"] p,
 html[data-adaptai-transformed="true"][data-adaptai-theme="light"] h1,
 html[data-adaptai-transformed="true"][data-adaptai-theme="light"] h2,
@@ -94,9 +155,10 @@ html[data-adaptai-transformed="true"][data-adaptai-theme="light"] h6,
 html[data-adaptai-transformed="true"][data-adaptai-theme="light"] span:not(.brand-dot),
 html[data-adaptai-transformed="true"][data-adaptai-theme="light"] li,
 html[data-adaptai-transformed="true"][data-adaptai-theme="light"] label,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] a {
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] a:not(.btn-hero-primary):not(.btn-nav-cta) {
   color: #09090b !important;
 }
+
 
 
 

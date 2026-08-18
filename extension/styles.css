@@ -8,12 +8,31 @@
 }
 
 /* Master AdaptAI Accessibility Theme Engine */
+html[data-adaptai-transformed="true"] {
+  background-color: var(--adapt-bg-color, #09090b) !important;
+  color: var(--adapt-text-color, #f4f4f5) !important;
+}
+
+html[data-adaptai-transformed="true"] p,
+html[data-adaptai-transformed="true"] h1,
+html[data-adaptai-transformed="true"] h2,
+html[data-adaptai-transformed="true"] h3,
+html[data-adaptai-transformed="true"] h4,
+html[data-adaptai-transformed="true"] h5,
+html[data-adaptai-transformed="true"] h6,
+html[data-adaptai-transformed="true"] span:not(.brand-dot),
+html[data-adaptai-transformed="true"] li,
+html[data-adaptai-transformed="true"] label,
+html[data-adaptai-transformed="true"] a {
+  color: var(--adapt-text-color, inherit) !important;
+}
+
 html[data-adaptai-transformed="true"][data-adaptai-theme="dark"],
 html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] body,
 html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]),
 html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) body {
-  background-color: #09090b !important;
-  color: #f4f4f5 !important;
+  background-color: var(--adapt-bg-color, #09090b) !important;
+  color: var(--adapt-text-color, #f4f4f5) !important;
 }
 
 /* Transform layout containers, headers, articles, and cards to dark zinc */
@@ -38,7 +57,7 @@ html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) aside {
   border-color: #27272a !important;
 }
 
-/* Ensure clean text legibility on dark theme */
+/* /* Ensure clean text legibility on dark theme with dynamic yellow text support */
 html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] p,
 html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] h1,
 html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] h2,
@@ -49,7 +68,6 @@ html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] h6,
 html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] span:not(.brand-dot),
 html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] li,
 html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] label,
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] a,
 html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) p,
 html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h1,
 html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h2,
@@ -58,9 +76,11 @@ html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h4,
 html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h5,
 html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h6,
 html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) span:not(.brand-dot),
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] a:not(.btn-hero-primary),
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) a:not(.btn-hero-primary) {
-  color: #f4f4f5 !important;
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) li,
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) label,
+html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] a:not(.btn-hero-primary):not(.btn-nav-cta),
+html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) a:not(.btn-hero-primary):not(.btn-nav-cta) {
+  color: var(--adapt-text-color, #f4f4f5) !important;
 }
 
 
@@ -97,14 +117,24 @@ html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .brand-badge {
   border-color: #d4d4d8 !important;
 }
 
-html[data-adaptai-transformed="true"] .btn-nav-cta {
+html[data-adaptai-transformed="true"] .btn-hero-primary,
+html[data-adaptai-transformed="true"] .btn-nav-cta,
+html[data-adaptai-transformed="true"] a.btn-hero-primary,
+html[data-adaptai-transformed="true"] a.btn-nav-cta {
   background: #ffffff !important;
   color: #09090b !important;
+  -webkit-text-fill-color: #09090b !important;
+  font-weight: 700 !important;
 }
 
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .btn-nav-cta {
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .btn-hero-primary,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] .btn-nav-cta,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] a.btn-hero-primary,
+html[data-adaptai-transformed="true"][data-adaptai-theme="light"] a.btn-nav-cta {
   background: #09090b !important;
   color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-weight: 700 !important;
 }
 
 html[data-adaptai-transformed="true"] .pill-announcement {

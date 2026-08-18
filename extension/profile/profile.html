@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AdaptAI — User Profile & Persona Settings</title>
+  <title>AdaptAI — Profile & Preferences</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #09090b;
-      --card-bg: #121215;
-      --card-border: #27272a;
-      --text-bright: #fafafa;
-      --text-muted: #a1a1aa;
-      --text-dim: #71717a;
+      --bg: #000000;
+      --card-bg: #0a0a0a;
+      --card-border: #1a1a1a;
+      --text-bright: #ffffff;
+      --text-muted: #888888;
+      --text-dim: #444444;
     }
 
     * {
@@ -28,11 +28,11 @@
       background-color: var(--bg);
       color: var(--text-bright);
       min-height: 100vh;
-      padding: 48px 24px;
+      padding: 64px 32px;
     }
 
     .container {
-      max-width: 720px;
+      max-width: 640px;
       margin: 0 auto;
     }
 
@@ -40,36 +40,37 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 40px;
-      padding-bottom: 20px;
+      margin-bottom: 48px;
+      padding-bottom: 24px;
       border-bottom: 1px solid var(--card-border);
     }
 
     .brand {
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
       display: flex;
       align-items: center;
-      gap: 10px;
-      letter-spacing: -0.3px;
+      gap: 8px;
     }
 
     .brand-mark {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       background: var(--text-bright);
-      border-radius: 2px;
+      border-radius: 1px;
     }
 
     .nav-links {
       display: flex;
-      gap: 20px;
+      gap: 24px;
     }
 
     .nav-link {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 500;
       transition: color 0.2s;
     }
@@ -79,99 +80,91 @@
     .profile-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 36px;
-      margin-bottom: 24px;
+      border-radius: 8px;
+      padding: 40px;
+      margin-bottom: 32px;
     }
 
     .card-title {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
       color: var(--text-dim);
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 8px;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
     }
 
     .persona-name {
-      font-size: 24px;
-      font-weight: 700;
+      font-size: 22px;
+      font-weight: 600;
       margin-bottom: 12px;
-      letter-spacing: -0.4px;
+      letter-spacing: -0.3px;
     }
 
     .persona-desc {
       color: var(--text-muted);
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.6;
-      margin-bottom: 32px;
+      margin-bottom: 36px;
     }
 
     .score-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-
-    .score-box {
-      background: #18181b;
-      border: 1px solid var(--card-border);
-      padding: 20px;
-      border-radius: 12px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 36px;
+      border-top: 1px solid var(--card-border);
+      border-bottom: 1px solid var(--card-border);
+      padding: 24px 0;
     }
 
     .score-box .label {
-      font-size: 12px;
-      color: var(--text-dim);
-      font-weight: 500;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 400;
     }
 
     .score-box .value {
-      font-size: 22px;
-      font-weight: 700;
+      font-size: 18px;
+      font-weight: 600;
       margin-top: 6px;
       color: var(--text-bright);
-      letter-spacing: -0.3px;
     }
 
     .action-row {
       display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
+      gap: 12px;
     }
 
     .btn-primary {
       background: var(--text-bright);
-      color: #09090b;
+      color: var(--bg);
       border: none;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-size: 13px;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       text-decoration: none;
-      display: inline-block;
       transition: opacity 0.2s;
     }
 
-    .btn-primary:hover { opacity: 0.9; }
+    .btn-primary:hover { opacity: 0.85; }
 
     .btn-secondary {
-      background: #18181b;
+      background: transparent;
       border: 1px solid var(--card-border);
-      color: var(--text-bright);
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
+      color: var(--text-muted);
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
       cursor: pointer;
       text-decoration: none;
-      display: inline-block;
-      transition: background 0.2s;
+      transition: color 0.2s, border-color 0.2s;
     }
 
-    .btn-secondary:hover { background: #27272a; }
+    .btn-secondary:hover { color: var(--text-bright); border-color: var(--text-muted); }
   </style>
 </head>
 <body>
@@ -179,40 +172,40 @@
     <div class="nav-bar">
       <div class="brand">
         <span class="brand-mark"></span>
-        <span>AdaptAI Profile Center</span>
+        <span>ADAPTAI</span>
       </div>
       <div class="nav-links">
-        <a href="http://localhost:8080/index.html" class="nav-link">Landing Page</a>
-        <a href="http://localhost:8080/demo/index.html" class="nav-link">Simulation Workbench</a>
-        <a href="http://localhost:8080/extension/onboarding/onboarding.html" class="nav-link">Diagnostic Test</a>
+        <a href="http://localhost:8080/index.html" class="nav-link">Overview</a>
+        <a href="http://localhost:8080/demo/index.html" class="nav-link">Workbench</a>
+        <a href="http://localhost:8080/extension/onboarding/onboarding.html" class="nav-link">Assessment</a>
       </div>
     </div>
 
     <div class="profile-card">
-      <div class="card-title">Active Accessibility Persona</div>
-      <div class="persona-name" id="persona-name">High-Contrast Visual Assist Persona</div>
+      <div class="card-title">Active Persona</div>
+      <div class="persona-name" id="persona-name">High-Contrast Visual Assist</div>
       <div class="persona-desc" id="persona-summary">
-        Optimized for low-vision and light sensitivity. Applies high-contrast color themes, scaled typography, and custom dyslexia-friendly line spacing automatically.
+        Calibrated for enhanced visual clarity. Applies contrast themes, scaled typography, and custom dyslexia-friendly line spacing dynamically.
       </div>
 
       <div class="score-grid">
         <div class="score-box">
-          <div class="label">Visual Legibility</div>
+          <div class="label">Visual</div>
           <div class="value" id="score-visual">85 / 100</div>
         </div>
         <div class="score-box">
-          <div class="label">Cognitive Readability</div>
+          <div class="label">Cognitive</div>
           <div class="value" id="score-cognitive">90 / 100</div>
         </div>
         <div class="score-box">
-          <div class="label">Motor Target Precision</div>
+          <div class="label">Motor</div>
           <div class="value" id="score-motor">95 / 100</div>
         </div>
       </div>
 
       <div class="action-row">
-        <a href="http://localhost:8080/extension/onboarding/onboarding.html" class="btn-primary">Retake Diagnostic Assessment</a>
-        <a href="http://localhost:8080/demo/index.html" class="btn-secondary">Test Persona in Workbench</a>
+        <a href="http://localhost:8080/extension/onboarding/onboarding.html" class="btn-primary">Recalibrate Profile</a>
+        <a href="http://localhost:8080/demo/index.html" class="btn-secondary">Open Workbench</a>
       </div>
     </div>
   </div>
@@ -242,4 +235,5 @@
   </script>
 </body>
 </html>
+
 

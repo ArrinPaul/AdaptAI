@@ -9,15 +9,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #09090b;
-      --card-bg: #121215;
-      --card-border: #27272a;
-      --text-bright: #fafafa;
-      --text-muted: #a1a1aa;
-      --text-dim: #71717a;
+      --bg: #000000;
+      --card-bg: #0a0a0a;
+      --card-border: #1a1a1a;
+      --text-bright: #ffffff;
+      --text-muted: #888888;
+      --text-dim: #555555;
       --accent-white: #ffffff;
-      --status-active: #22c55e;
-      --status-disabled: #ef4444;
+      --status-active: #ffffff;
+      --status-disabled: #555555;
     }
 
     * {
@@ -31,7 +31,7 @@
       width: 320px;
       background-color: var(--bg);
       color: var(--text-bright);
-      padding: 20px;
+      padding: 24px;
       user-select: none;
     }
 
@@ -39,9 +39,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--card-border);
-      margin-bottom: 16px;
+      padding-bottom: 24px;
     }
 
     .brand {
@@ -49,41 +47,36 @@
       align-items: center;
       gap: 10px;
       font-weight: 700;
-      font-size: 15px;
-      letter-spacing: -0.3px;
+      font-size: 14px;
+      letter-spacing: -0.2px;
       color: var(--text-bright);
     }
 
     .brand-mark {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       background: var(--text-bright);
-      border-radius: 2px;
+      border-radius: 1px;
     }
 
     .status-badge {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      background: rgba(34, 197, 94, 0.1);
-      color: var(--status-active);
-      border: 1px solid rgba(34, 197, 94, 0.2);
-      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-bright);
     }
 
     .status-badge.disabled {
-      background: rgba(239, 68, 68, 0.1);
-      color: var(--status-disabled);
-      border-color: rgba(239, 68, 68, 0.2);
+      color: var(--text-dim);
     }
 
     .status-dot {
-      width: 6px;
-      height: 6px;
+      width: 4px;
+      height: 4px;
       background: var(--status-active);
       border-radius: 50%;
     }
@@ -96,21 +89,21 @@
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       padding: 16px;
-      border-radius: 12px;
+      border-radius: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     .toggle-info h4 {
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 500;
       color: var(--text-bright);
     }
 
     .toggle-info p {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-muted);
       margin-top: 2px;
     }
@@ -118,8 +111,8 @@
     .master-switch {
       position: relative;
       display: inline-block;
-      width: 40px;
-      height: 22px;
+      width: 32px;
+      height: 18px;
     }
 
     .master-switch input { opacity: 0; width: 0; height: 0; }
@@ -128,102 +121,90 @@
       position: absolute;
       cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #27272a;
-      transition: .25s ease;
+      background-color: var(--card-border);
+      transition: .2s ease;
       border-radius: 9999px;
     }
 
     .slider:before {
       position: absolute;
       content: "";
-      height: 16px;
-      width: 16px;
+      height: 12px;
+      width: 12px;
       left: 3px;
       bottom: 3px;
-      background-color: #a1a1aa;
-      transition: .25s ease;
+      background-color: var(--text-bright);
+      transition: .2s ease;
       border-radius: 50%;
     }
 
     input:checked + .slider { background-color: var(--text-bright); }
-    input:checked + .slider:before { transform: translateX(18px); background-color: #09090b; }
+    input:checked + .slider:before { transform: translateX(14px); background-color: var(--bg); }
 
     .persona-banner {
-      background: var(--card-bg);
+      background: transparent;
       border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 14px 16px;
-      margin-bottom: 14px;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
     }
 
     .persona-title {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 600;
       color: var(--text-dim);
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.6px;
     }
 
     .persona-name {
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 500;
       color: var(--text-bright);
       margin-top: 4px;
     }
 
     .btn-adapt-now {
       background: var(--text-bright);
-      color: #09090b;
+      color: var(--bg);
       border: none;
       width: 100%;
       padding: 12px;
-      border-radius: 10px;
+      border-radius: 6px;
       font-weight: 600;
-      font-size: 13px;
+      font-size: 12px;
       cursor: pointer;
       transition: opacity 0.2s ease;
-      margin-bottom: 16px;
-      letter-spacing: -0.2px;
+      margin-bottom: 24px;
     }
 
     .btn-adapt-now:hover {
       opacity: 0.9;
     }
 
-    .btn-adapt-now:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
-
     .menu-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 4px;
     }
 
     .menu-item {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      padding: 12px 14px;
-      border-radius: 10px;
-      color: var(--text-bright);
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 500;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: all 0.2s ease;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 11px;
+      padding: 8px 0;
+      transition: color 0.2s ease;
     }
 
     .menu-item:hover {
-      border-color: var(--text-muted);
-      background: #18181b;
+      color: var(--text-bright);
     }
 
     .arrow-icon {
-      color: var(--text-dim);
-      font-size: 12px;
+      font-size: 10px;
     }
   </style>
 </head>
@@ -231,18 +212,17 @@
   <div class="header">
     <div class="brand">
       <span class="brand-mark"></span>
-      <span>AdaptAI</span>
+      <span>ADAPTAI</span>
     </div>
     <div id="status-badge" class="status-badge">
       <span class="status-dot"></span> <span id="status-text">ON</span>
     </div>
   </div>
 
-  <!-- Master ON/OFF Switch -->
   <div class="master-toggle-box">
     <div class="toggle-info">
-      <h4>Extension Status</h4>
-      <p id="toggle-desc">Adaptations Active</p>
+      <h4>Extension</h4>
+      <p id="toggle-desc">Global processing active</p>
     </div>
     <label class="master-switch">
       <input type="checkbox" id="master-toggle" checked>
@@ -250,37 +230,32 @@
     </label>
   </div>
 
-  <!-- User Persona Summary -->
   <div class="persona-banner" id="persona-banner">
-    <div class="persona-title">Active Persona</div>
+    <div class="persona-title">Active Profile</div>
     <div class="persona-name" id="persona-name">High-Contrast Visual Assist</div>
   </div>
 
-  <button class="btn-adapt-now" id="trigger-adapt">Adapt Page (Ctrl+Shift+A)</button>
+  <button class="btn-adapt-now" id="trigger-adapt">Run Adaptation</button>
 
-  <!-- Quick Action Navigation -->
   <div class="menu-list">
     <a href="http://localhost:8080/index.html" id="link-landing" target="_blank" class="menu-item">
-      <span>Landing Page</span>
-      <span class="arrow-icon">→</span>
+      <span>Documentation</span>
+      <span class="arrow-icon">/</span>
     </a>
     <a href="http://localhost:8080/extension/onboarding/onboarding.html" id="link-onboarding" target="_blank" class="menu-item">
-      <span>Diagnostic Assessment</span>
-      <span class="arrow-icon">→</span>
+      <span>Assessment</span>
+      <span class="arrow-icon">/</span>
     </a>
     <a href="http://localhost:8080/extension/profile/profile.html" id="link-profile" target="_blank" class="menu-item">
-      <span>Profile & Settings</span>
-      <span class="arrow-icon">→</span>
+      <span>Preferences</span>
+      <span class="arrow-icon">/</span>
     </a>
     <a href="http://localhost:8080/demo/index.html" id="link-demo" target="_blank" class="menu-item">
-      <span>Simulation Workbench</span>
-      <span class="arrow-icon">→</span>
+      <span>Workbench</span>
+      <span class="arrow-icon">/</span>
     </a>
   </div>
 
   <script src="popup.js"></script>
 </body>
 </html>
-
-
-

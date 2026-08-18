@@ -3,32 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AdaptAI Controlled Demo & Diagnostic Test Page</title>
+  <title>AdaptAI Workbench — Simulation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --adapt-bg-color: #0b0f19;
-      --adapt-text-color: #f1f5f9;
+      --adapt-bg-color: #000000;
+      --adapt-text-color: #ffffff;
       --adapt-font-scale: 1;
       --adapt-line-height: 1.6;
-      --panel-bg: #141a29;
-      --panel-border: rgba(255, 255, 255, 0.08);
-      --accent: #3b82f6;
+      --panel-bg: #0a0a0a;
+      --panel-border: #1a1a1a;
+      --text-muted: #888888;
+      --text-dim: #444444;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
     body {
       background-color: var(--adapt-bg-color);
       color: var(--adapt-text-color);
-      font-size: calc(15px * var(--adapt-font-scale));
+      font-size: calc(14px * var(--adapt-font-scale));
       line-height: var(--adapt-line-height);
       display: flex;
       min-height: 100vh;
@@ -36,156 +37,135 @@
 
     /* Sidebar Control Panel */
     .control-sidebar {
-      width: 320px;
+      width: 280px;
       background: var(--panel-bg);
       border-right: 1px solid var(--panel-border);
-      padding: 24px;
+      padding: 32px 24px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 24px;
       flex-shrink: 0;
     }
 
     .sidebar-header {
       border-bottom: 1px solid var(--panel-border);
-      padding-bottom: 16px;
+      padding-bottom: 20px;
+    }
+
+    .brand-mark {
+      width: 6px;
+      height: 6px;
+      background: var(--adapt-text-color);
+      border-radius: 1px;
+      display: inline-block;
+      margin-right: 8px;
     }
 
     .sidebar-header h2 {
-      font-size: 18px;
-      font-weight: 800;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
       display: flex;
       align-items: center;
-      gap: 8px;
     }
 
     .sidebar-header p {
-      font-size: 12px;
-      color: #94a3b8;
+      font-size: 11px;
+      color: var(--text-muted);
       margin-top: 4px;
     }
 
     .control-group {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .control-label {
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-dim);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #94a3b8;
+      letter-spacing: 0.8px;
     }
 
     .btn-action {
-      background: #1e293b;
+      background: transparent;
       border: 1px solid var(--panel-border);
-      color: white;
-      padding: 12px 16px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
+      color: var(--adapt-text-color);
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
       cursor: pointer;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      transition: all 0.2s ease;
+      align-items: center;
+      transition: all 0.2s;
     }
 
     .btn-action:hover {
-      background: #334155;
-      border-color: var(--accent);
+      border-color: var(--text-muted);
     }
 
     .btn-trigger-main {
-      background: linear-gradient(135deg, #2563eb, #7c3aed);
-      color: white;
+      background: var(--adapt-text-color);
+      color: var(--adapt-bg-color);
       border: none;
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 700;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
       cursor: pointer;
-      box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
-      transition: all 0.2s ease;
+      transition: opacity 0.2s;
       margin-top: auto;
     }
 
     .btn-trigger-main:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 28px rgba(37, 99, 235, 0.6);
+      opacity: 0.85;
     }
 
-    /* Main Hostile / Adapted Document Area */
     .document-area {
       flex-grow: 1;
-      padding: 40px;
-      overflow-y: auto;
-      max-width: 900px;
-    }
-
-    /* Deliberately hostile elements before adaptation */
-    .hostile-header {
-      border-bottom: 2px solid var(--panel-border);
-      padding-bottom: 20px;
-      margin-bottom: 30px;
+      padding: 64px 48px;
+      max-width: 800px;
+      margin: 0 auto;
     }
 
     .hostile-banner {
-      background: #ef4444;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    h1.headline {
-      font-size: 28px;
-      font-weight: 800;
-      margin-bottom: 8px;
-      color: inherit;
-    }
-
-    h2.subheading {
-      font-size: 16px;
-      color: #94a3b8;
-      font-weight: 600;
-      margin-bottom: 24px;
-    }
-
-    p.dense-paragraph {
-      margin-bottom: 20px;
-      color: inherit;
-    }
-
-    .actions-row {
-      display: flex;
-      gap: 12px;
-      margin-top: 30px;
-    }
-
-    .tiny-btn {
-      background: #1e293b;
-      color: white;
+      background: #0a0a0a;
       border: 1px solid var(--panel-border);
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
+      padding: 10px 16px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
     }
 
-    .adapt-motor-assist .tiny-btn {
-      padding: 16px 28px !important;
-      font-size: 16px !important;
-      background: #2563eb !important;
+    .hostile-header {
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--panel-border);
+      padding-bottom: 20px;
+    }
+
+    .hostile-header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+      margin-bottom: 8px;
+    }
+
+    .article-meta {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .article-content p {
+      margin-bottom: 20px;
+      color: var(--text-muted);
     }
   </style>
 </head>
@@ -193,52 +173,51 @@
   <!-- Side Control Bar -->
   <aside class="control-sidebar">
     <div class="sidebar-header">
-      <h2>⚡ AdaptAI Test Suite</h2>
-      <p>Control & simulation environment for Extension DOM transformations.</p>
+      <h2><span class="brand-mark"></span> Workbench</h2>
+      <p>Control environment for DOM transformations.</p>
     </div>
 
     <div class="control-group">
-      <span class="control-label">Visual Adjustments</span>
+      <span class="control-label">Visual</span>
       <button class="btn-action" onclick="toggleHighContrast()">
-        High Contrast Theme <span>👁️</span>
+        <span>High Contrast</span>
       </button>
       <button class="btn-action" onclick="toggleDyslexicFont()">
-        OpenDyslexic Font <span>📖</span>
+        <span>OpenDyslexic Font</span>
       </button>
       <button class="btn-action" onclick="toggleFontScaling()">
-        1.5x Typography Scale <span>🔍</span>
+        <span>1.5x Typography Scale</span>
       </button>
     </div>
 
     <div class="control-group">
       <span class="control-label">Cognitive & Motor</span>
       <button class="btn-action" onclick="toggleTextSimplification()">
-        AI Simplification <span>🧠</span>
+        <span>AI Simplification</span>
       </button>
       <button class="btn-action" onclick="toggleMotorTargets()">
-        Motor Click Targets <span>🎯</span>
+        <span>Motor Targets</span>
       </button>
     </div>
 
     <div class="control-group">
-      <span class="control-label">Navigation & Sub-Pages</span>
-      <a href="/index.html" class="btn-action" style="text-decoration:none;">
-        🌐 Public Landing Page
+      <span class="control-label">Navigation</span>
+      <a href="http://localhost:8080/index.html" class="btn-action" style="text-decoration:none;">
+        <span>Overview</span> <span>/</span>
       </a>
-      <a href="/extension/profile/profile.html" class="btn-action" style="text-decoration:none;">
-        ⚙️ Profile Settings & Persona
+      <a href="http://localhost:8080/extension/profile/profile.html" class="btn-action" style="text-decoration:none;">
+        <span>Preferences</span> <span>/</span>
       </a>
-      <a href="/extension/onboarding/onboarding.html" class="btn-action" style="text-decoration:none;">
-        🧠 Take Diagnostic Test
+      <a href="http://localhost:8080/extension/onboarding/onboarding.html" class="btn-action" style="text-decoration:none;">
+        <span>Assessment</span> <span>/</span>
       </a>
     </div>
 
     <button class="btn-trigger-main" onclick="triggerFullAdaptation()">
-      🚀 Trigger Full AI Adaptation Pipeline
-
+      Run Adaptation Pipeline
     </button>
-
   </aside>
+
 
   <!-- Document Viewport -->
   <main class="document-area">

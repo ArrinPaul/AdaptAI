@@ -13,20 +13,6 @@ html[data-adaptai-transformed="true"] {
   color: var(--adapt-text-color, #f4f4f5) !important;
 }
 
-html[data-adaptai-transformed="true"] p,
-html[data-adaptai-transformed="true"] h1,
-html[data-adaptai-transformed="true"] h2,
-html[data-adaptai-transformed="true"] h3,
-html[data-adaptai-transformed="true"] h4,
-html[data-adaptai-transformed="true"] h5,
-html[data-adaptai-transformed="true"] h6,
-html[data-adaptai-transformed="true"] span:not(.brand-dot),
-html[data-adaptai-transformed="true"] li,
-html[data-adaptai-transformed="true"] label,
-html[data-adaptai-transformed="true"] a {
-  color: var(--adapt-text-color, inherit) !important;
-}
-
 html[data-adaptai-transformed="true"][data-adaptai-theme="dark"],
 html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] body,
 html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]),

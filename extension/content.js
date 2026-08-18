@@ -381,11 +381,6 @@ function applyCssTransformations(cssUpdates) {
   const root = document.documentElement;
   root.setAttribute('data-adaptai-transformed', 'true');
 
-  // If background is set to yellow, enforce yellow text color
-  if (cssUpdates["--adapt-bg-color"] === "#FFFF00" || cssUpdates["--adapt-bg-color"] === "yellow") {
-    cssUpdates["--adapt-text-color"] = "#FFFF00";
-  }
-
   Object.entries(cssUpdates).forEach(([varName, val]) => {
     root.style.setProperty(varName, val);
   });

@@ -100,7 +100,8 @@ function mountShadowWidget() {
 
   shadowHost = document.createElement('div');
   shadowHost.id = 'adaptai-widget-host';
-  shadowHost.style.cssText = 'position: fixed; bottom: 24px; right: 24px; z-index: 2147483647;';
+  shadowHost.style.cssText = 'position: fixed; top: 50%; right: 24px; transform: translateY(-50%); z-index: 2147483647;';
+
   
   const shadowRoot = shadowHost.attachShadow({ mode: 'open' });
 

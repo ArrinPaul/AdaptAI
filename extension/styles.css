@@ -1,3 +1,5 @@
+/* styles.css - AdaptAI Injection Style Engine */
+
 :root {
   --adapt-bg-color: inherit;
   --adapt-text-color: inherit;
@@ -5,71 +7,106 @@
   --adapt-font-family: inherit;
 }
 
-body, p, h1, h2, h3, h4, h5, h6, span, div, li, a {
-  background-color: var(--adapt-bg-color) !important;
-  color: var(--adapt-text-color) !important;
-  font-family: var(--adapt-font-family) !important;
-  transition: background-color 0.4s ease, color 0.4s ease !important;
+/* Master Accessibility High-Contrast Dark Filter Engine (Standard Open-Source Filter Inversion Engine) */
+html[data-adaptai-transformed="true"] {
+  filter: invert(0.92) hue-rotate(180deg) contrast(1.08) !important;
+  background-color: #121212 !important;
 }
 
+/* Invert back images, videos, canvas, and vector graphics to preserve true natural colors */
+html[data-adaptai-transformed="true"] img,
+html[data-adaptai-transformed="true"] video,
+html[data-adaptai-transformed="true"] iframe,
+html[data-adaptai-transformed="true"] canvas,
+html[data-adaptai-transformed="true"] svg,
+html[data-adaptai-transformed="true"] .mw-logo,
+html[data-adaptai-transformed="true"] #adaptai-widget-host,
+html[data-adaptai-transformed="true"] #adaptai-assistant-overlay {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
+
+
+
+
+/* Motor target expansion for click accessibility */
 .adapt-motor-assist button, 
 .adapt-motor-assist a {
-  padding: 1.5rem 3rem !important;
-  margin: 0.5rem !important;
-  font-size: 1.125rem !important;
+  padding: 16px 28px !important;
+  margin: 8px !important;
+  font-size: 1.1em !important;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.4) !important;
 }
 
+/* Floating Assistant Glassmorphic Toolbar Panel */
 #adaptai-toolbar,
 #adaptai-assistant-panel {
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  background: #0a0a0a;
-  border: 1px solid #222;
-  border-radius: 9999px;
+  bottom: 24px;
+  right: 24px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 40px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  gap: 12px;
+  padding: 10px 16px;
   z-index: 999999;
 }
 
 #adaptai-toolbar button,
 #adaptai-assistant-panel button {
-  background: transparent;
-  border: none;
-  color: #fff;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-size: 13px !important;
+  font-weight: 600 !important;
   cursor: pointer;
-  transition: all 0.3s ease;
+  padding: 8px 14px !important;
+  border-radius: 9999px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  width: auto !important;
+  height: auto !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 #adaptai-toolbar button:hover,
 #adaptai-assistant-panel button:hover {
-  background: #222;
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  transform: translateY(-2px) !important;
 }
 
+
+}
+
+/* Floating AI Assistant Overlay Panel */
 #adaptai-assistant-overlay {
   position: fixed;
-  bottom: 5rem;
-  right: 2rem;
-  width: 360px;
-  height: 480px;
-  background: #0a0a0a;
-  border: 1px solid #222;
-  border-radius: 24px;
+  bottom: 84px;
+  right: 24px;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  height: 500px;
+  max-height: calc(100vh - 120px);
+  background: rgba(18, 18, 22, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
   display: flex;
   flex-direction: column;
   z-index: 999999;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
-  color: #fff !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  color: #fafafa !important;
   overflow: hidden;
-  animation: slideInUp 0.4s ease;
+  animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes slideInUp {
@@ -78,73 +115,187 @@ body, p, h1, h2, h3, h4, h5, h6, span, div, li, a {
 }
 
 #adaptai-assistant-overlay .assistant-header {
-  padding: 1.5rem;
-  border-bottom: 1px solid #222;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 #adaptai-assistant-overlay .assistant-title {
-  font-weight: 500;
-  font-size: 1rem;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fafafa !important;
+}
+
+#adaptai-assistant-overlay .brand-dot {
+  width: 6px;
+  height: 6px;
+  background: #fafafa;
+  border-radius: 1px;
 }
 
 #adaptai-assistant-overlay .assistant-close-btn {
   background: transparent;
   border: none;
-  color: #888;
+  color: #a1a1aa;
+  font-size: 14px;
   cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
 }
-#adaptai-assistant-overlay .assistant-close-btn:hover { color: #fff; }
+
+#adaptai-assistant-overlay .assistant-close-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
 
 #adaptai-assistant-overlay .assistant-body {
   flex-grow: 1;
-  padding: 1.5rem;
+  padding: 20px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 16px;
+}
+
+#adaptai-assistant-overlay .assistant-welcome {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+#adaptai-assistant-overlay .welcome-heading {
+  font-weight: 600;
+  font-size: 13px;
+  color: #ffffff !important;
+}
+
+#adaptai-assistant-overlay .welcome-sub {
+  font-size: 11px;
+  color: #a1a1aa !important;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+#adaptai-assistant-overlay .suggested-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+#adaptai-assistant-overlay .chip-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #a1a1aa !important;
+  padding: 8px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#adaptai-assistant-overlay .chip-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+#adaptai-assistant-overlay .chat-history {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 #adaptai-assistant-overlay .chat-msg {
-  padding: 1rem;
-  border-radius: 12px;
-  font-size: 0.875rem;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 12px;
   line-height: 1.5;
   max-width: 85%;
 }
 
 #adaptai-assistant-overlay .user-msg {
-  background: #fff;
-  color: #000 !important;
+  background: #fafafa;
+  color: #09090b !important;
   align-self: flex-end;
+  font-weight: 500;
 }
 
 #adaptai-assistant-overlay .ai-msg {
-  background: #111;
-  border: 1px solid #222;
-  color: #fff !important;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fafafa !important;
   align-self: flex-start;
 }
 
+#adaptai-assistant-overlay .ai-msg.thinking {
+  color: #a1a1aa !important;
+  font-style: italic;
+}
+
 #adaptai-assistant-overlay .assistant-footer {
-  padding: 1.5rem;
-  border-top: 1px solid #222;
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+#adaptai-assistant-overlay .context-indicator {
+  font-size: 11px;
+  color: #a1a1aa !important;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+#adaptai-assistant-overlay .input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 #adaptai-assistant-overlay textarea {
-  width: 100%;
-  background: #111;
-  border: 1px solid #222;
-  color: #fff !important;
-  padding: 1rem;
-  border-radius: 12px;
-  font-size: 0.875rem;
+  flex-grow: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff !important;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 12px;
   resize: none;
   outline: none;
+  transition: border-color 0.2s;
 }
 
 #adaptai-assistant-overlay textarea:focus {
-  border-color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
 }
+
+#adaptai-assistant-overlay .send-btn {
+  background: #fafafa;
+  border: none;
+  color: #09090b;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: opacity 0.2s;
+}
+
+#adaptai-assistant-overlay .send-btn:hover {
+  opacity: 0.9;
+}
+
+
+
+

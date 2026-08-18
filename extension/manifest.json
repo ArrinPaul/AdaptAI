@@ -16,10 +16,8 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "onboarding/*",
-        "profile/*",
-        "demo/*",
-        "index.html",
+        "onboarding/onboarding.html",
+        "profile/profile.html",
         "styles.css"
       ],
       "matches": ["<all_urls>"]

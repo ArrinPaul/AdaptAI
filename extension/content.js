@@ -76,11 +76,9 @@ function injectFloatingToolbar() {
         return;
       }
       if (res.extensionTheme) extensionThemeState = res.extensionTheme;
-      applyHostTheme(extensionThemeState);
       mountShadowWidget();
     });
   } else {
-    applyHostTheme(extensionThemeState);
     mountShadowWidget();
   }
 }
@@ -110,45 +108,75 @@ function mountShadowWidget() {
     .widget-container {
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: ${extensionThemeState === 'light' ? '#ffffff' : 'rgba(15, 23, 42, 0.92)'};
-      color: ${extensionThemeState === 'light' ? '#0f172a' : '#f8fafc'};
-      border: 1px solid ${extensionThemeState === 'light' ? '#e2e8f0' : 'rgba(255, 255, 255, 0.15)'};
+      gap: 6px;
+      background: rgba(18, 18, 22, 0.9);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border-radius: 30px;
-      padding: 8px 12px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
-      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 9999px;
+      padding: 6px 10px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .widget-container:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 255, 255, 0.08);
     }
     .widget-btn {
-      background: ${extensionThemeState === 'light' ? '#f1f5f9' : 'rgba(255, 255, 255, 0.08)'};
-      border: 1px solid ${extensionThemeState === 'light' ? '#cbd5e1' : 'rgba(255, 255, 255, 0.15)'};
-      color: ${extensionThemeState === 'light' ? '#0f172a' : '#ffffff'};
-      font-size: 16px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
       cursor: pointer;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
+      padding: 8px 14px;
+      border-radius: 9999px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
+      gap: 6px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .widget-btn:hover {
-      background: #3b82f6;
-      border-color: #3b82f6;
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.35);
       color: #ffffff;
-      transform: scale(1.08);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    .widget-btn:active {
+      transform: translateY(0) scale(0.96);
+    }
+    .widget-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
   `;
+
+
+
+
 
   const container = document.createElement('div');
   container.className = 'widget-container';
   container.innerHTML = `
-    <button id="tts-btn" class="widget-btn" title="Text to Speech (Read Selected Text / Page)">🔊</button>
-    <button id="theme-btn" class="widget-btn" title="Toggle Extension Theme (Light / Dark)">${extensionThemeState === 'light' ? '☀' : '☾'}</button>
-    <button id="assistant-btn" class="widget-btn" title="Toggle AI Assistant Overlay (Ctrl+Shift+Y)">⚡</button>
+    <button id="tts-btn" class="widget-btn" title="Text to Speech (Read Selected Text / Page)">
+      <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+      <span>Audio</span>
+    </button>
+    <button id="theme-btn" class="widget-btn" title="Toggle Extension Theme (Light / Dark)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      <span>Theme</span>
+    </button>
+    <button id="assistant-btn" class="widget-btn" title="Toggle AI Assistant Overlay (Ctrl+Shift+U)">
+      <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 12L2.5 7.5"></path><path d="M12 12v10"></path></svg>
+      <span>AI</span>
+    </button>
   `;
 
   shadowRoot.appendChild(styleEl);
@@ -166,8 +194,10 @@ function mountShadowWidget() {
 }
 
 
+
+
 /**
- * Handles Text-to-Speech prioritizing user selected text first, then simplified/scraped text
+ * Text-to-Speech Engine with priority queuing: Selected Text -> AI Simplified Text -> DOM Headings
  */
 function handleReadAloud() {
   if (!('speechSynthesis' in window)) {
@@ -180,13 +210,13 @@ function handleReadAloud() {
     if (currentSpeechState === 'speaking') {
       window.speechSynthesis.pause();
       currentSpeechState = 'paused';
-      updateTtsBtnIcon('▶');
+      updateTtsBtnIcon('Resume');
       console.log("[AdaptAI TTS] Speech paused.");
       return;
     } else if (currentSpeechState === 'paused') {
       window.speechSynthesis.resume();
       currentSpeechState = 'speaking';
-      updateTtsBtnIcon('⏸');
+      updateTtsBtnIcon('Pause');
       console.log("[AdaptAI TTS] Speech resumed.");
       return;
     }
@@ -219,74 +249,72 @@ function handleReadAloud() {
 
   currentSpeechUtterance.onstart = () => {
     currentSpeechState = 'speaking';
-    updateTtsBtnIcon('⏸');
+    updateTtsBtnIcon('Pause');
     console.log("[AdaptAI TTS] Reading aloud started.");
   };
 
   currentSpeechUtterance.onend = () => {
     currentSpeechState = 'idle';
-    updateTtsBtnIcon('🔊');
+    updateTtsBtnIcon('Audio');
     console.log("[AdaptAI TTS] Reading aloud completed.");
   };
 
   currentSpeechUtterance.onerror = (e) => {
     currentSpeechState = 'idle';
-    updateTtsBtnIcon('🔊');
+    updateTtsBtnIcon('Audio');
     console.error("[AdaptAI TTS Error]", e);
   };
 
   window.speechSynthesis.speak(currentSpeechUtterance);
 }
 
-function updateTtsBtnIcon(iconChar) {
+function updateTtsBtnIcon(iconText) {
   const shadowHost = document.getElementById('adaptai-widget-host');
   if (!shadowHost || !shadowHost.shadowRoot) return;
   const ttsBtn = shadowHost.shadowRoot.getElementById('tts-btn');
-  if (ttsBtn) ttsBtn.innerText = iconChar;
-}
-
-function applyHostTheme(theme) {
-  if (theme === 'dark') {
-    document.documentElement.style.filter = 'invert(1) hue-rotate(180deg)';
-    document.documentElement.style.backgroundColor = '#ffffff';
-    let style = document.getElementById('adaptai-host-theme');
-    if (!style) {
-      style = document.createElement('style');
-      style.id = 'adaptai-host-theme';
-      document.head.appendChild(style);
-    }
-    style.textContent = `
-      img, video, iframe, canvas, [style*="background-image"] {
-        filter: invert(1) hue-rotate(180deg) !important;
-      }
-    `;
-  } else {
-    document.documentElement.style.filter = '';
-    document.documentElement.style.backgroundColor = '';
-    const style = document.getElementById('adaptai-host-theme');
-    if (style) style.remove();
-  }
+  if (ttsBtn) ttsBtn.innerText = iconText;
 }
 
 /**
- * Toggles Extension Light / Dark Mode and modifies host website colors
+ * Toggles Extension Light / Dark Mode across external web pages using clean Filter Engine
  */
 function toggleExtensionTheme() {
-  extensionThemeState = extensionThemeState === 'light' ? 'dark' : 'light';
-  
+  const root = document.documentElement;
+
   if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-    chrome.storage.local.set({ extensionTheme: extensionThemeState }, () => {
-      console.log("[AdaptAI Theme] Extension theme saved:", extensionThemeState);
+    chrome.storage.local.get(['extensionTheme'], (res) => {
+      const currentTheme = res.extensionTheme || 'light';
+
+      if (currentTheme === 'light') {
+        // Toggle to High-Contrast Dark Mode (Flawless Dark Inversion)
+        extensionThemeState = 'dark';
+        root.setAttribute('data-adaptai-transformed', 'true');
+        console.log("[AdaptAI Theme] Toggled to High-Contrast Dark Theme across website.");
+      } else {
+        // Toggle back to Normal / Light Mode
+        extensionThemeState = 'light';
+        root.removeAttribute('data-adaptai-transformed');
+        console.log("[AdaptAI Theme] Reset to Normal / Light Theme across website.");
+      }
+
+      chrome.storage.local.set({ extensionTheme: extensionThemeState });
+
+      // Re-mount widget with new theme styles
+      removeFloatingToolbar();
+      mountShadowWidget();
     });
+  } else {
+    // Standalone fallback toggle
+    if (root.getAttribute('data-adaptai-transformed') === 'true') {
+      root.removeAttribute('data-adaptai-transformed');
+    } else {
+      root.setAttribute('data-adaptai-transformed', 'true');
+    }
   }
-
-  applyHostTheme(extensionThemeState);
-
-
-  // Re-mount widget with new theme styles
-  removeFloatingToolbar();
-  mountShadowWidget();
 }
+
+
+
 
 function handleVoiceCommand() {
   toggleAiAssistant();
@@ -327,10 +355,12 @@ function ensureDyslexicFont(enable) {
 function applyCssTransformations(cssUpdates) {
   if (!cssUpdates) return;
   const root = document.documentElement;
+  root.setAttribute('data-adaptai-transformed', 'true');
   Object.entries(cssUpdates).forEach(([varName, val]) => {
     root.style.setProperty(varName, val);
   });
 }
+
 
 /**
  * Toggles motor accessibility target expansion
@@ -343,12 +373,55 @@ function applyMotorAssist(enable) {
   }
 }
 
+// Store original paragraph text before AI simplification for full DOM restore capability
+let originalParagraphTexts = [];
+let isPageAdaptedState = false;
+
+/**
+ * Restores the webpage back to its original un-adapted DOM state
+ */
+function restoreOriginalPageDOM() {
+  const root = document.documentElement;
+
+  // 1. Remove CSS variables and attribute overrides
+  root.removeAttribute('data-adaptai-transformed');
+  root.style.removeProperty('--adapt-bg-color');
+  root.style.removeProperty('--adapt-text-color');
+  root.style.removeProperty('--adapt-font-scale');
+  root.style.removeProperty('--adapt-font-family');
+
+  // 2. Remove Dyslexic font
+  ensureDyslexicFont(false);
+
+  // 3. Remove motor assistance
+  applyMotorAssist(false);
+
+  // 4. Restore original paragraph texts
+  if (originalParagraphTexts.length > 0) {
+    const paragraphs = Array.from(document.querySelectorAll('p')).filter(p => !p.closest('#adaptai-toolbar'));
+    paragraphs.forEach((p, idx) => {
+      if (originalParagraphTexts[idx] !== undefined) {
+        p.innerText = originalParagraphTexts[idx];
+      }
+    });
+  }
+
+  isPageAdaptedState = false;
+  console.log("[AdaptAI] Restored page back to original DOM state.");
+}
+
 /**
  * Swaps original paragraph innerText with simplified AI texts
  */
 function applyTextSimplification(simplifiedTextArray) {
   if (!Array.isArray(simplifiedTextArray) || simplifiedTextArray.length === 0) return;
   
+  // Cache original paragraph text first time
+  if (originalParagraphTexts.length === 0) {
+    const paragraphs = Array.from(document.querySelectorAll('p')).filter(p => !p.closest('#adaptai-toolbar'));
+    originalParagraphTexts = paragraphs.map(p => p.innerText);
+  }
+
   // Store active simplified text for Web Speech TTS engine
   activeSimplifiedText = simplifiedTextArray;
 
@@ -362,39 +435,16 @@ function applyTextSimplification(simplifiedTextArray) {
 }
 
 /**
- * Executes navigation / scrolling voice intents
- */
-function executeVoiceIntent(intent) {
-  if (!intent) return;
-  console.log(`[AdaptAI Voice Intent Execution] Executing intent: ${intent}`);
-  
-  switch (intent.toLowerCase()) {
-    case 'scroll_down':
-      window.scrollBy({ top: 500, behavior: 'smooth' });
-      break;
-    case 'scroll_up':
-      window.scrollBy({ top: -500, behavior: 'smooth' });
-      break;
-    case 'scroll_top':
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      break;
-    case 'scroll_bottom':
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      break;
-    case 'read_page':
-      handleReadAloud();
-      break;
-    default:
-      console.warn(`[AdaptAI Voice Intent] Unrecognized intent: ${intent}`);
-  }
-}
-
-/**
- * Master transformation pipeline entrypoint
+ * Master transformation pipeline entrypoint with Toggle ON / Restore ORIGINAL support
  */
 function runFullTransformation(payload) {
-  console.log("🔥 [AdaptAI DEV LOG] AI Recommended Transformation Payload:");
-  console.log(JSON.stringify(payload, null, 2));
+  // If page is already adapted, toggle back to original DOM state!
+  if (isPageAdaptedState) {
+    restoreOriginalPageDOM();
+    return;
+  }
+
+  console.log("[AdaptAI] Applying full persona transformation payload:", payload);
 
   // 1. Apply CSS variable overrides
   if (payload.cssUpdates) {
@@ -420,7 +470,10 @@ function runFullTransformation(payload) {
   if (payload.voiceIntent) {
     executeVoiceIntent(payload.voiceIntent);
   }
+
+  isPageAdaptedState = true;
 }
+
 
 // -------------------------------------------------------------
 // FLOATING AI ASSISTANT OVERLAY PANEL (CHROME & SAFARI ADAPTER)
@@ -436,7 +489,7 @@ function injectAiAssistantPanel() {
   panel.innerHTML = `
     <div class="assistant-header">
       <div class="assistant-title">
-        <span class="logo-spark">⚡</span> AdaptAI Floating Assistant
+        <span class="brand-dot"></span> AdaptAI Floating Assistant
       </div>
       <button class="assistant-close-btn" id="adaptai-assistant-close" title="Close (Esc)">✕</button>
     </div>
@@ -448,9 +501,9 @@ function injectAiAssistantPanel() {
       </div>
 
       <div class="suggested-chips" id="adaptai-suggested-chips">
-        <button class="chip-btn" data-query="Summarize this page content briefly.">📄 Summarize Page</button>
-        <button class="chip-btn" data-query="Explain complex concepts on this page simply.">🧠 Explain This</button>
-        <button class="chip-btn" data-query="Highlight key action items or decisions.">🎯 Key Takeaways</button>
+        <button class="chip-btn" data-query="Summarize this page content briefly.">Summarize Page</button>
+        <button class="chip-btn" data-query="Explain complex concepts on this page simply.">Explain This</button>
+        <button class="chip-btn" data-query="Highlight key action items or decisions.">Key Takeaways</button>
       </div>
 
       <div id="adaptai-chat-history" class="chat-history"></div>
@@ -458,14 +511,15 @@ function injectAiAssistantPanel() {
 
     <div class="assistant-footer">
       <div id="adaptai-context-indicator" class="context-indicator" style="display:none;">
-        <span class="context-icon">📌</span> Selected Text Context Attached
+        <span class="context-icon">/</span> Selected Text Context Attached
       </div>
       <div class="input-row">
-        <textarea id="adaptai-assistant-input" rows="1" placeholder="Ask anything about this page... (Enter to send, Shift+Enter for new line)"></textarea>
-        <button id="adaptai-assistant-send" class="send-btn">➤</button>
+        <textarea id="adaptai-assistant-input" rows="1" placeholder="Ask anything about this page..."></textarea>
+        <button id="adaptai-assistant-send" class="send-btn">→</button>
       </div>
     </div>
   `;
+
 
   document.body.appendChild(panel);
 
@@ -605,34 +659,12 @@ document.addEventListener('keydown', (e) => {
 });
 
 
-function applyGeminiPreset() {
-  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-    chrome.storage.local.get(['geminiUIPreset'], (res) => {
-      if (res.geminiUIPreset) {
-        console.log("🔥 [AdaptAI DEV LOG] Recommended CSS Change from Gemini:");
-        console.log(res.geminiUIPreset);
-        
-        let styleEl = document.getElementById('gemini-ui-preset-style');
-        if (!styleEl) {
-          styleEl = document.createElement('style');
-          styleEl.id = 'gemini-ui-preset-style';
-          document.head.appendChild(styleEl);
-        }
-        styleEl.textContent = res.geminiUIPreset;
-      } else {
-        console.log("⚠️ [AdaptAI DEV LOG] No Gemini UI Preset found in chrome.storage.local.");
-      }
-    });
-  }
-}
-
 // -------------------------------------------------------------
 // MESSAGE LISTENER & RUNTIME HANDLERS
 // -------------------------------------------------------------
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "scrape_page") {
     const pageText = scrapePageDOM();
-    applyGeminiPreset(); // Inject when user triggers adaptation
     chrome.runtime.sendMessage({ 
       action: "process_with_ai", 
       pageText: pageText 
@@ -651,17 +683,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "extension_state_changed") {
     if (request.enabled) {
       injectFloatingToolbar();
-      applyGeminiPreset(); // Inject when extension is enabled
     } else {
       removeFloatingToolbar();
-      let styleEl = document.getElementById('gemini-ui-preset-style');
-      if (styleEl) styleEl.remove();
     }
   }
 
   if (request.action === "extension_theme_changed") {
     extensionThemeState = request.theme || 'dark';
-    applyHostTheme(extensionThemeState);
     removeFloatingToolbar();
     mountShadowWidget();
   }
@@ -669,8 +697,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 
 // Auto-inject UI toolbar on load
-injectFloatingToolbar();
-applyGeminiPreset();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', injectFloatingToolbar);
+} else {
+  injectFloatingToolbar();
+}
+window.addEventListener('load', injectFloatingToolbar);
+
 
 
 // -------------------------------------------------------------

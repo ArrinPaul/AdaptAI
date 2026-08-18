@@ -13,18 +13,12 @@ self.ENV = self.ENV || {
 
 
 
-// 1. Open Onboarding Setup Tab on Installation / Unpacked load
+// 1. Open Onboarding Setup Tab on Installation
 chrome.runtime.onInstalled.addListener((details) => {
-  console.log(`[AdaptAI Service Worker] Extension onInstalled event triggered (reason: ${details.reason})`);
-  
-  chrome.storage.local.get(['onboardingCompleted'], (res) => {
-    // Open onboarding page if first installation or if onboarding is not yet completed
-    if (details.reason === 'install' || !res.onboardingCompleted) {
-      const onboardingUrl = chrome.runtime.getURL('onboarding/onboarding.html');
-      console.log("[AdaptAI Service Worker] Opening Onboarding setup tab:", onboardingUrl);
-      chrome.tabs.create({ url: onboardingUrl });
-    }
-  });
+  if (details.reason === 'install') {
+    console.log("[AdaptAI Service Worker] Extension installed. Opening Onboarding setup tab...");
+    chrome.tabs.create({ url: 'onboarding/onboarding.html' });
+  }
 });
 
 // Helper: Sends scrape_page trigger to target tab if extension is enabled and onboarding is complete
@@ -36,9 +30,8 @@ function triggerPageAdaptation(tab) {
     const isCompleted = res.onboardingCompleted === true;
 
     if (!isCompleted) {
-      const onboardingUrl = chrome.runtime.getURL('onboarding/onboarding.html');
-      console.log("[AdaptAI Service Worker] Onboarding incomplete. Opening onboarding setup:", onboardingUrl);
-      chrome.tabs.create({ url: onboardingUrl });
+      console.log("[AdaptAI Service Worker] Onboarding incomplete. Opening onboarding setup...");
+      chrome.tabs.create({ url: 'onboarding/onboarding.html' });
       return;
     }
 
@@ -70,9 +63,8 @@ function triggerAssistantActivation(tab) {
     const isCompleted = res.onboardingCompleted === true;
 
     if (!isCompleted) {
-      const onboardingUrl = chrome.runtime.getURL('onboarding/onboarding.html');
-      console.log("[AdaptAI Service Worker] Onboarding incomplete. Directing user to onboarding:", onboardingUrl);
-      chrome.tabs.create({ url: onboardingUrl });
+      console.log("[AdaptAI Service Worker] Onboarding incomplete. Directing user to onboarding...");
+      chrome.tabs.create({ url: 'onboarding/onboarding.html' });
       return;
     }
 
@@ -108,30 +100,6 @@ chrome.commands.onCommand.addListener((command) => {
 
 // 4. Runtime Message Listener Router
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "generate_ui_preset") {
-    const testResultsStr = JSON.stringify(request.testResults);
-    const apiKey = self.ENV.GEMINI_API_KEY;
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-    const promptText = `act as the best UI designer to create a CSS preset that rearranges and styles website content to aid accessibility and web viewability based on these user needs: ${testResultsStr}`;
-    
-    fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: promptText }] }]
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      let cssText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      cssText = cssText.replace(/```css\n?/g, '').replace(/```/g, '').trim();
-      chrome.storage.local.set({ geminiUIPreset: cssText }, () => {
-        console.log("[AdaptAI Service Worker] Saved geminiUIPreset");
-      });
-    })
-    .catch(err => console.error("[AdaptAI Service Worker] Error generating UI preset:", err));
-  }
-
   if (request.action === "process_with_ai") {
     console.log("[AdaptAI Service Worker] Received scraped text payload from content script.");
     const tabId = sender.tab ? sender.tab.id : null;
@@ -241,6 +209,7 @@ You MUST respond strictly using the required JSON schema. Do NOT include markdow
 
   return { systemInstruction, userContent };
 }
+
 
 // -------------------------------------------------------------
 // SUB-TASK B3: GEMINI API INTEGRATION & STRUCTURED OUTPUTS
@@ -414,11 +383,27 @@ async function handleAiProcessRequest(pageText, tabId) {
     }
   }
 
-  // Ensure static profile flags are passed along for the UI to read
-  transformationData.dyslexicFont = profile.cognitive?.dyslexicFont;
-  transformationData.motorAssist = profile.audio?.enabled; // Using audio enabled as motor assist proxy for this build
+  // 4. Override transformation output with exact user profile persona settings
+  const visual = profile.visual || {};
+  const cognitive = profile.cognitive || {};
 
-  // 4. Dispatch result back to Content Script
+  if (!transformationData.cssUpdates) transformationData.cssUpdates = {};
+
+  if (visual.highContrast) {
+    transformationData.cssUpdates["--adapt-bg-color"] = "#121212";
+    transformationData.cssUpdates["--adapt-text-color"] = "#FFFF00";
+  }
+
+  if (visual.fontScale && visual.fontScale > 1.0) {
+    transformationData.cssUpdates["--adapt-font-scale"] = String(visual.fontScale);
+  }
+
+  transformationData.dyslexicFont = Boolean(cognitive.dyslexicFont);
+  transformationData.motorAssist = Boolean(profile.audio?.enabled);
+
+  console.log("[AdaptAI Pipeline] Final Profile-Enforced Payload:", transformationData);
+
+  // 5. Dispatch result back to Content Script
   if (tabId && typeof chrome !== 'undefined' && chrome.tabs) {
     chrome.tabs.sendMessage(tabId, {
       action: "apply_transformations",
@@ -431,6 +416,7 @@ async function handleAiProcessRequest(pageText, tabId) {
       }
     });
   }
+
 
   return transformationData;
 }

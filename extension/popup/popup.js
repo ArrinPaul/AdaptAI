@@ -64,8 +64,37 @@ document.addEventListener('DOMContentLoaded', () => {
     triggerBtn.addEventListener('click', () => {
       if (typeof chrome !== 'undefined' && chrome.tabs) {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          if (tabs && tabs[0]) {
-            chrome.tabs.sendMessage(tabs[0].id, { action: "scrape_page" });
+          if (tabs && tabs[0] && tabs[0].id) {
+            const tabId = tabs[0].id;
+            const tabUrl = tabs[0].url || '';
+
+            // Guard against restricted chrome:// and edge:// URLs
+            if (tabUrl.startsWith('chrome://') || tabUrl.startsWith('edge://') || tabUrl.startsWith('chrome-extension://')) {
+              alert("AdaptAI cannot modify browser internal pages. Try opening an external site (e.g. Wikipedia).");
+              return;
+            }
+
+            chrome.tabs.sendMessage(tabId, { action: "scrape_page" }, (res) => {
+              if (chrome.runtime.lastError) {
+                console.warn("[AdaptAI Popup] Content script missing on target tab. Dynamically injecting content script...");
+                chrome.scripting.executeScript({
+                  target: { tabId: tabId },
+                  files: ['content.js']
+                }, () => {
+                  if (chrome.runtime.lastError) {
+                    console.error("[AdaptAI Popup] Script injection error:", chrome.runtime.lastError.message);
+                  } else {
+                    setTimeout(() => {
+                      chrome.tabs.sendMessage(tabId, { action: "scrape_page" }, () => {
+                        if (chrome.runtime.lastError) {
+                          console.warn("[AdaptAI Popup] Retry error:", chrome.runtime.lastError.message);
+                        }
+                      });
+                    }, 100);
+                  }
+                });
+              }
+            });
             window.close();
           }
         });
@@ -73,12 +102,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Bind Chrome Extension Navigation Routing for all Popup Links
+
+  // Bind Navigation Routing for all Popup Links to http://localhost:8080
   const linkMappings = [
-    { id: 'link-landing', path: 'index.html', fullUrl: '../index.html' },
-    { id: 'link-onboarding', path: 'onboarding/onboarding.html', fullUrl: '../onboarding/onboarding.html' },
-    { id: 'link-profile', path: 'profile/profile.html', fullUrl: '../profile/profile.html' },
-    { id: 'link-demo', path: 'demo/index.html', fullUrl: '../demo/index.html' }
+    { id: 'link-landing', url: 'http://localhost:8080/index.html' },
+    { id: 'link-onboarding', url: 'http://localhost:8080/extension/onboarding/onboarding.html' },
+    { id: 'link-profile', url: 'http://localhost:8080/extension/profile/profile.html' },
+    { id: 'link-demo', url: 'http://localhost:8080/demo/index.html' }
   ];
 
   linkMappings.forEach(item => {
@@ -87,10 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
       el.addEventListener('click', (e) => {
         e.preventDefault();
         if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.create) {
-          const targetUrl = chrome.runtime && chrome.runtime.getURL ? chrome.runtime.getURL(item.path) : item.fullUrl;
-          chrome.tabs.create({ url: targetUrl });
+          chrome.tabs.create({ url: item.url });
         } else {
-          window.open(item.fullUrl, '_blank');
+          window.open(item.url, '_blank');
         }
       });
     }
@@ -111,13 +140,14 @@ document.addEventListener('DOMContentLoaded', () => {
         clickCount = 0;
         console.log("[AdaptAI Gesture] Double click detected. Launching profile center...");
         if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.create) {
-          chrome.tabs.create({ url: chrome.runtime.getURL('profile/profile.html') });
+          chrome.tabs.create({ url: 'http://localhost:8080/extension/profile/profile.html' });
         } else {
-          window.open('../profile/profile.html', '_blank');
+          window.open('http://localhost:8080/extension/profile/profile.html', '_blank');
         }
       }
     });
   }
 });
+
 
 

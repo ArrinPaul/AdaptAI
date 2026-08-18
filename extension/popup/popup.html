@@ -3,96 +3,263 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AdaptAI Extension</title>
+  <title>AdaptAI Extension Control Center</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #000000;
-      --surface: #0a0a0a;
-      --border: #222222;
-      --text: #ffffff;
-      --text-muted: #888888;
-      --accent: #ffffff;
+      --bg: #09090b;
+      --card-bg: #121215;
+      --card-border: #27272a;
+      --text-bright: #fafafa;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+      --status-active: #22c55e;
+      --status-disabled: #ef4444;
+      --spring: cubic-bezier(0.16, 1, 0.3, 1);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
-    body { width: 320px; background-color: var(--bg); color: var(--text); padding: 1.5rem; user-select: none; -webkit-font-smoothing: antialiased; }
-    
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-    .brand { font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-    .brand svg { width: 18px; height: 18px; }
-    
-    .status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 500; padding: 0.25rem 0.75rem; border-radius: 9999px; background: #111; border: 1px solid var(--border); }
-    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #ffffff; }
-    
-    .toggle-group { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
-    .toggle-info h4 { font-size: 0.875rem; font-weight: 500; margin-bottom: 0.25rem; }
-    .toggle-info p { font-size: 0.75rem; color: var(--text-muted); }
-    
-    .switch { position: relative; width: 40px; height: 24px; }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #222; transition: .3s; border-radius: 24px; border: 1px solid var(--border); }
-    .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: var(--text-muted); transition: .3s; border-radius: 50%; }
-    input:checked + .slider { background-color: var(--text); border-color: var(--text); }
-    input:checked + .slider:before { transform: translateX(16px); background-color: var(--bg); }
-    
-    .persona { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem; text-align: center; }
-    .persona-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.5rem; }
-    .persona-name { font-size: 1rem; font-weight: 600; }
-    
-    .btn-adapt { background: var(--text); color: var(--bg); border: none; width: 100%; padding: 1rem; border-radius: 9999px; font-weight: 500; font-size: 0.875rem; cursor: pointer; transition: all 0.3s ease; margin-bottom: 2rem; }
-    .btn-adapt:hover { transform: scale(1.02); }
-    
-    .menu { display: flex; flex-direction: column; gap: 0.5rem; }
-    .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 0.875rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; color: var(--text); text-decoration: none; font-size: 0.875rem; transition: all 0.3s ease; }
-    .menu-item:hover { border-color: #444; background: #111; }
-    .menu-item svg { width: 16px; height: 16px; opacity: 0.5; }
-    
-    svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      width: 350px;
+      background-color: var(--bg);
+      color: var(--text-bright);
+      padding: 24px;
+      user-select: none;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.2px;
+      color: var(--text-bright);
+    }
+
+    .brand-mark {
+      width: 7px;
+      height: 7px;
+      background: var(--text-bright);
+      border-radius: 1px;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-bright);
+    }
+
+    .status-badge.disabled {
+      color: var(--text-dim);
+    }
+
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--status-active);
+      border-radius: 50%;
+    }
+
+    .status-badge.disabled .status-dot {
+      background: var(--status-disabled);
+    }
+
+    .master-toggle-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 18px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .toggle-info h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-bright);
+    }
+
+    .toggle-info p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .master-switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+    }
+
+    .master-switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--card-border);
+      transition: .2s ease;
+      border-radius: 9999px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background-color: var(--text-bright);
+      transition: .2s ease;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider { background-color: var(--text-bright); }
+    input:checked + .slider:before { transform: translateX(18px); background-color: var(--bg); }
+
+    .persona-banner {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+    }
+
+    .persona-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .persona-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-top: 4px;
+    }
+
+    .btn-adapt-now {
+      background: var(--text-bright);
+      color: var(--bg);
+      border: none;
+      width: 100%;
+      padding: 13px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.25s var(--spring);
+      margin-bottom: 20px;
+      box-shadow: 0 4px 14px rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-adapt-now:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 255, 255, 0.25);
+    }
+
+    .menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 8px 0;
+      transition: color 0.2s ease;
+    }
+
+    .menu-item:hover {
+      color: var(--text-bright);
+    }
+
+    .arrow-icon {
+      font-size: 11px;
+    }
   </style>
+
+
+
 </head>
 <body>
-  <header>
+  <div class="header">
     <div class="brand">
-      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-      AdaptAI
+      <span class="brand-mark"></span>
+      <span>ADAPTAI</span>
     </div>
-    <div class="status">
-      <span class="status-dot"></span> ON
+    <div id="status-badge" class="status-badge">
+      <span class="status-dot"></span> <span id="status-text">ON</span>
     </div>
-  </header>
+  </div>
 
-  <div class="toggle-group">
+  <div class="master-toggle-box">
     <div class="toggle-info">
       <h4>Extension</h4>
-      <p>DOM active</p>
+      <p id="toggle-desc">Global processing active</p>
     </div>
-    <label class="switch">
-      <input type="checkbox" checked>
+    <label class="master-switch">
+      <input type="checkbox" id="master-toggle" checked>
       <span class="slider"></span>
     </label>
   </div>
 
-  <div class="persona">
-    <div class="persona-label">Active Persona</div>
-    <div class="persona-name">High-Contrast Assist</div>
+  <div class="persona-banner" id="persona-banner">
+    <div class="persona-title">Active Profile</div>
+    <div class="persona-name" id="persona-name">High-Contrast Visual Assist</div>
   </div>
 
-  <button class="btn-adapt">Adapt Page</button>
+  <button class="btn-adapt-now" id="trigger-adapt">Run Adaptation</button>
 
-  <div class="menu">
-    <a href="../../index.html" id="link-landing" class="menu-item">
-      Landing Page <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  <div class="menu-list">
+    <a href="http://localhost:8080/index.html" id="link-landing" target="_blank" class="menu-item">
+      <span>Documentation</span>
+      <span class="arrow-icon">/</span>
     </a>
-    <a href="../onboarding/onboarding.html" id="link-onboarding" class="menu-item">
-      Diagnostic Test <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    <a href="http://localhost:8080/extension/onboarding/onboarding.html" id="link-onboarding" target="_blank" class="menu-item">
+      <span>Assessment</span>
+      <span class="arrow-icon">/</span>
     </a>
-    <a href="../profile/profile.html" id="link-profile" class="menu-item">
-      Profile Settings <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    <a href="http://localhost:8080/extension/profile/profile.html" id="link-profile" target="_blank" class="menu-item">
+      <span>Preferences</span>
+      <span class="arrow-icon">/</span>
     </a>
-    <a href="../../demo/index.html" id="link-demo" class="menu-item">
-      Demo Workbench <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    <a href="http://localhost:8080/demo/index.html" id="link-demo" target="_blank" class="menu-item">
+      <span>Workbench</span>
+      <span class="arrow-icon">/</span>
     </a>
   </div>
 

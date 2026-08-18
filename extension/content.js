@@ -5,15 +5,12 @@
 // -------------------------------------------------------------
 const mockGeminiResponse = {
   cssUpdates: {
-    "--adapt-font-scale": "1.5",
-    "--adapt-bg-color": "#121212",
+    "--adapt-font-scale": "1.4",
+    "--adapt-bg-color": "#09090b",
     "--adapt-text-color": "#f4f4f5",
     "--adapt-line-height": "1.6"
   },
-  simplifiedText: [
-    "Simplified Summary 1: This is a placeholder for paragraph simplification.",
-    "Simplified Summary 2: AI simplifies complex web content for easy reading."
-  ],
+  simplifiedText: [],
   voiceIntent: null
 };
 
@@ -22,36 +19,29 @@ const mockGeminiResponse = {
 // -------------------------------------------------------------
 function scrapePageDOM() {
   try {
-    // Target key structural elements across the document: headings, articles, sections, main, p, nav
-    const selectors = 'h1, h2, h3, h4, p, article, section, main, header, nav, aside';
-    const elements = Array.from(document.querySelectorAll(selectors));
-
-    // Analyze DOM structure dynamically for site-specific layout profiling
-    const structuredNodes = elements
+    const pElements = Array.from(document.querySelectorAll('p'))
       .filter(el => {
         if (el.closest('#adaptai-toolbar') || el.closest('#adaptai-widget-host') || el.closest('#adaptai-assistant-overlay')) return false;
-        const style = window.getComputedStyle(el);
-        return style.display !== 'none' && style.visibility !== 'hidden' && el.innerText.trim().length > 0;
+        const text = el.innerText.trim();
+        return text.length > 20;
       })
-      .slice(0, 30) // Analyze first 30 structural DOM nodes
-      .map(el => {
-        const tag = el.tagName.toLowerCase();
-        const text = el.innerText.trim().slice(0, 150).replace(/\s+/g, ' ');
-        return `<${tag}>${text}</${tag}>`;
-      });
+      .slice(0, 15);
+
+    const paragraphs = pElements.map(p => p.innerText.trim().replace(/\s+/g, ' '));
 
     const pageMeta = {
       domain: window.location.hostname,
       title: document.title,
-      structuredDOM: structuredNodes.join('\n')
+      paragraphs: paragraphs,
+      structuredDOM: paragraphs.map(p => `<p>${p}</p>`).join('\n')
     };
 
     const payloadString = JSON.stringify(pageMeta, null, 2);
-    console.log(`[AdaptAI Structural Analyzer] Analyzed ${structuredNodes.length} DOM elements for domain: ${pageMeta.domain}`);
+    console.log(`[AdaptAI Scraper] Scraped ${paragraphs.length} paragraphs for domain: ${pageMeta.domain}`);
     return payloadString;
   } catch (err) {
     console.error("[AdaptAI Scraper Error]", err);
-    return JSON.stringify({ domain: window.location.hostname, structuredDOM: document.body.innerText.slice(0, 1500) });
+    return JSON.stringify({ domain: window.location.hostname, paragraphs: [], structuredDOM: document.body.innerText.slice(0, 1500) });
   }
 }
 
@@ -436,7 +426,10 @@ function restoreOriginalPageDOM() {
 
   // 4. Restore original paragraph texts
   if (originalParagraphTexts.length > 0) {
-    const paragraphs = Array.from(document.querySelectorAll('p')).filter(p => !p.closest('#adaptai-toolbar') && !p.closest('#adaptai-widget-host') && !p.closest('#adaptai-assistant-overlay'));
+    const paragraphs = Array.from(document.querySelectorAll('p')).filter(p => {
+      if (p.closest('#adaptai-toolbar') || p.closest('#adaptai-widget-host') || p.closest('#adaptai-assistant-overlay')) return false;
+      return p.innerText.trim().length > 20;
+    });
     paragraphs.forEach((p, idx) => {
       if (originalParagraphTexts[idx] !== undefined) {
         p.innerText = originalParagraphTexts[idx];
@@ -450,12 +443,15 @@ function restoreOriginalPageDOM() {
 }
 
 /**
- * Swaps original paragraph innerText with simplified AI texts
+ * Swaps original paragraph innerText with restructured AI texts
  */
 function applyTextSimplification(simplifiedTextArray) {
   if (!Array.isArray(simplifiedTextArray) || simplifiedTextArray.length === 0) return;
   
-  const paragraphs = Array.from(document.querySelectorAll('p')).filter(p => !p.closest('#adaptai-toolbar') && !p.closest('#adaptai-widget-host') && !p.closest('#adaptai-assistant-overlay'));
+  const paragraphs = Array.from(document.querySelectorAll('p')).filter(p => {
+    if (p.closest('#adaptai-toolbar') || p.closest('#adaptai-widget-host') || p.closest('#adaptai-assistant-overlay')) return false;
+    return p.innerText.trim().length > 20;
+  });
 
   // Cache original paragraph text first time
   if (originalParagraphTexts.length === 0) {
@@ -466,7 +462,7 @@ function applyTextSimplification(simplifiedTextArray) {
   activeSimplifiedText = simplifiedTextArray;
 
   paragraphs.forEach((p, idx) => {
-    if (simplifiedTextArray[idx]) {
+    if (simplifiedTextArray[idx] && typeof simplifiedTextArray[idx] === 'string' && simplifiedTextArray[idx].trim().length > 0) {
       p.innerText = simplifiedTextArray[idx];
       p.style.transition = 'all 0.3s ease';
     }

@@ -283,7 +283,7 @@ function buildSystemPrompt(userProfile, scrapedPageText) {
   const visual = userProfile?.visual || {};
   const cognitive = userProfile?.cognitive || {};
 
-  const systemInstruction = `You are AdaptAI, an intelligent real-time web accessibility adaptation engine.
+  const systemInstruction = `You are AdaptAI, an intelligent real-time web accessibility and text restructuring engine.
 Analyze the user's accessibility profile and the provided webpage text content.
 
 User Persona: ${userProfile?.personaName || 'Accessibility User'}
@@ -291,14 +291,19 @@ Preferences:
 - High Contrast Theme Required: ${visual.highContrast ? 'YES' : 'NO'}
 - Font Scale Required: ${visual.fontScale || 1.0}x
 - Dyslexia-Friendly Font Required: ${cognitive.dyslexicFont ? 'YES' : 'NO'}
-- AI Text Simplification Required: ${cognitive.simplifyText ? 'YES' : 'NO'}
+- AI Text Restructuring Required: ${cognitive.simplifyText ? 'YES' : 'NO'}
 
 CRITICAL INSTRUCTIONS:
 1. CSS Variable Overrides:
-   - If High Contrast is YES: set "--adapt-bg-color": "#09090b", "--adapt-text-color": "#f4f4f5", "--adapt-font-scale": "${visual.fontScale || 1.5}".
-   - Else: set "--adapt-font-scale": "${visual.fontScale || 1.0}".
-2. Simplified Text:
-   - If Text Simplification is YES: return an array of simplified, clear bullet-point string summaries corresponding to the input webpage paragraphs.
+   - If High Contrast is YES: set "--adapt-bg-color": "#09090b", "--adapt-text-color": "#f4f4f5", "--adapt-font-scale": "${visual.fontScale || 1.4}".
+   - Else: set "--adapt-bg-color": "#09090b", "--adapt-text-color": "#f4f4f5", "--adapt-font-scale": "${visual.fontScale || 1.0}".
+2. Text Restructuring (Keep SAME text/facts, restructured for plain-language legibility):
+   - If Text Restructuring is YES: Take each original paragraph from the webpage content and RESTRUCTURE the text in-place.
+     * Keep the EXACT same facts, entities, numbers, names, and information from the original text.
+     * Do NOT write high-level summaries or meta-labels (NEVER prepend with "Summary:", "Simplified Summary:", etc.).
+     * Restructure long, convoluted, passive sentences into clear, direct, readable sentences using plain language.
+     * Return an array of strings in "simplifiedText", where each string directly corresponds to the restructured version of each input paragraph.
+   - If NO: return an empty array [] for "simplifiedText".
 3. Voice Intent:
    - Determine if navigation intent (e.g. "scroll_down") is requested or set to null.
 
@@ -324,10 +329,7 @@ const mockGeminiFallback = {
     "--adapt-text-color": "#f4f4f5",
     "--adapt-line-height": "1.6"
   },
-  simplifiedText: [
-    "Simplified Summary 1: High performance cloud architecture boosted operational margins.",
-    "Simplified Summary 2: Real-time client-side DOM adaptation models transform web layouts safely."
-  ],
+  simplifiedText: [],
   dyslexicFont: false,
   motorAssist: false,
   voiceIntent: null
@@ -521,6 +523,28 @@ async function handleAiProcessRequest(pageText, tabId) {
 
   transformationData.dyslexicFont = Boolean(cognitive.dyslexicFont);
   transformationData.motorAssist = Boolean(motor.targetExpansion);
+
+  // If cognitive text restructuring was not requested, keep original text
+  if (!cognitive.simplifyText) {
+    transformationData.simplifiedText = [];
+  } else if (!Array.isArray(transformationData.simplifiedText) || transformationData.simplifiedText.length === 0) {
+    // If AI was offline or returned empty, restructure the actual scraped paragraphs locally without dummy text
+    try {
+      const parsed = typeof pageText === 'string' ? JSON.parse(pageText) : null;
+      if (parsed && Array.isArray(parsed.paragraphs) && parsed.paragraphs.length > 0) {
+        transformationData.simplifiedText = parsed.paragraphs.map(p => {
+          return p
+            .replace(/;\s+/g, '. ')
+            .replace(/,\s+which\s+/gi, '. This ')
+            .replace(/,\s+and\s+furthermore\s+/gi, '. Also, ')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+        });
+      }
+    } catch (e) {
+      transformationData.simplifiedText = [];
+    }
+  }
 
   console.log("[AdaptAI Pipeline] Final Profile-Enforced Payload:", transformationData);
 

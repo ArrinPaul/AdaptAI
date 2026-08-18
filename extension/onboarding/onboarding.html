@@ -3,22 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AdaptAI — Diagnostic Assessment & Persona Creation</title>
+  <title>AdaptAI — Interactive Diagnostic Test & Persona Creation</title>
   <link rel="stylesheet" href="onboarding.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+  <div class="glow-bg"></div>
 
   <div class="onboarding-card">
     <div class="card-header">
-      <div class="brand">
-        <span class="brand-mark"></span>
-        <span>AdaptAI Diagnostic Suite</span>
-      </div>
+      <div class="brand">⚡ AdaptAI Diagnostic Suite</div>
       <h1>Accessibility Assessment</h1>
-      <p>Complete this 30-second assessment to calibrate your personalized AI Accessibility Persona.</p>
+      <p>Take this 30-second interactive test to generate your unique AI Accessibility Persona.</p>
     </div>
 
     <!-- Step Indicators -->
@@ -32,13 +30,13 @@
     <form id="profile-form">
       <!-- TEST STEP 1: VISUAL CONTRAST & LEGIBILITY TEST -->
       <div class="test-step" id="step-1">
-        <div class="group-title">Test 1: Visual Legibility</div>
+        <div class="group-title"><span class="icon">👁️</span> Test 1: Visual Legibility Test</div>
         <p class="test-desc">Select the text sample below that is easiest for your eyes to read effortlessly:</p>
         
         <label class="test-option">
           <input type="radio" name="visual_test" value="standard" checked>
           <div class="sample-box sample-standard">
-            Sample A: Standard small text with low contrast gray typography.
+            Sample A: Standard small text with low contrast grey font.
           </div>
         </label>
 
@@ -56,76 +54,93 @@
           </div>
         </label>
 
-        <button type="button" id="btn-next-2" class="submit-btn">Continue to Cognitive Test →</button>
+        <button type="button" id="btn-next-2" class="submit-btn">Continue to Cognitive Test ➔</button>
       </div>
 
       <!-- TEST STEP 2: COGNITIVE READABILITY TEST -->
-      <div class="test-step" id="step-2" style="display:none;">
-        <div class="group-title">Test 2: Cognitive Readability</div>
-        <p class="test-desc">Choose the formatting structure that offers maximum reading comfort:</p>
+      <div class="test-step" id="step-2" style="display: none;">
+        <div class="group-title"><span class="icon">🧠</span> Test 2: Cognitive Readability Test</div>
+        <p class="test-desc">Which paragraph presentation allows you to comprehend information fastest?</p>
 
         <label class="test-option">
-          <input type="radio" name="cognitive_test" value="dyslexic_font" checked>
+          <input type="radio" name="cognitive_test" value="dense" checked>
+          <div class="sample-box">
+            Dense Original: Hyper-scaled cloud architecture deployments recorded exponential productivity metrics.
+          </div>
+        </label>
+
+        <label class="test-option">
+          <input type="radio" name="cognitive_test" value="dyslexic">
           <div class="sample-box sample-dyslexic">
-            Sample A: OpenDyslexic Typography (Heavy weighted bottoms to prevent letter swapping).
+            Dyslexia Friendly: OpenDyslexic font style designed to prevent letter flipping and confusion.
           </div>
         </label>
 
         <label class="test-option">
-          <input type="radio" name="cognitive_test" value="bullet_summary">
-          <div class="sample-box sample-bullet">
-            Sample B: AI Simplification (Bullet point summaries corresponding to paragraphs).
+          <input type="radio" name="cognitive_test" value="simplified">
+          <div class="sample-box sample-simplified">
+            AI Simplified: Cloud systems boosted performance by 14% this quarter.
           </div>
         </label>
 
-        <button type="button" id="btn-next-3" class="submit-btn">Continue to Motor Test →</button>
-      </div>
-
-      <!-- TEST STEP 3: MOTOR REACTION & PRECISION TEST -->
-      <div class="test-step" id="step-3" style="display:none;">
-        <div class="group-title">Test 3: Motor Click Precision</div>
-        <p class="test-desc">Click the target box below as quickly as possible to measure motor precision:</p>
-
-        <div class="motor-test-box" id="motor-target">
-          Click Here To Test Reaction
+        <div class="btn-row">
+          <button type="button" id="btn-back-1" class="secondary-btn">Back</button>
+          <button type="button" id="btn-next-3" class="submit-btn">Continue to Motor Test ➔</button>
         </div>
-        <p id="motor-score-text" class="motor-feedback">Click count: 0 clicks recorded</p>
-
-        <button type="button" id="btn-next-4" class="submit-btn">Generate AI Persona →</button>
       </div>
 
-      <!-- TEST STEP 4: AI PERSONA CARD GENERATOR & SCORES -->
-      <div class="test-step" id="step-4" style="display:none;">
-        <div class="persona-card-result">
-          <div class="persona-tag">Generated AI Persona</div>
-          <h2 id="result-persona-name">High-Contrast Assist Persona</h2>
-          <p id="result-persona-desc">Calculated based on your legibility selections and reaction speed.</p>
+      <!-- TEST STEP 3: MOTOR TARGET TEST -->
+      <div class="test-step" id="step-3" style="display: none;">
+        <div class="group-title"><span class="icon">🎯</span> Test 3: Motor Click Precision Test</div>
+        <p class="test-desc">Click the target button below as fast as possible:</p>
 
-          <div class="metrics-grid">
-            <div class="metric-box">
-              <span class="m-label">Visual Score</span>
-              <span class="m-val" id="res-visual-score">85 / 100</span>
+        <div class="motor-target-area">
+          <button type="button" id="motor-target-btn" class="target-btn">Click Me!</button>
+          <div id="motor-score-display" class="score-badge">Accuracy Score: Pending...</div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" id="btn-back-2" class="secondary-btn">Back</button>
+          <button type="button" id="btn-calc-persona" class="submit-btn">Generate My AI Persona ✨</button>
+        </div>
+      </div>
+
+      <!-- TEST STEP 4: PERSONA RESULT CARD -->
+      <div class="test-step" id="step-4" style="display: none;">
+        <div class="persona-card">
+          <div class="persona-badge" id="persona-title">Generating Persona...</div>
+          <div class="persona-details" id="persona-summary">
+            Analyzing your test scores to compile a personalized context payload for Gemini...
+          </div>
+          <div class="score-grid">
+            <div class="score-item">
+              <span class="score-label">Visual Score</span>
+              <span class="score-val" id="visual-score-val">--</span>
             </div>
-            <div class="metric-box">
-              <span class="m-label">Cognitive Score</span>
-              <span class="m-val" id="res-cognitive-score">90 / 100</span>
+            <div class="score-item">
+              <span class="score-label">Cognitive Score</span>
+              <span class="score-val" id="cognitive-score-val">--</span>
             </div>
-            <div class="metric-box">
-              <span class="m-label">Motor Target Score</span>
-              <span class="m-val" id="res-motor-score">95 / 100</span>
+            <div class="score-item">
+              <span class="score-label">Motor Precision</span>
+              <span class="score-val" id="motor-score-val">--</span>
             </div>
           </div>
         </div>
 
-        <button type="submit" class="submit-btn">Save Persona & Launch Demo Workbench →</button>
+        <button type="submit" class="submit-btn">
+          Save Persona & Experience Personalised Demo Page 🚀
+        </button>
       </div>
     </form>
 
-    <div id="success-message" class="success-banner" style="display:none;">
-      Persona calibrated and saved successfully. Redirecting to Workbench...
+    <div id="success-message">
+      ✨ Persona & diagnostic scores saved! Redirecting to personalized demo page...
     </div>
   </div>
 
   <script src="onboarding.js"></script>
 </body>
 </html>
+
+

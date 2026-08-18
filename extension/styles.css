@@ -7,33 +7,24 @@
   --adapt-font-family: inherit;
 }
 
-/* Clean high-contrast container adaptation without breaking inline element backgrounds */
-html[data-adaptai-transformed="true"] body, 
-html[data-adaptai-transformed="true"] main,
-html[data-adaptai-transformed="true"] article,
-html[data-adaptai-transformed="true"] section {
-  background-color: var(--adapt-bg-color) !important;
-  color: var(--adapt-text-color) !important;
-  font-family: var(--adapt-font-family) !important;
-  transition: background-color 0.3s ease, color 0.3s ease !important;
+/* Master Accessibility High-Contrast Dark Filter Engine (Standard Open-Source Filter Inversion Engine) */
+html[data-adaptai-transformed="true"] {
+  filter: invert(0.92) hue-rotate(180deg) contrast(1.08) !important;
+  background-color: #121212 !important;
 }
 
-html[data-adaptai-transformed="true"] p, 
-html[data-adaptai-transformed="true"] h1, 
-html[data-adaptai-transformed="true"] h2, 
-html[data-adaptai-transformed="true"] h3, 
-html[data-adaptai-transformed="true"] h4, 
-html[data-adaptai-transformed="true"] h5, 
-html[data-adaptai-transformed="true"] h6, 
-html[data-adaptai-transformed="true"] span, 
-html[data-adaptai-transformed="true"] li, 
-html[data-adaptai-transformed="true"] label,
-html[data-adaptai-transformed="true"] a {
-  background-color: transparent !important;
-  color: var(--adapt-text-color) !important;
-  font-family: var(--adapt-font-family) !important;
-  transition: color 0.3s ease !important;
+/* Invert back images, videos, canvas, and vector graphics to preserve true natural colors */
+html[data-adaptai-transformed="true"] img,
+html[data-adaptai-transformed="true"] video,
+html[data-adaptai-transformed="true"] iframe,
+html[data-adaptai-transformed="true"] canvas,
+html[data-adaptai-transformed="true"] svg,
+html[data-adaptai-transformed="true"] .mw-logo,
+html[data-adaptai-transformed="true"] #adaptai-widget-host,
+html[data-adaptai-transformed="true"] #adaptai-assistant-overlay {
+  filter: invert(1) hue-rotate(180deg) !important;
 }
+
 
 
 

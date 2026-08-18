@@ -276,29 +276,25 @@ function updateTtsBtnIcon(iconText) {
 }
 
 /**
- * Toggles Extension Light / Dark Mode across external web pages
+ * Toggles Extension Light / Dark Mode across external web pages using clean Filter Engine
  */
 function toggleExtensionTheme() {
   const root = document.documentElement;
 
   if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
     chrome.storage.local.get(['extensionTheme'], (res) => {
-      const currentTheme = res.extensionTheme || 'dark';
+      const currentTheme = res.extensionTheme || 'light';
 
-      if (currentTheme === 'dark') {
-        // Toggle to Light Mode (Black text on White background)
-        extensionThemeState = 'light';
-        root.setAttribute('data-adaptai-transformed', 'true');
-        root.style.setProperty('--adapt-bg-color', '#ffffff');
-        root.style.setProperty('--adapt-text-color', '#0f172a');
-        console.log("[AdaptAI Theme] Toggled to Light Theme across website.");
-      } else {
-        // Toggle to Dark Mode (Yellow text on Dark background)
+      if (currentTheme === 'light') {
+        // Toggle to High-Contrast Dark Mode (Flawless Dark Inversion)
         extensionThemeState = 'dark';
         root.setAttribute('data-adaptai-transformed', 'true');
-        root.style.setProperty('--adapt-bg-color', '#09090b');
-        root.style.setProperty('--adapt-text-color', '#ffff00');
-        console.log("[AdaptAI Theme] Toggled to Dark Theme across website.");
+        console.log("[AdaptAI Theme] Toggled to High-Contrast Dark Theme across website.");
+      } else {
+        // Toggle back to Normal / Light Mode
+        extensionThemeState = 'light';
+        root.removeAttribute('data-adaptai-transformed');
+        console.log("[AdaptAI Theme] Reset to Normal / Light Theme across website.");
       }
 
       chrome.storage.local.set({ extensionTheme: extensionThemeState });
@@ -311,15 +307,12 @@ function toggleExtensionTheme() {
     // Standalone fallback toggle
     if (root.getAttribute('data-adaptai-transformed') === 'true') {
       root.removeAttribute('data-adaptai-transformed');
-      root.style.removeProperty('--adapt-bg-color');
-      root.style.removeProperty('--adapt-text-color');
     } else {
       root.setAttribute('data-adaptai-transformed', 'true');
-      root.style.setProperty('--adapt-bg-color', '#09090b');
-      root.style.setProperty('--adapt-text-color', '#ffff00');
     }
   }
 }
+
 
 
 

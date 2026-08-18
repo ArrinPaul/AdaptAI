@@ -28,7 +28,7 @@ html[data-adaptai-transformed="true"] aside {
   border-color: #27272a !important;
 }
 
-/* Ensure clean white text legibility on headings, paragraphs, spans, and links */
+/* Ensure clean white text legibility & enlarged typography scaling on headings, paragraphs, spans, and links */
 html[data-adaptai-transformed="true"] p,
 html[data-adaptai-transformed="true"] h1,
 html[data-adaptai-transformed="true"] h2,
@@ -41,7 +41,10 @@ html[data-adaptai-transformed="true"] li,
 html[data-adaptai-transformed="true"] label,
 html[data-adaptai-transformed="true"] a {
   color: #f4f4f5 !important;
+  font-size: calc(1.15em * var(--adapt-font-scale, 1.35)) !important;
+  line-height: 1.7 !important;
 }
+
 
 /* Highlight links with high-contrast accessibility accent */
 html[data-adaptai-transformed="true"] a {

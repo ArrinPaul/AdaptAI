@@ -290,16 +290,18 @@ function toggleExtensionTheme() {
           fallbackToggleTheme(root);
           return;
         }
-        const currentTheme = res ? (res.extensionTheme || 'dark') : 'dark';
+        const currentTheme = res ? (res.extensionTheme || 'light') : 'light';
 
-        if (currentTheme === 'dark') {
-          extensionThemeState = 'light';
-          root.removeAttribute('data-adaptai-transformed');
-          console.log("[AdaptAI Theme] Toggled to Light / Original Theme across website.");
-        } else {
+        if (currentTheme === 'light' || root.getAttribute('data-adaptai-transformed') !== 'true') {
+          // Toggle to High-Contrast Dark Mode
           extensionThemeState = 'dark';
           root.setAttribute('data-adaptai-transformed', 'true');
           console.log("[AdaptAI Theme] Toggled to High-Contrast Dark Theme across website.");
+        } else {
+          // Toggle to Light / Original Normal Mode
+          extensionThemeState = 'light';
+          root.removeAttribute('data-adaptai-transformed');
+          console.log("[AdaptAI Theme] Toggled to Light / Original Theme across website.");
         }
 
         try {
@@ -327,6 +329,7 @@ function fallbackToggleTheme(root) {
     extensionThemeState = 'dark';
   }
 }
+
 
 
 

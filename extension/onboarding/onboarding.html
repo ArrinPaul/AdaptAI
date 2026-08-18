@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to AdaptAI</title>
+    <link rel="stylesheet" href="onboarding.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to AdaptAI</h1>
+        <p>Let's tailor the web to your needs. Complete this quick setup.</p>
+
+        <form id="profile-form">
+            <div class="test-section">
+                <h3>Visual Preference</h3>
+                <label>
+                    <input type="checkbox" id="high-contrast"> Enable High Contrast (Dark Mode + Bright Text)
+                </label>
+                <label>
+                    <input type="checkbox" id="large-text"> I need larger text
+                </label>
+            </div>
+
+            <div class="test-section">
+                <h3>Cognitive Preference</h3>
+                <label>
+                    <input type="checkbox" id="dyslexic-font"> Use a Dyslexia-friendly font
+                </label>
+                <label>
+                    <input type="checkbox" id="simplify-text"> Have AI simplify complex paragraphs
+                </label>
+            </div>
+
+            <div class="test-section">
+                <h3>Audio & Motor Preference</h3>
+                <label>
+                    <input type="checkbox" id="enable-audio"> Enable Read Aloud & Voice Commands
+                </label>
+            </div>
+
+            <button type="submit" class="primary-btn">Save My Profile</button>
+        </form>
+
+        <div id="success-message" style="display: none; color: green; margin-top: 20px;">
+            Profile saved! You can close this tab and click the extension icon on any website.
+        </div>
+    </div>
+    <script src="onboarding.js"></script>
+</body>
+</html>

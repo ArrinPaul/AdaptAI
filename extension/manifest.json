@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "AdaptAI",
+  "version": "1.0",
+  "description": "The web adapts to you. AI-powered accessibility transformations.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://generativelanguage.googleapis.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "action": {
+    "default_title": "Adapt this page"
+  },
+  "commands": {
+    "trigger_adaptation": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+A",
+        "mac": "Command+Shift+A"
+      },
+      "description": "Trigger the AI adaptation layer"
+    }
+  }
+}

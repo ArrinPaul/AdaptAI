@@ -1,65 +1,174 @@
+:root {
+  --bg-main: #0a0d14;
+  --bg-card: #121824;
+  --accent-blue: #3884ff;
+  --accent-purple: #7952eb;
+  --accent-cyan: #00d2ff;
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
+  --border-line: rgba(255, 255, 255, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  position: relative;
+  overflow-x: hidden;
 }
 
-.container {
-    background: white;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.1);
-    max-width: 500px;
-    width: 100%;
+.glow-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(56, 132, 255, 0.2) 0%, rgba(121, 82, 235, 0.15) 50%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
 }
 
-h1 {
-    margin-top: 0;
-    color: #222;
+.onboarding-card {
+  background: rgba(18, 24, 36, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-line);
+  border-radius: 24px;
+  padding: 40px;
+  max-width: 560px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 10;
 }
 
-.test-section {
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #eee;
+.card-header {
+  margin-bottom: 32px;
+  text-align: left;
 }
 
-.test-section h3 {
-    margin-bottom: 12px;
-    font-size: 16px;
-    color: #555;
+.brand {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
 }
 
-label {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 15px;
-    cursor: pointer;
+.card-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #ffffff 0%, #d1d5db 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-input[type="checkbox"] {
-    margin-right: 8px;
-    transform: scale(1.2);
+.card-header p {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-.primary-btn {
-    background: #0066ff;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    font-size: 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    width: 100%;
-    font-weight: bold;
-    transition: background 0.2s;
+.section-group {
+  margin-bottom: 24px;
 }
 
-.primary-btn:hover {
-    background: #0052cc;
+.group-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+
+.custom-toggle {
+  display: block;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.custom-toggle input {
+  display: none;
+}
+
+.toggle-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-line);
+  padding: 14px 18px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-toggle:hover .toggle-box {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(56, 132, 255, 0.3);
+}
+
+.custom-toggle input:checked + .toggle-box {
+  background: rgba(56, 132, 255, 0.12);
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 16px rgba(56, 132, 255, 0.15);
+}
+
+.label-text {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.sub-text {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  color: white;
+  border: none;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 24px rgba(56, 132, 255, 0.35);
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(56, 132, 255, 0.5);
+}
+
+#success-message {
+  display: none;
+  margin-top: 20px;
+  padding: 14px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+

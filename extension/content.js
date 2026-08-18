@@ -144,9 +144,9 @@ function mountShadowWidget() {
   const container = document.createElement('div');
   container.className = 'widget-container';
   container.innerHTML = `
-    <button id="tts-btn" class="widget-btn" title="Text to Speech (Read Selected Text / Page)">🔊</button>
-    <button id="theme-btn" class="widget-btn" title="Toggle Extension Theme (Light / Dark)">${extensionThemeState === 'light' ? '☀' : '☾'}</button>
-    <button id="assistant-btn" class="widget-btn" title="Toggle AI Assistant Overlay (Ctrl+Shift+Y)">⚡</button>
+    <button id="tts-btn" class="widget-btn" title="Text to Speech (Read Selected Text / Page)">Audio</button>
+    <button id="theme-btn" class="widget-btn" title="Toggle Extension Theme (Light / Dark)">Theme</button>
+    <button id="assistant-btn" class="widget-btn" title="Toggle AI Assistant Overlay (Ctrl+Shift+U)">AI</button>
   `;
 
   shadowRoot.appendChild(styleEl);
@@ -165,7 +165,7 @@ function mountShadowWidget() {
 
 
 /**
- * Handles Text-to-Speech prioritizing user selected text first, then simplified/scraped text
+ * Text-to-Speech Engine with priority queuing: Selected Text -> AI Simplified Text -> DOM Headings
  */
 function handleReadAloud() {
   if (!('speechSynthesis' in window)) {
@@ -178,13 +178,13 @@ function handleReadAloud() {
     if (currentSpeechState === 'speaking') {
       window.speechSynthesis.pause();
       currentSpeechState = 'paused';
-      updateTtsBtnIcon('▶');
+      updateTtsBtnIcon('Resume');
       console.log("[AdaptAI TTS] Speech paused.");
       return;
     } else if (currentSpeechState === 'paused') {
       window.speechSynthesis.resume();
       currentSpeechState = 'speaking';
-      updateTtsBtnIcon('⏸');
+      updateTtsBtnIcon('Pause');
       console.log("[AdaptAI TTS] Speech resumed.");
       return;
     }
@@ -217,30 +217,30 @@ function handleReadAloud() {
 
   currentSpeechUtterance.onstart = () => {
     currentSpeechState = 'speaking';
-    updateTtsBtnIcon('⏸');
+    updateTtsBtnIcon('Pause');
     console.log("[AdaptAI TTS] Reading aloud started.");
   };
 
   currentSpeechUtterance.onend = () => {
     currentSpeechState = 'idle';
-    updateTtsBtnIcon('🔊');
+    updateTtsBtnIcon('Audio');
     console.log("[AdaptAI TTS] Reading aloud completed.");
   };
 
   currentSpeechUtterance.onerror = (e) => {
     currentSpeechState = 'idle';
-    updateTtsBtnIcon('🔊');
+    updateTtsBtnIcon('Audio');
     console.error("[AdaptAI TTS Error]", e);
   };
 
   window.speechSynthesis.speak(currentSpeechUtterance);
 }
 
-function updateTtsBtnIcon(iconChar) {
+function updateTtsBtnIcon(iconText) {
   const shadowHost = document.getElementById('adaptai-widget-host');
   if (!shadowHost || !shadowHost.shadowRoot) return;
   const ttsBtn = shadowHost.shadowRoot.getElementById('tts-btn');
-  if (ttsBtn) ttsBtn.innerText = iconChar;
+  if (ttsBtn) ttsBtn.innerText = iconText;
 }
 
 /**

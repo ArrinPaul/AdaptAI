@@ -6,31 +6,32 @@
   <title>AdaptAI Extension Control Center</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b0f19;
-      --card-bg: #141a29;
-      --text-bright: #f8fafc;
-      --text-subtle: #94a3b8;
-      --accent-blue: #3b82f6;
-      --accent-green: #10b981;
-      --accent-red: #ef4444;
-      --border: rgba(255, 255, 255, 0.08);
+      --bg: #09090b;
+      --card-bg: #121215;
+      --card-border: #27272a;
+      --text-bright: #fafafa;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+      --accent-white: #ffffff;
+      --status-active: #22c55e;
+      --status-disabled: #ef4444;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
     body {
-      width: 330px;
+      width: 320px;
       background-color: var(--bg);
       color: var(--text-bright);
-      padding: 16px;
+      padding: 20px;
       user-select: none;
     }
 
@@ -38,17 +39,26 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 14px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 16px;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-weight: 800;
-      font-size: 17px;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.3px;
+      color: var(--text-bright);
+    }
+
+    .brand-mark {
+      width: 8px;
+      height: 8px;
+      background: var(--text-bright);
+      border-radius: 2px;
     }
 
     .status-badge {
@@ -56,38 +66,36 @@
       align-items: center;
       gap: 6px;
       font-size: 11px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 12px;
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--accent-green);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: rgba(34, 197, 94, 0.1);
+      color: var(--status-active);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      letter-spacing: 0.3px;
     }
 
     .status-badge.disabled {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--accent-red);
-      border-color: rgba(239, 68, 68, 0.3);
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--status-disabled);
+      border-color: rgba(239, 68, 68, 0.2);
     }
 
     .status-dot {
-      width: 7px;
-      height: 7px;
-      background: var(--accent-green);
+      width: 6px;
+      height: 6px;
+      background: var(--status-active);
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--accent-green);
     }
 
     .status-badge.disabled .status-dot {
-      background: var(--accent-red);
-      box-shadow: 0 0 8px var(--accent-red);
+      background: var(--status-disabled);
     }
 
-    /* Master ON/OFF Toggle Box */
     .master-toggle-box {
       background: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 14px;
+      border: 1px solid var(--card-border);
+      padding: 16px;
       border-radius: 12px;
       display: flex;
       justify-content: space-between;
@@ -96,20 +104,22 @@
     }
 
     .toggle-info h4 {
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-bright);
     }
 
     .toggle-info p {
       font-size: 11px;
-      color: var(--text-subtle);
+      color: var(--text-muted);
+      margin-top: 2px;
     }
 
     .master-switch {
       position: relative;
       display: inline-block;
-      width: 44px;
-      height: 24px;
+      width: 40px;
+      height: 22px;
     }
 
     .master-switch input { opacity: 0; width: 0; height: 0; }
@@ -118,73 +128,71 @@
       position: absolute;
       cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #334155;
-      transition: .3s;
-      border-radius: 24px;
+      background-color: #27272a;
+      transition: .25s ease;
+      border-radius: 9999px;
     }
 
     .slider:before {
       position: absolute;
       content: "";
-      height: 18px;
-      width: 18px;
+      height: 16px;
+      width: 16px;
       left: 3px;
       bottom: 3px;
-      background-color: white;
-      transition: .3s;
+      background-color: #a1a1aa;
+      transition: .25s ease;
       border-radius: 50%;
     }
 
-    input:checked + .slider { background-color: var(--accent-blue); }
-    input:checked + .slider:before { transform: translateX(20px); }
+    input:checked + .slider { background-color: var(--text-bright); }
+    input:checked + .slider:before { transform: translateX(18px); background-color: #09090b; }
 
-    /* Persona Summary Banner */
     .persona-banner {
-      background: rgba(59, 130, 246, 0.1);
-      border: 1px solid rgba(59, 130, 246, 0.25);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 12px;
+      padding: 14px 16px;
       margin-bottom: 14px;
     }
 
     .persona-title {
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--accent-blue);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-dim);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
     }
 
     .persona-name {
-      font-size: 14px;
-      font-weight: 700;
-      margin-top: 2px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-top: 4px;
     }
 
     .btn-adapt-now {
-      background: linear-gradient(135deg, var(--accent-blue), #2563eb);
-      color: white;
+      background: var(--text-bright);
+      color: #09090b;
       border: none;
       width: 100%;
       padding: 12px;
       border-radius: 10px;
-      font-weight: 700;
-      font-size: 14px;
+      font-weight: 600;
+      font-size: 13px;
       cursor: pointer;
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
-      transition: all 0.2s;
-      margin-bottom: 14px;
+      transition: opacity 0.2s ease;
+      margin-bottom: 16px;
+      letter-spacing: -0.2px;
     }
 
     .btn-adapt-now:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+      opacity: 0.9;
     }
 
     .btn-adapt-now:disabled {
-      opacity: 0.5;
+      opacity: 0.3;
       cursor: not-allowed;
-      box-shadow: none;
     }
 
     .menu-list {
@@ -195,28 +203,36 @@
 
     .menu-item {
       background: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 10px 12px;
-      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      padding: 12px 14px;
+      border-radius: 10px;
       color: var(--text-bright);
       text-decoration: none;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 500;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
     }
 
     .menu-item:hover {
-      border-color: rgba(59, 130, 246, 0.4);
-      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--text-muted);
+      background: #18181b;
+    }
+
+    .arrow-icon {
+      color: var(--text-dim);
+      font-size: 12px;
     }
   </style>
 </head>
 <body>
   <div class="header">
-    <div class="brand">⚡ AdaptAI</div>
+    <div class="brand">
+      <span class="brand-mark"></span>
+      <span>AdaptAI</span>
+    </div>
     <div id="status-badge" class="status-badge">
       <span class="status-dot"></span> <span id="status-text">ON</span>
     </div>
@@ -225,8 +241,8 @@
   <!-- Master ON/OFF Switch -->
   <div class="master-toggle-box">
     <div class="toggle-info">
-      <h4>Extension Protection</h4>
-      <p id="toggle-desc">DOM transformations active</p>
+      <h4>Extension Status</h4>
+      <p id="toggle-desc">Adaptations Active</p>
     </div>
     <label class="master-switch">
       <input type="checkbox" id="master-toggle" checked>
@@ -236,30 +252,35 @@
 
   <!-- User Persona Summary -->
   <div class="persona-banner" id="persona-banner">
-    <div class="persona-title">Active AI Persona</div>
-    <div class="persona-name" id="persona-name">High-Contrast Assist</div>
+    <div class="persona-title">Active Persona</div>
+    <div class="persona-name" id="persona-name">High-Contrast Visual Assist</div>
   </div>
 
-  <button class="btn-adapt-now" id="trigger-adapt">✨ Adapt Current Page (Ctrl+Shift+A)</button>
+  <button class="btn-adapt-now" id="trigger-adapt">Adapt Page (Ctrl+Shift+A)</button>
 
   <!-- Quick Action Navigation -->
   <div class="menu-list">
     <a href="http://localhost:8080/index.html" id="link-landing" target="_blank" class="menu-item">
-      <span>🌐 Public Landing Page</span> ➔
+      <span>Landing Page</span>
+      <span class="arrow-icon">→</span>
     </a>
     <a href="http://localhost:8080/extension/onboarding/onboarding.html" id="link-onboarding" target="_blank" class="menu-item">
-      <span>🧠 Take Diagnostic Test</span> ➔
+      <span>Diagnostic Assessment</span>
+      <span class="arrow-icon">→</span>
     </a>
     <a href="http://localhost:8080/extension/profile/profile.html" id="link-profile" target="_blank" class="menu-item">
-      <span>⚙️ Profile Settings</span> ➔
+      <span>Profile & Settings</span>
+      <span class="arrow-icon">→</span>
     </a>
     <a href="http://localhost:8080/demo/index.html" id="link-demo" target="_blank" class="menu-item">
-      <span>🧪 Demo Workbench</span> ➔
+      <span>Simulation Workbench</span>
+      <span class="arrow-icon">→</span>
     </a>
   </div>
 
   <script src="popup.js"></script>
 </body>
 </html>
+
 
 

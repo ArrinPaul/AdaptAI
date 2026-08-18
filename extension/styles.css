@@ -62,21 +62,9 @@ html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h4,
 html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h5,
 html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h6,
 html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) span:not(.brand-dot),
-/* High Contrast Yellow Text Accent Engine */
+/* High Contrast Link Accent Engine */
 html[data-adaptai-transformed="true"] a:not(.btn-hero-primary):not(.btn-nav-cta) {
-  color: #ffff00 !important;
   text-decoration: underline !important;
-}
-
-html[data-adaptai-transformed="true"][data-adaptai-high-contrast="true"] p,
-html[data-adaptai-transformed="true"][data-adaptai-high-contrast="true"] h1,
-html[data-adaptai-transformed="true"][data-adaptai-high-contrast="true"] h2,
-html[data-adaptai-transformed="true"][data-adaptai-high-contrast="true"] h3,
-html[data-adaptai-transformed="true"][data-adaptai-high-contrast="true"] h4,
-html[data-adaptai-transformed="true"][data-adaptai-high-contrast="true"] h5,
-html[data-adaptai-transformed="true"][data-adaptai-high-contrast="true"] h6,
-html[data-adaptai-transformed="true"][data-adaptai-high-contrast="true"] li {
-  color: #ffff00 !important;
 }
 
 

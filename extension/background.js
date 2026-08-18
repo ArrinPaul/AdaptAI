@@ -504,7 +504,7 @@ async function handleAiProcessRequest(pageText, tabId) {
 
   if (visual.highContrast) {
     transformationData.cssUpdates["--adapt-bg-color"] = "#121212";
-    transformationData.cssUpdates["--adapt-text-color"] = "#FFFF00";
+    transformationData.cssUpdates["--adapt-text-color"] = "#FFFFFF";
   }
 
   if (visual.fontScale && visual.fontScale > 1.0) {

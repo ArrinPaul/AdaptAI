@@ -1,10 +1,20 @@
 // background.js - Track B Intelligence Engine & Service Worker
 
-importScripts('env.js');
+try {
+  importScripts('env.js');
+} catch (e) {
+  console.warn("[AdaptAI Service Worker] env.js not found or optional, using default ENV fallback.");
+}
+
+self.ENV = self.ENV || {
+  GEMINI_API_KEY: "YOUR_GEMINI_API_KEY",
+  GROQ_API_KEY: "YOUR_GROQ_API_KEY"
+};
 
 // -------------------------------------------------------------
 // SUB-TASK B1: SERVICE WORKER LIFECYCLE & EVENT WIRING
 // -------------------------------------------------------------
+
 
 // 1. Open Onboarding Setup Tab on Installation
 chrome.runtime.onInstalled.addListener((details) => {

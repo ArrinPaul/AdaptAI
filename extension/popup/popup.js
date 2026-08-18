@@ -73,12 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Bind Chrome Extension Navigation Routing for all Popup Links
+  // Bind Navigation Routing for all Popup Links to http://localhost:8080
   const linkMappings = [
-    { id: 'link-landing', path: 'index.html', fullUrl: 'http://localhost:8080/index.html' },
-    { id: 'link-onboarding', path: 'extension/onboarding/onboarding.html', fullUrl: 'http://localhost:8080/extension/onboarding/onboarding.html' },
-    { id: 'link-profile', path: 'extension/profile/profile.html', fullUrl: 'http://localhost:8080/extension/profile/profile.html' },
-    { id: 'link-demo', path: 'demo/index.html', fullUrl: 'http://localhost:8080/demo/index.html' }
+    { id: 'link-landing', url: 'http://localhost:8080/index.html' },
+    { id: 'link-onboarding', url: 'http://localhost:8080/extension/onboarding/onboarding.html' },
+    { id: 'link-profile', url: 'http://localhost:8080/extension/profile/profile.html' },
+    { id: 'link-demo', url: 'http://localhost:8080/demo/index.html' }
   ];
 
   linkMappings.forEach(item => {
@@ -86,28 +86,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el) {
       el.addEventListener('click', (e) => {
         e.preventDefault();
-        try {
-          if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.create) {
-            let targetUrl = item.fullUrl;
-            try {
-              if (chrome.runtime && chrome.runtime.getURL) {
-                targetUrl = chrome.runtime.getURL(item.path);
-              }
-            } catch (err) {
-              targetUrl = item.fullUrl;
-            }
-            chrome.tabs.create({ url: targetUrl });
-          } else {
-            window.open(item.fullUrl, '_blank');
-          }
-        } catch (err) {
-          console.warn("[AdaptAI Popup] Navigation fallback:", err);
-          window.open(item.fullUrl, '_blank');
+        if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.create) {
+          chrome.tabs.create({ url: item.url });
+        } else {
+          window.open(item.url, '_blank');
         }
       });
     }
   });
-
 
   // Handle Long Click / Double Click interaction menu gesture
   let clickTimer = null;
@@ -124,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clickCount = 0;
         console.log("[AdaptAI Gesture] Double click detected. Launching profile center...");
         if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.create) {
-          chrome.tabs.create({ url: chrome.runtime.getURL('profile/profile.html') });
+          chrome.tabs.create({ url: 'http://localhost:8080/extension/profile/profile.html' });
         } else {
           window.open('http://localhost:8080/extension/profile/profile.html', '_blank');
         }
@@ -132,5 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
 
 

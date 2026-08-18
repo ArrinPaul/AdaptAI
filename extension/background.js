@@ -1,90 +1,196 @@
-// background.js - Person B's Domain (API & Logic)
+// background.js - Track B Intelligence Engine & Service Worker
 
 importScripts('env.js');
 
-// MOCK DATA FOR PARALLEL DEVELOPMENT
-// Person B: Use this to test your Gemini API calls without waiting for Person A
-const mockScrapedText = "Quantum mechanics is a fundamental theory in physics that provides a description of the physical properties of nature at the scale of atoms and subatomic particles.";
-const mockUserProfile = { 
-  visual: { highContrast: true, fontScale: 1.5 },
-  cognitive: { simplifyText: true }
-};
+// -------------------------------------------------------------
+// SUB-TASK B1: SERVICE WORKER LIFECYCLE & EVENT WIRING
+// -------------------------------------------------------------
 
-// 1. Open onboarding page on install
+// 1. Open Onboarding Setup Tab on Installation
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === 'install') {
+    console.log("[AdaptAI Service Worker] Extension installed. Opening Onboarding setup tab...");
     chrome.tabs.create({ url: 'onboarding/onboarding.html' });
   }
 });
 
-// 2. Listen for clicks on the extension icon
+// Helper: Sends scrape_page trigger to target tab
+function triggerPageAdaptation(tab) {
+  if (!tab || !tab.id) return;
+  console.log(`[AdaptAI Service Worker] Triggering page scrape on Tab ID: ${tab.id}`);
+  chrome.tabs.sendMessage(tab.id, { action: "scrape_page" }, (response) => {
+    if (chrome.runtime.lastError) {
+      console.warn("[AdaptAI Service Worker] Tab listener error:", chrome.runtime.lastError.message);
+    }
+  });
+}
+
+// 2. Listen for clicks on the Extension Action Icon
 chrome.action.onClicked.addListener((tab) => {
-  // Tell content script to scrape the page
-  chrome.tabs.sendMessage(tab.id, { action: "scrape_page" });
+  triggerPageAdaptation(tab);
 });
 
-// 3. Listen for the scraped text from content.js
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "process_with_ai") {
-    console.log("Received scraped text from content.js:", request.pageText);
-    handleAiProcessing(request.pageText, sender.tab.id);
+// 3. Listen for Keyboard Commands (e.g. Ctrl+Shift+A)
+chrome.commands.onCommand.addListener((command) => {
+  if (command === "trigger_adaptation") {
+    console.log("[AdaptAI Service Worker] Keyboard command trigger_adaptation received.");
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs && tabs[0]) {
+        triggerPageAdaptation(tabs[0]);
+      }
+    });
   }
 });
 
-const mockGeminiResponse = {
+// 4. Runtime Message Listener Router
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "process_with_ai") {
+    console.log("[AdaptAI Service Worker] Received scraped text payload from content script.");
+    const tabId = sender.tab ? sender.tab.id : null;
+    
+    // Delegate to processing pipeline
+    if (typeof handleAiProcessRequest === 'function') {
+      handleAiProcessRequest(request.pageText, tabId);
+    } else {
+      console.log("[AdaptAI Service Worker Placeholder] Pipeline pending B.2 & B.3 implementation.");
+    }
+  }
+  return true; // Keep message channel open for async responses
+});
+
+// -------------------------------------------------------------
+// SUB-TASK B2: STORAGE RETRIEVAL & GEMINI PROMPT ENGINEERING
+// -------------------------------------------------------------
+
+/**
+ * Retrieves User Accessibility Profile / Persona from storage
+ */
+async function getUserProfileFromStorage() {
+  return new Promise((resolve) => {
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.get(['userProfile'], (result) => {
+        if (result && result.userProfile) {
+          console.log("[AdaptAI Storage] Retrieved user profile from storage:", result.userProfile);
+          resolve(result.userProfile);
+        } else {
+          console.log("[AdaptAI Storage] No profile found. Using fallback default profile.");
+          resolve(getDefaultFallbackProfile());
+        }
+      });
+    } else {
+      resolve(getDefaultFallbackProfile());
+    }
+  });
+}
+
+function getDefaultFallbackProfile() {
+  return {
+    personaName: "Standard Assist Persona",
+    visual: { highContrast: true, fontScale: 1.5 },
+    cognitive: { dyslexicFont: true, simplifyText: true },
+    audio: { enabled: true }
+  };
+}
+
+/**
+ * Builds dynamic system prompt enforcing Frozen Data Contract output rules
+ */
+function buildGeminiSystemPrompt(userProfile, scrapedPageText) {
+  const visual = userProfile.visual || {};
+  const cognitive = userProfile.cognitive || {};
+
+  const systemInstruction = `You are AdaptAI, an intelligent real-time web accessibility adaptation engine.
+Analyze the user's accessibility profile and the provided webpage text content.
+
+User Persona: ${userProfile.personaName || 'Accessibility User'}
+Preferences:
+- High Contrast Theme Required: ${visual.highContrast ? 'YES' : 'NO'}
+- Font Scale Required: ${visual.fontScale || 1.0}x
+- Dyslexia-Friendly Font Required: ${cognitive.dyslexicFont ? 'YES' : 'NO'}
+- AI Text Simplification Required: ${cognitive.simplifyText ? 'YES' : 'NO'}
+
+CRITICAL INSTRUCTIONS:
+1. CSS Updates:
+   - If High Contrast is YES: set "--adapt-bg-color": "#121212", "--adapt-text-color": "#FFFF00", "--adapt-font-scale": "${visual.fontScale || 1.5}".
+   - Else: set "--adapt-font-scale": "${visual.fontScale || 1.0}".
+2. Simplified Text:
+   - If Text Simplification is YES: return an array of simplified, clear bullet-point string summaries corresponding to the input webpage paragraphs.
+3. Voice Intent:
+   - Determine if navigation intent (e.g. "scroll_down") is requested or set to null.
+
+You MUST respond strictly using the required JSON schema. Do NOT include markdown formatting.`;
+
+  const userContent = `Webpage Content Scraped From DOM:\n${scrapedPageText}`;
+
+  return { systemInstruction, userContent };
+}
+
+// -------------------------------------------------------------
+// SUB-TASK B3: GEMINI API INTEGRATION & STRUCTURED OUTPUTS
+// -------------------------------------------------------------
+
+// Fallback JSON in case of API error, offline status, or missing key
+const mockGeminiFallback = {
   cssUpdates: {
     "--adapt-font-scale": "1.5",
     "--adapt-bg-color": "#121212",
-    "--adapt-text-color": "#e0e0e0"
+    "--adapt-text-color": "#FFFF00",
+    "--adapt-line-height": "1.6"
   },
   simplifiedText: [
-    "This is fake simplified text for paragraph 1.",
-    "This is fake simplified text for paragraph 2."
-  ]
+    "Simplified Summary 1: High performance cloud architecture boosted operational margins.",
+    "Simplified Summary 2: Real-time client-side DOM adaptation models transform web layouts safely."
+  ],
+  dyslexicFont: true,
+  motorAssist: true,
+  voiceIntent: null
 };
 
-async function callGeminiAPI(apiKey, profile, pageText) {
+// Gemini Structured Output Schema Definition
+const geminiResponseSchema = {
+  type: "OBJECT",
+  properties: {
+    cssUpdates: {
+      type: "OBJECT",
+      properties: {
+        "--adapt-font-scale": { type: "STRING" },
+        "--adapt-bg-color": { type: "STRING" },
+        "--adapt-text-color": { type: "STRING" }
+      },
+      required: ["--adapt-font-scale"]
+    },
+    simplifiedText: {
+      type: "ARRAY",
+      items: { type: "STRING" }
+    },
+    dyslexicFont: { type: "BOOLEAN" },
+    motorAssist: { type: "BOOLEAN" },
+    voiceIntent: { type: "STRING", nullable: true }
+  },
+  required: ["cssUpdates", "simplifiedText"]
+};
+
+/**
+ * Invokes Gemini REST API via native fetch()
+ */
+async function callGeminiApi(systemInstruction, userContent, apiKey) {
+  if (!apiKey || apiKey === "YOUR_GEMINI_API_KEY") {
+    throw new Error("No valid Gemini API Key provided.");
+  }
+
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-  
-  const systemInstruction = `You are an AI accessibility assistant. Adapt the following webpage text based on the user's profile.
-User Profile: ${JSON.stringify(profile)}
-
-Your job is to provide CSS updates for visual adaptations (like font scaling and high contrast) and an array of simplified text strings for the paragraphs on the page.
-
-If highContrast is true in the profile, use high contrast colors (e.g., #121212 for background and #e0e0e0 for text). Otherwise, leave them empty or use standard colors.
-If fontScale is provided, apply it to --adapt-font-scale.
-Simplify the text based on cognitive needs. Return one simplified string for each logical paragraph in the text.`;
 
   const requestBody = {
     contents: [
       {
-        parts: [{ text: `Page Text to adapt:\n\n${pageText}` }]
+        role: "user",
+        parts: [{ text: `${systemInstruction}\n\n${userContent}` }]
       }
     ],
-    systemInstruction: {
-      parts: [{ text: systemInstruction }]
-    },
     generationConfig: {
       responseMimeType: "application/json",
-      responseSchema: {
-        type: "OBJECT",
-        properties: {
-          cssUpdates: {
-            type: "OBJECT",
-            properties: {
-              "--adapt-font-scale": { type: "STRING" },
-              "--adapt-bg-color": { type: "STRING" },
-              "--adapt-text-color": { type: "STRING" }
-            }
-          },
-          simplifiedText: {
-            type: "ARRAY",
-            items: { type: "STRING" },
-            description: "An array of simplified text strings, one for each input paragraph."
-          }
-        },
-        required: ["cssUpdates", "simplifiedText"]
-      }
+      responseSchema: geminiResponseSchema,
+      temperature: 0.2
     }
   };
 
@@ -95,40 +201,47 @@ Simplify the text based on cognitive needs. Return one simplified string for eac
   });
 
   if (!response.ok) {
-    throw new Error(`Gemini API error: ${response.status}`);
+    throw new Error(`Gemini API HTTP Error: ${response.status} ${response.statusText}`);
   }
 
   const data = await response.json();
-  const textResponse = data.candidates[0].content.parts[0].text;
-  return JSON.parse(textResponse);
+  const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!rawText) throw new Error("Empty candidate payload from Gemini API.");
+
+  const parsedJson = JSON.parse(rawText);
+  console.log("[AdaptAI Gemini API] Successfully generated Structured JSON:", parsedJson);
+  return parsedJson;
 }
 
-async function callGroqAPI(apiKey, profile, pageText) {
+/**
+ * Invokes Groq API via native fetch() as a Fallback
+ */
+async function callGroqAPI(systemInstruction, userContent, apiKey) {
+  if (!apiKey || apiKey === "YOUR_GROQ_API_KEY") {
+    throw new Error("No valid Groq API Key provided.");
+  }
+
   const endpoint = "https://api.groq.com/openai/v1/chat/completions";
   
-  const systemInstruction = `You are an AI accessibility assistant. Adapt the webpage text based on the user's profile.
-User Profile: ${JSON.stringify(profile)}
-
-Your job is to provide CSS updates for visual adaptations and an array of simplified text strings for the paragraphs.
-You MUST return a valid JSON object with EXACTLY this structure:
+  // Groq requires JSON structure defined in prompt when using json_object response format
+  const groqSystemInstruction = systemInstruction + `\n\nYou MUST return a valid JSON object with EXACTLY this structure:
 {
   "cssUpdates": {
     "--adapt-font-scale": "string",
     "--adapt-bg-color": "string",
     "--adapt-text-color": "string"
   },
-  "simplifiedText": ["string", "string"]
-}
-
-If highContrast is true in the profile, use high contrast colors (#121212 for background, #e0e0e0 for text).
-If fontScale is provided, apply it to --adapt-font-scale.
-Simplify the text based on cognitive needs. Return one simplified string for each logical paragraph.`;
+  "simplifiedText": ["string", "string"],
+  "dyslexicFont": true,
+  "motorAssist": true,
+  "voiceIntent": null
+}`;
 
   const requestBody = {
     model: "llama-3.1-8b-instant",
     messages: [
-      { role: "system", content: systemInstruction },
-      { role: "user", content: `Page Text to adapt:\n\n${pageText}` }
+      { role: "system", content: groqSystemInstruction },
+      { role: "user", content: userContent }
     ],
     response_format: { type: "json_object" }
   };
@@ -151,55 +264,101 @@ Simplify the text based on cognitive needs. Return one simplified string for eac
   return JSON.parse(textResponse);
 }
 
-async function handleAiProcessing(pageText, tabId) {
+/**
+ * Master processing pipeline orchestrating storage, Gemini invocation, and tab response
+ */
+async function handleAiProcessRequest(pageText, tabId) {
+  console.log(`[AdaptAI Processing Pipeline] Starting process for Tab ID: ${tabId}`);
+  
+  // 1. Retrieve User Accessibility Profile
+  const profile = await getUserProfileFromStorage();
+
+  // 2. Engineer Gemini System Prompt
+  const { systemInstruction, userContent } = buildGeminiSystemPrompt(profile, pageText);
+
+  // Get keys from env.js
+  const geminiKey = self.ENV?.GEMINI_API_KEY;
+  const groqKey = self.ENV?.GROQ_API_KEY;
+  
+  let transformationData = mockGeminiFallback;
+
+  // 3. Invoke API Pipeline with Groq Fallback
   try {
-    // 1. Get user profile
-    const data = await chrome.storage.local.get(['userProfile']);
-    const profile = data.userProfile || mockUserProfile;
-    
-    // Get keys from env.js
-    const geminiKey = self.ENV?.GEMINI_API_KEY;
-    const groqKey = self.ENV?.GROQ_API_KEY;
-    
-    if (!geminiKey && !groqKey) {
-      console.warn("No API keys found in env.js. Fallback to mock data.");
-      chrome.tabs.sendMessage(tabId, { action: "apply_transformations", data: mockGeminiResponse });
-      return;
-    }
-
-    let resultJson = null;
-
+    console.log("Attempting Gemini API...");
+    transformationData = await callGeminiApi(systemInstruction, userContent, geminiKey);
+  } catch (geminiError) {
+    console.warn("Gemini API failed:", geminiError.message, "- Falling back to Groq...");
     try {
-      if (!geminiKey || geminiKey === "YOUR_GEMINI_API_KEY") throw new Error("Gemini Key Missing or Invalid");
-      console.log("Attempting Gemini API...");
-      resultJson = await callGeminiAPI(geminiKey, profile, pageText);
-    } catch (geminiError) {
-      console.warn("Gemini API failed:", geminiError.message, "Falling back to Groq...");
-      
-      try {
-        if (!groqKey || groqKey === "YOUR_GROQ_API_KEY") throw new Error("Groq Key Missing or Invalid");
-        console.log("Attempting Groq API Fallback...");
-        resultJson = await callGroqAPI(groqKey, profile, pageText);
-      } catch (groqError) {
-        console.error("Groq API Fallback failed:", groqError.message);
-        throw new Error("Both Gemini and Groq APIs failed.");
-      }
+      console.log("Attempting Groq API Fallback...");
+      transformationData = await callGroqAPI(systemInstruction, userContent, groqKey);
+    } catch (groqError) {
+      console.error("Groq API Fallback failed:", groqError.message);
+      console.warn("[AdaptAI Processing Pipeline] Both APIs failed. Using fallback mock JSON.");
     }
-
-    console.log("AI Response:", resultJson);
-    
-    // Merge static profile flags so Person A's content.js can toggle them
-    if (resultJson) {
-      resultJson.dyslexicFont = profile.cognitive?.dyslexicFont;
-      // If there's a motor profile, pass it along. Otherwise default to audio enabled flag for motor assist
-      resultJson.motorAssist = profile.audio?.enabled; 
-    }
-
-    chrome.tabs.sendMessage(tabId, { action: "apply_transformations", data: resultJson });
-
-  } catch (error) {
-    console.error("Error processing with AI:", error);
-    // Send mock data on error so Person A isn't blocked
-    chrome.tabs.sendMessage(tabId, { action: "apply_transformations", data: mockGeminiResponse });
   }
+
+  // Ensure static profile flags are passed along for the UI to read
+  transformationData.dyslexicFont = profile.cognitive?.dyslexicFont;
+  transformationData.motorAssist = profile.audio?.enabled; // Using audio enabled as motor assist proxy for this build
+
+  // 4. Dispatch result back to Content Script
+  if (tabId && typeof chrome !== 'undefined' && chrome.tabs) {
+    chrome.tabs.sendMessage(tabId, {
+      action: "apply_transformations",
+      data: transformationData
+    }, () => {
+      if (chrome.runtime.lastError) {
+        console.warn("[AdaptAI Processing Pipeline] Error sending payload to tab:", chrome.runtime.lastError.message);
+      } else {
+        console.log("[AdaptAI Processing Pipeline] Successfully delivered transformations to tab!");
+      }
+    });
+  }
+
+  return transformationData;
+}
+
+
+// -------------------------------------------------------------
+// SUB-TASK B4: BACKGROUND WORKER AUTOMATED SUITE
+// -------------------------------------------------------------
+async function runTrackBTests() {
+  console.group("🧪 [AdaptAI Track B Validation Suite]");
+  let passed = 0;
+  let total = 0;
+
+  function assert(condition, testName) {
+    total++;
+    if (condition) {
+      console.log(`✅ PASS: ${testName}`);
+      passed++;
+    } else {
+      console.error(`❌ FAIL: ${testName}`);
+    }
+  }
+
+  // 1. Storage Retrieval Test
+  const profile = await getUserProfileFromStorage();
+  assert(profile !== null && typeof profile === 'object', "Storage retrieval returns valid profile object");
+  assert(profile.visual !== undefined, "Profile contains visual preferences block");
+
+  // 2. Prompt Engineering Test
+  const sampleScrapedText = "Sample academic text scraped from DOM.";
+  const { systemInstruction, userContent } = buildGeminiSystemPrompt(profile, sampleScrapedText);
+  assert(systemInstruction.includes("AdaptAI"), "System prompt includes core instruction persona");
+  assert(userContent.includes(sampleScrapedText), "User content prompt includes scraped page text");
+
+  // 3. Fallback Execution Test
+  const fallbackResult = await handleAiProcessRequest(sampleScrapedText, null);
+  assert(fallbackResult.cssUpdates !== undefined, "Pipeline returns valid cssUpdates object");
+  assert(Array.isArray(fallbackResult.simplifiedText), "Pipeline returns valid simplifiedText array");
+
+  console.log(`\n📊 Track B Test Results: ${passed}/${total} assertions passed.`);
+  console.groupEnd();
+  return passed === total;
+}
+
+// Export for module/global test runners
+if (typeof self !== 'undefined') {
+  self.runTrackBTests = runTrackBTests;
 }

@@ -109,8 +109,8 @@ function calculatePersona() {
   const visualVal = document.querySelector('input[name="visual_test"]:checked')?.value || 'standard';
   const cognitiveVal = document.querySelector('input[name="cognitive_test"]:checked')?.value || 'dense';
 
-  let personaName = "Standard Explorer";
-  let summary = "Balanced visual and text settings. Standard web layout supported.";
+  let personaParts = [];
+  let summaryParts = [];
   let visualScore = "85/100";
   let cognitiveScore = "90/100";
   let motorScore = "95/100";
@@ -119,30 +119,40 @@ function calculatePersona() {
   let cognitiveProfile = { dyslexicFont: false, simplifyText: false };
   let audioProfile = { enabled: true };
 
-  // Personalization Matrix based on diagnostic responses
+  // 1. Visual Diagnostics Evaluation
   if (visualVal === 'high_contrast') {
-    personaName = "High-Contrast Visual Assist Persona";
-    summary = "Optimized for low-vision & light sensitivity. Forces high-contrast themes and dark backgrounds.";
+    personaParts.push("High Contrast");
+    summaryParts.push("Low-vision & high contrast dark theme active.");
     visualScore = "45/100 (Assisted)";
     visualProfile.highContrast = true;
   } else if (visualVal === 'scaled_text') {
-    personaName = "Large Typography Assist Persona";
-    summary = "Optimized for legibility. Applies 1.5x font scaling automatically.";
+    personaParts.push("Large Typography");
+    summaryParts.push("1.5x font scaling & enhanced spacing active.");
     visualScore = "60/100 (Assisted)";
     visualProfile.fontScale = 1.5;
+  } else {
+    personaParts.push("Standard Visual");
   }
 
+  // 2. Cognitive Diagnostics Evaluation
   if (cognitiveVal === 'dyslexic') {
-    personaName = "Dyslexia Cognitive Assist Persona";
-    summary = "Injects OpenDyslexic font family to eliminate character rotation.";
+    personaParts.push("Dyslexia Assist");
+    summaryParts.push("OpenDyslexic font family active.");
     cognitiveScore = "50/100 (Assisted)";
     cognitiveProfile.dyslexicFont = true;
   } else if (cognitiveVal === 'simplified') {
-    personaName = "AI Simplification Cognitive Persona";
-    summary = "Summarizes complex academic jargon into clear bullet points using Gemini AI.";
+    personaParts.push("AI Simplification");
+    summaryParts.push("Gemini AI paragraph summarization active.");
     cognitiveScore = "55/100 (Assisted)";
     cognitiveProfile.simplifyText = true;
+  } else {
+    personaParts.push("Original Text");
   }
+
+  const personaName = `${personaParts.join(" + ")} Persona`;
+  const summary = summaryParts.length > 0 
+    ? summaryParts.join(" ") 
+    : "Balanced visual and text settings. Standard web layout supported.";
 
   // Update UI Persona Card
   document.getElementById('persona-title').innerText = personaName;
@@ -163,6 +173,7 @@ function calculatePersona() {
 
   nextStep(4);
 }
+
 
 document.getElementById('profile-form').addEventListener('submit', (e) => {
   e.preventDefault();

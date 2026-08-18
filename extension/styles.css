@@ -7,86 +7,32 @@
   --adapt-font-family: inherit;
 }
 
-/* Master AdaptAI Accessibility Theme Engine */
-html[data-adaptai-transformed="true"] {
+/* /* Clean high-contrast container adaptation without breaking inline element backgrounds */
+html[data-adaptai-transformed="true"] body, 
+html[data-adaptai-transformed="true"] main,
+html[data-adaptai-transformed="true"] article,
+html[data-adaptai-transformed="true"] section {
   background-color: var(--adapt-bg-color, #09090b) !important;
   color: var(--adapt-text-color, #f4f4f5) !important;
+  font-family: var(--adapt-font-family, inherit) !important;
+  transition: background-color 0.3s ease, color 0.3s ease !important;
 }
 
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"],
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] body,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]),
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) body {
-  background-color: var(--adapt-bg-color, #09090b) !important;
-  color: var(--adapt-text-color, #f4f4f5) !important;
-}
-
-/* Transform layout containers, headers, articles, and cards to dark zinc */
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] main,
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] article,
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] section,
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] div:not(#adaptai-widget-host):not(#adaptai-assistant-overlay):not(#adaptai-assistant-overlay *),
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] header,
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] footer,
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] nav,
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] aside,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) main,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) article,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) section,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) div:not(#adaptai-widget-host):not(#adaptai-assistant-overlay):not(#adaptai-assistant-overlay *),
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) header,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) footer,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) nav,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) aside {
-  background-color: #09090b !important;
-  color: #f4f4f5 !important;
-  border-color: #27272a !important;
-}
-
-/* /* Ensure clean text legibility on dark theme with dynamic yellow text support */
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] p,
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] h1,
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] h2,
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] h3,
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] h4,
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] h5,
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] h6,
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] span:not(.brand-dot),
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] li,
-html[data-adaptai-transformed="true"][data-adaptai-theme="dark"] label,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) p,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h1,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h2,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h3,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h4,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h5,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) h6,
-html[data-adaptai-transformed="true"]:not([data-adaptai-theme="light"]) span:not(.brand-dot),
-/* High Contrast Link Accent Engine */
+html[data-adaptai-transformed="true"] p, 
+html[data-adaptai-transformed="true"] h1, 
+html[data-adaptai-transformed="true"] h2, 
+html[data-adaptai-transformed="true"] h3, 
+html[data-adaptai-transformed="true"] h4, 
+html[data-adaptai-transformed="true"] h5, 
+html[data-adaptai-transformed="true"] h6, 
+html[data-adaptai-transformed="true"] span:not(.brand-dot), 
+html[data-adaptai-transformed="true"] li, 
+html[data-adaptai-transformed="true"] label,
 html[data-adaptai-transformed="true"] a:not(.btn-hero-primary):not(.btn-nav-cta) {
-  text-decoration: underline !important;
-}
-
-
-
-/* Light Theme High-Contrast Mode */
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"],
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] body {
-  background-color: #ffffff !important;
-  color: #09090b !important;
-}
-
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] main,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] article,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] section,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] div:not(#adaptai-widget-host):not(#adaptai-assistant-overlay):not(#adaptai-assistant-overlay *),
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] header,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] footer,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] nav,
-html[data-adaptai-transformed="true"][data-adaptai-theme="light"] aside {
-  background-color: #ffffff !important;
-  color: #09090b !important;
-  border-color: #e4e4e7 !important;
+  background-color: transparent !important;
+  color: var(--adapt-text-color, #f4f4f5) !important;
+  font-family: var(--adapt-font-family, inherit) !important;
+  transition: color 0.3s ease !important;
 }
 
 /* High contrast text rules for badges, buttons, pills, and UI cards */
